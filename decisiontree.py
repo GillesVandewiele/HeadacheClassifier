@@ -86,14 +86,13 @@ class DecisionTree(object):
         :return: a class label
         """
         if self.value is None:
-            print(self.label)
             return self.label
         else:
             # feature_vector should only contain 1 row
             if feature_vector[self.label].values[0] <= self.value:
-                self.left.evaluate(feature_vector)
+                return self.left.evaluate(feature_vector)
             else:
-                self.right.evaluate(feature_vector)
+                return self.right.evaluate(feature_vector)
 
     def evaluate_multiple(self, feature_vectors):
         #todo: iterate over rows and call evaluate(row)

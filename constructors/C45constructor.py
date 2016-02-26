@@ -25,7 +25,8 @@ class C45Constructor(TreeConstructor):
 
     def split_criterion(self, node):
         """
-        Calculates information gain for a subtree
+        Calculates information gain ratio (ratio because normal gain tends to have a strong bias in favor of tests with
+        many outcomes) for a subtree
         :param node: the node where the information gain needs to be calculated for
         :return: the information gain: information (entropy) in node - sum(weighted information in its children)
         """
@@ -44,7 +45,7 @@ class C45Constructor(TreeConstructor):
         info_after_split = total_left_count / total_count_before_split * self.calculate_entropy(left_counts) \
                            + total_right_count / total_count_before_split * self.calculate_entropy(right_counts)
 
-        return info_before_split - info_after_split
+        return (info_before_split - info_after_split)/info_before_split
 
     def get_possible_split_values(self, feature_values):
         """
@@ -55,7 +56,9 @@ class C45Constructor(TreeConstructor):
         split_values = []
         unique_values = feature_values.sort_values().unique()
         for i in range(len(unique_values) - 1):
-            split_values.append(unique_values[i] + (unique_values[i + 1] - unique_values[i]) / 2)
+            # C4.5 differs from others in not taking the midpoint,so that values also appear as in the feature vectors
+            split_values.append(unique_values[i])
+            # split_values.append(unique_values[i] + (unique_values[i + 1] - unique_values[i]) / 2)
         return split_values
 
     def divide_data(self, data, feature, value):
@@ -72,7 +75,7 @@ class C45Constructor(TreeConstructor):
                             data=data,
                             value=value)
 
-    def construct_tree(self, feature_vectors, labels):
+    def construct_tree(self, feature_vectors, labels, default):
         """
         Construct a tree from a given array of feature vectors
         :param feature_vectors: a pandas dataframe containing the features
@@ -98,36 +101,51 @@ class C45Constructor(TreeConstructor):
                 node = self.divide_data(data, feature, value)
                 info_gains[node] = self.split_criterion(node)
 
+        # If info_gains is empty, we have no more possibilities to test, something went wrong
+        # Output the default class (this should be adjusted using some background knowledge)
+        if len(info_gains) == 0:
+            return DecisionTree(label=unique_labels[0])
+
         # Pick the (feature, value) combination with the highest information gain and create a new node
         best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
         node = DecisionTree(label=best_split_node.label, value=best_split_node.value, data=best_split_node.data)
 
         # Recursive call to set the left and right child of the newly created node
-        node.left = self.construct_tree(best_split_node.left.data.drop('cat', axis=1), best_split_node.left.data[['cat']])
-        node.right = self.construct_tree(best_split_node.right.data.drop('cat', axis=1), best_split_node.right.data[['cat']])
+        node.left = self.construct_tree(best_split_node.left.data.drop('cat', axis=1),
+                                        best_split_node.left.data[['cat']], default)
+        node.right = self.construct_tree(best_split_node.right.data.drop('cat', axis=1),
+                                         best_split_node.right.data[['cat']], default)
 
         return node
 
 
-x1 = np.asarray([1.0, 1.0, 3.0, 3.0, 2.0, 2.0, 3.0, 4.0])
-x2 = np.asarray([0, 0, 1, 0, 0, 1, 1, 0])
-categories = np.asarray([0, 0, 1, 0, 0, 0, 1, 2])
+outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2])
+temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70])
+humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96])
+windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0])
+
+play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1])
+
 feature_vectors_df = DataFrame()
-feature_vectors_df['x1'] = x1
-feature_vectors_df['x2'] = x2
+feature_vectors_df['outlook'] = outlook
+feature_vectors_df['temp'] = temp
+feature_vectors_df['humidity'] = humidity
+feature_vectors_df['windy'] = windy
+
 labels_df = DataFrame()
-labels_df['cat'] = categories
+labels_df['cat'] = play
+
 frame = DataFrame(feature_vectors_df.copy())
 frame['cat'] = labels_df.copy()
 print(frame)
-tree_constructor = C45Constructor()
-tree = tree_constructor.construct_tree(feature_vectors_df, categories)
-#print(tree.convert_to_DOT())
-#tree.visualise('../tree')
 
-tree.to_string()
+tree_constructor = C45Constructor()
+tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
+tree.visualise('../tree')
 
 input_vector = DataFrame()
-input_vector['x1'] = np.asarray([3])
-input_vector['x2'] = np.asarray([0])
+input_vector['outlook'] = np.asarray([1])
+input_vector['temp'] = np.asarray([69])
+input_vector['humidity'] = np.asarray([97])
+input_vector['windy'] = np.asarray([0])
 print(tree.evaluate(input_vector))
