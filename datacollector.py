@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 
+from testshit import loadDataFromDB
+
 
 class DataCollector(object):
 

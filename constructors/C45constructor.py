@@ -55,7 +55,7 @@ class C45Constructor(TreeConstructor):
         # TODO: possible optimizations: if value consecutive values have same classes, they shouldn't be a split value
         split_values = []
         unique_values = feature_values.sort_values().unique()
-        for i in range(len(unique_values) - 1):
+        for i in range(len(unique_values)-1):
             # C4.5 differs from others in not taking the midpoint,so that values also appear as in the feature vectors
             split_values.append(unique_values[i])
             # split_values.append(unique_values[i] + (unique_values[i + 1] - unique_values[i]) / 2)
