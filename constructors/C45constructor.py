@@ -47,18 +47,34 @@ class C45Constructor(TreeConstructor):
 
         return (info_before_split - info_after_split)/info_before_split
 
-    def get_possible_split_values(self, feature_values):
+    def get_possible_split_values(self, feature_values_cats):
         """
-        :param feature_values: pandas dataframe containing the values of a specific feature and the class of that record
+        :param feature_values_cats: pandas dataframe containing the values of a specific feature (first column)
+                                    and category (last) of that record
         :return: split_values: list of floats where the tree can possibly split on
         """
         # TODO: possible optimizations: if value consecutive values have same classes, they shouldn't be a split value
         split_values = []
-        unique_values = feature_values.sort_values().unique()
+        """
+        print(feature_values_cats.sort_values(by=[feature_values_cats.columns[0], feature_values_cats.columns[1]]))
+        sorted_feature_values_cats = feature_values_cats.sort_values(by=[feature_values_cats.columns[0], feature_values_cats.columns[1]])
+        current_cat = None
+        current_value = None
+        for i in range(len(sorted_feature_values_cats.index)):
+            print(sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[1]), current_value)
+            if sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[1]) != current_cat:
+                split_values.append(current_value)
+            current_cat = sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[1])
+            current_value = sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[0])
+        print(split_values)
+        return split_values
+        """
+        unique_values = Series(feature_values_cats.sort_values(by=feature_values_cats.columns[0])[feature_values_cats.columns[0]]).unique()
         for i in range(len(unique_values) - 1):
             # C4.5 differs from others in not taking the midpoint,so that values also appear as in the feature vectors
             split_values.append(unique_values[i])
             # split_values.append(unique_values[i] + (unique_values[i + 1] - unique_values[i]) / 2)
+        print(split_values)
         return split_values
 
     def divide_data(self, data, feature, value):
@@ -97,7 +113,7 @@ class C45Constructor(TreeConstructor):
         # For every possible feature and its possible values: calculate the information gain if we would split
         info_gains = {}
         for feature in cols:
-            for value in self.get_possible_split_values(data[feature]):
+            for value in self.get_possible_split_values(data[[feature, 'cat']]):
                 node = self.divide_data(data, feature, value)
                 info_gains[node] = self.split_criterion(node)
 
@@ -119,12 +135,12 @@ class C45Constructor(TreeConstructor):
         return node
 
 
-outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2])
-temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70])
-humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96])
-windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0])
+outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0])
+temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70, 75])
+humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96, 70])
+windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1])
 
-play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1])
+play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0])
 
 feature_vectors_df = DataFrame()
 feature_vectors_df['outlook'] = outlook
@@ -149,3 +165,10 @@ input_vector['temp'] = np.asarray([69])
 input_vector['humidity'] = np.asarray([97])
 input_vector['windy'] = np.asarray([0])
 print(tree.evaluate(input_vector))
+
+#TODO: predict probabilities: http://aaaipress.org/Papers/Workshops/2006/WS-06-06/WS06-06-005.pdf
+#TODO                         http://cseweb.ucsd.edu/~elkan/calibrated.pdf
+
+#TODO: pruning
+
+#TODO: multivariate splits possible? Split on multiple attributes at once (in C4.5)
