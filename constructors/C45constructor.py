@@ -1,10 +1,12 @@
 import operator
-from math import log2
+from math import log2, sqrt
 
 from pandas import DataFrame, Series
+from sklearn.cross_validation import KFold
 
 from constructors.treeconstructor import TreeConstructor
 import numpy as np
+from scipy.stats import norm
 
 from decisiontree import DecisionTree
 
@@ -12,6 +14,9 @@ from decisiontree import DecisionTree
 class C45Constructor(TreeConstructor):
     def __init__(self):
         pass
+
+    def cross_validation(self, data, k):
+        return KFold(len(data.index), n_folds=k, shuffle=True)
 
     def calculate_entropy(self, values_list):
         # Normalize the values by dividing each value by the sum of all values in the list
@@ -30,7 +35,6 @@ class C45Constructor(TreeConstructor):
         :param node: the node where the information gain needs to be calculated for
         :return: the information gain: information (entropy) in node - sum(weighted information in its children)
         """
-
         counts_before_split = np.asarray(node.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
         total_count_before_split = sum(counts_before_split)
         info_before_split = self.calculate_entropy(counts_before_split)
@@ -45,7 +49,7 @@ class C45Constructor(TreeConstructor):
         info_after_split = total_left_count / total_count_before_split * self.calculate_entropy(left_counts) \
                            + total_right_count / total_count_before_split * self.calculate_entropy(right_counts)
 
-        return (info_before_split - info_after_split)/info_before_split
+        return (info_before_split - info_after_split) / info_before_split
 
     def get_possible_split_values(self, feature_values_cats):
         """
@@ -55,26 +59,11 @@ class C45Constructor(TreeConstructor):
         """
         # TODO: possible optimizations: if value consecutive values have same classes, they shouldn't be a split value
         split_values = []
-        """
-        print(feature_values_cats.sort_values(by=[feature_values_cats.columns[0], feature_values_cats.columns[1]]))
-        sorted_feature_values_cats = feature_values_cats.sort_values(by=[feature_values_cats.columns[0], feature_values_cats.columns[1]])
-        current_cat = None
-        current_value = None
-        for i in range(len(sorted_feature_values_cats.index)):
-            print(sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[1]), current_value)
-            if sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[1]) != current_cat:
-                split_values.append(current_value)
-            current_cat = sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[1])
-            current_value = sorted_feature_values_cats.get_value(i, sorted_feature_values_cats.columns[0])
-        print(split_values)
-        return split_values
-        """
-        unique_values = Series(feature_values_cats.sort_values(by=feature_values_cats.columns[0])[feature_values_cats.columns[0]]).unique()
-        for i in range(len(unique_values) - 1):
+        unique_values = feature_values_cats.sort_values().unique()
+        for i in range(len(unique_values)):
             # C4.5 differs from others in not taking the midpoint,so that values also appear as in the feature vectors
             split_values.append(unique_values[i])
             # split_values.append(unique_values[i] + (unique_values[i + 1] - unique_values[i]) / 2)
-        print(split_values)
         return split_values
 
     def divide_data(self, data, feature, value):
@@ -91,36 +80,42 @@ class C45Constructor(TreeConstructor):
                             data=data,
                             value=value)
 
-    def construct_tree(self, feature_vectors, labels, default):
+    def all_feature_vectors_equal(self, training_feature_vectors):
+        return len(training_feature_vectors.index) == (training_feature_vectors.duplicated(keep='first').sum() + 1)
+
+    def construct_tree(self, training_feature_vectors, labels, default, max_nr_nodes=1):
         """
         Construct a tree from a given array of feature vectors
-        :param feature_vectors: a pandas dataframe containing the features
+        :param training_feature_vectors: a pandas dataframe containing the features
         :param labels: a pandas dataframe containing the labels in the same order
         :return: decision_tree: a DecisionTree object
         """
 
-        cols = feature_vectors.columns
+        cols = training_feature_vectors.columns
 
-        data = DataFrame(feature_vectors)
+        data = DataFrame(training_feature_vectors)
         data['cat'] = labels
         unique_labels = np.unique(labels)
 
+        if len(unique_labels) == 0:
+            return DecisionTree(label=default)
+
         # TODO: this has to improve of course (can get stuck now if data not linearly seperable)
         # Stop criterion (when is a node a decision class)
-        if len(unique_labels) == 1:
-            return DecisionTree(label=unique_labels[0])
+        if len(unique_labels) <= max_nr_nodes or self.all_feature_vectors_equal(data.drop('cat', axis=1)):
+            return DecisionTree(label=np.argmax(np.bincount(unique_labels)))
 
         # For every possible feature and its possible values: calculate the information gain if we would split
         info_gains = {}
         for feature in cols:
-            for value in self.get_possible_split_values(data[[feature, 'cat']]):
+            for value in self.get_possible_split_values(data[feature]):
                 node = self.divide_data(data, feature, value)
                 info_gains[node] = self.split_criterion(node)
 
         # If info_gains is empty, we have no more possibilities to test, something went wrong
         # Output the default class (this should be adjusted using some background knowledge)
         if len(info_gains) == 0:
-            return DecisionTree(label=unique_labels[0])
+            return DecisionTree(label=default)
 
         # Pick the (feature, value) combination with the highest information gain and create a new node
         best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
@@ -134,13 +129,62 @@ class C45Constructor(TreeConstructor):
 
         return node
 
+    def set_error_rate(self, tree, testing_feature_vectors, labels):
+        # Calculate the differences between predicted and correct classes
+        # labels is a pandas dataframe, having x rows and just 1 column (the label)
+        print(np.bincount(tree.evaluate_multiple(testing_feature_vectors)))
+        bins = np.bincount(tree.evaluate_multiple(testing_feature_vectors))
+        if len(bins) < 2:
+            error_count = 0
+        else:
+            error_count = np.min(bins)
+        """
+        differences = tree.evaluate_multiple(testing_feature_vectors) - labels.values[:, 0]
 
-outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0])
-temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70, 75])
-humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96, 70])
-windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1])
+        # If the difference between classes is not zero, the predictor made an error
+        error_count = np.count_nonzero(differences)
 
-play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0])
+        # Calculate the error_rate
+        error_rate = (error_count+1) / (len(labels.values)+2)
+        print("my error rate = ", error_rate)
+        """
+        error_rate = (error_count+1) / (len(labels.values)+2)
+        print("my error rate = ", error_rate)
+
+        # Set the pruning ratio of our tree
+        tree.pruning_ratio = len(labels.values) * error_rate * 1.150 * sqrt((error_rate * (1 - error_rate)) / (len(labels.values)+2))
+
+        # If we're not in a leaf, we divide the test data and do a recursive call
+        if tree.value is not None:
+            data = DataFrame(testing_feature_vectors)
+            data['cat'] = labels
+            node = self.divide_data(data, tree.label, tree.value)
+            self.set_error_rate(tree.left, node.left.data.drop('cat', axis=1), node.left.data[['cat']])
+            self.set_error_rate(tree.right, node.right.data.drop('cat', axis=1), node.right.data[['cat']])
+
+    def prune_node(self, tree, testing_feature_vectors):
+        if tree.value is not None:
+            if tree.pruning_ratio < (tree.right.pruning_ratio + tree.left.pruning_ratio):
+                new_class = np.argmax(np.bincount(tree.evaluate_multiple(tree.data)))
+                tree.value = None
+                tree.label = new_class
+                tree.left = None
+                tree.right = None
+            else:
+                self.prune_node(tree.left, testing_feature_vectors)
+                self.prune_node(tree.right, testing_feature_vectors)
+
+    def post_prune(self, tree, testing_feature_vectors, labels):
+        self.set_error_rate(tree, testing_feature_vectors, labels)
+        self.prune_node(tree, testing_feature_vectors)
+            
+
+outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0]*4)
+temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70, 75]*4)
+humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96, 70]*4)
+windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1]*4)
+
+play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0]*4)
 
 feature_vectors_df = DataFrame()
 feature_vectors_df['outlook'] = outlook
@@ -153,11 +197,28 @@ labels_df['cat'] = play
 
 frame = DataFrame(feature_vectors_df.copy())
 frame['cat'] = labels_df.copy()
-print(frame)
 
 tree_constructor = C45Constructor()
-tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
-tree.visualise('../tree')
+# tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
+# tree.visualise('../tree')
+
+kf = tree_constructor.cross_validation(feature_vectors_df, 2)
+
+i = 0
+for train, test in kf:
+    train_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=train)
+    test_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=test)
+    train_labels_df = DataFrame(labels_df, index=train)
+    test_labels_df = DataFrame(labels_df, index=test)
+    decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(play)))
+    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df, test_labels_df)
+    decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
+    tree_constructor.post_prune(decision_tree, test_feature_vectors_df, test_labels_df)
+    decision_tree.visualise('../tree_pruned' + str(i), with_pruning_ratio=True)
+    print(i)
+    i += 1
+"""
+train_feature_vectors_df = DataFrame(feature_vectors_df, index=)
 
 input_vector = DataFrame()
 input_vector['outlook'] = np.asarray([1])
@@ -165,10 +226,12 @@ input_vector['temp'] = np.asarray([69])
 input_vector['humidity'] = np.asarray([97])
 input_vector['windy'] = np.asarray([0])
 print(tree.evaluate(input_vector))
+"""
 
-#TODO: predict probabilities: http://aaaipress.org/Papers/Workshops/2006/WS-06-06/WS06-06-005.pdf
-#TODO                         http://cseweb.ucsd.edu/~elkan/calibrated.pdf
 
-#TODO: pruning
+# TODO: predict probabilities: http://aaaipress.org/Papers/Workshops/2006/WS-06-06/WS06-06-005.pdf
+# TODO                         http://cseweb.ucsd.edu/~elkan/calibrated.pdf
 
-#TODO: multivariate splits possible? Split on multiple attributes at once (in C4.5)
+# TODO: pruning
+
+# TODO: multivariate splits possible? Split on multiple attributes at once (in C4.5)

@@ -3,10 +3,8 @@ from headacheclassifier import HeadacheClassifier
 __author__ = 'kiani &gilles'
 
 import numpy as np
-from numpy.core.records import ndarray
 from pymongo import MongoClient
 from dateutil.parser import parse
-from sklearn.preprocessing import normalize
 
 
 def loadDataFromDB(host, port, dbname):
