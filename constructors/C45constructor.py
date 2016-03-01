@@ -129,30 +129,34 @@ class C45Constructor(TreeConstructor):
 
         return node
 
+    def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance):
+        # Calculate the differences between predicted and correct classes
+        # labels is a pandas dataframe, having x rows and just 1 column (the label)
+        differences = tree.evaluate_multiple(testing_feature_vectors) - labels.values[:, 0]
+
+        # If the difference between classes is not zero, the predictor made an error
+        error_count = np.count_nonzero(differences)
+
+        # From count to rate, doing some additions to avoid weird values and divisions by zero
+        error_rate = error_count / (len(labels.values)+1)
+
+        # error rate = |S| * e(T, S) * Z_(alpha/2) * sqrt((e(T,S) * (1-e(T,S)))/|S|)
+        return error_rate * norm.cdf(significance/2) * sqrt((error_rate * (1 - error_rate)) / (len(labels.values)+1))
+
     def set_error_rate(self, tree, testing_feature_vectors, labels):
         # Calculate the differences between predicted and correct classes
         # labels is a pandas dataframe, having x rows and just 1 column (the label)
-        print(np.bincount(tree.evaluate_multiple(testing_feature_vectors)))
-        bins = np.bincount(tree.evaluate_multiple(testing_feature_vectors))
-        if len(bins) < 2:
-            error_count = 0
-        else:
-            error_count = np.min(bins)
-        """
+
         differences = tree.evaluate_multiple(testing_feature_vectors) - labels.values[:, 0]
 
         # If the difference between classes is not zero, the predictor made an error
         error_count = np.count_nonzero(differences)
 
         # Calculate the error_rate
-        error_rate = (error_count+1) / (len(labels.values)+2)
-        print("my error rate = ", error_rate)
-        """
-        error_rate = (error_count+1) / (len(labels.values)+2)
-        print("my error rate = ", error_rate)
+        error_rate = error_count / (len(labels.values)+1)
 
-        # Set the pruning ratio of our tree
-        tree.pruning_ratio = len(labels.values) * error_rate * 1.150 * sqrt((error_rate * (1 - error_rate)) / (len(labels.values)+2))
+        # Set the pruning ratio of our tree (0.69 is the standard normal distribution of alpha = 0.25)
+        tree.pruning_ratio = error_rate * norm.cdf(0.125/2) * sqrt((error_rate * (1 - error_rate)) / (len(labels.values)+1))
 
         # If we're not in a leaf, we divide the test data and do a recursive call
         if tree.value is not None:
@@ -165,6 +169,7 @@ class C45Constructor(TreeConstructor):
     def prune_node(self, tree, testing_feature_vectors):
         if tree.value is not None:
             if tree.pruning_ratio < (tree.right.pruning_ratio + tree.left.pruning_ratio):
+                # Pick the most occuring class as new class of the leaf
                 new_class = np.argmax(np.bincount(tree.evaluate_multiple(tree.data)))
                 tree.value = None
                 tree.label = new_class
@@ -174,9 +179,62 @@ class C45Constructor(TreeConstructor):
                 self.prune_node(tree.left, testing_feature_vectors)
                 self.prune_node(tree.right, testing_feature_vectors)
 
-    def post_prune(self, tree, testing_feature_vectors, labels):
-        self.set_error_rate(tree, testing_feature_vectors, labels)
-        self.prune_node(tree, testing_feature_vectors)
+    def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
+        # if tree.left and tree.right are leafs:
+        #   calculate error rate of tree and his two children
+        # else:
+        #   recursive call to calculate error rate of subtrees left and right, eventually proning them
+
+        # If the tree value is None, we are in a leaf, just calculate the error rate and return it
+        if tree.value is None:
+            return self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
+        else:
+            # Else, we will need to split up the data for further recursive calls
+            data = DataFrame(testing_feature_vectors)
+            data['cat'] = labels
+            node = self.divide_data(data, tree.label, tree.value)
+            # Already calculate the error rate recursively
+            error_rate = self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
+            left_child_error_rate = self.post_prune(tree.left, node.left.data.drop('cat', axis=1),
+                                                    node.left.data[['cat']], significance)
+            right_child_error_rate = self.post_prune(tree.right, node.right.data.drop('cat', axis=1),
+                                                        node.right.data[['cat']], significance)
+
+            # If the left and right children their values are None, they are both leafs
+            if tree.left.value is None and tree.right.value is None:
+                # Prune if there is an improvement in error rate, the tree becomes a leaf
+                if error_rate < (left_child_error_rate + right_child_error_rate):
+                    # The new class is equal to the most occurring class in the data
+                    new_class = np.argmax(np.bincount(tree.evaluate_multiple(tree.data)))
+                    tree.value = None
+                    tree.label = int(new_class)
+                    tree.left = None
+                    tree.right = None
+                    print(self.calculate_error_rate(tree, testing_feature_vectors, labels, significance))
+
+                    # Recalculate the error rate and return it
+                    return self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
+                else:
+                    return error_rate
+
+            # Else, one of the children is still a subtree, pruning is different
+            else:
+                if error_rate < (left_child_error_rate + right_child_error_rate) \
+                        and len(node.left.data.index) > len(node.right.data.index):
+                    new_tree = tree.left
+                else:
+                    new_tree = tree.right
+
+                if error_rate < (left_child_error_rate + right_child_error_rate):
+                    tree.value = new_tree.value
+                    tree.label = new_tree.label
+                    tree.left = new_tree.left
+                    tree.right = new_tree.right
+                    print(self.calculate_error_rate(tree, testing_feature_vectors, labels, significance))
+
+                    # Recalculate the error rate and return it
+
+                return error_rate
             
 
 outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0]*4)
@@ -211,9 +269,10 @@ for train, test in kf:
     train_labels_df = DataFrame(labels_df, index=train)
     test_labels_df = DataFrame(labels_df, index=test)
     decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(play)))
-    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df, test_labels_df)
+    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
-    tree_constructor.post_prune(decision_tree, test_feature_vectors_df, test_labels_df)
+    print(test_feature_vectors_df, test_labels_df)
+    tree_constructor.post_prune(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     decision_tree.visualise('../tree_pruned' + str(i), with_pruning_ratio=True)
     print(i)
     i += 1
