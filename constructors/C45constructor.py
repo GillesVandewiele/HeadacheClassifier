@@ -137,7 +137,7 @@ class C45Constructor(TreeConstructor):
         # If the difference between classes is not zero, the predictor made an error
         error_count = np.count_nonzero(differences)
 
-        # From count to rate, doing some additions to avoid weird values and divisions by zero
+        # From count to rate, doing +1 to avoid division by zero
         error_rate = error_count / (len(labels.values)+1)
 
         # error rate = |S| * e(T, S) * Z_(alpha/2) * sqrt((e(T,S) * (1-e(T,S)))/|S|)
@@ -210,12 +210,11 @@ class C45Constructor(TreeConstructor):
                     tree.label = int(new_class)
                     tree.left = None
                     tree.right = None
-                    print(self.calculate_error_rate(tree, testing_feature_vectors, labels, significance))
 
                     # Recalculate the error rate and return it
                     return self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
                 else:
-                    return error_rate
+                    return left_child_error_rate + right_child_error_rate
 
             # Else, one of the children is still a subtree, pruning is different
             else:
@@ -230,19 +229,17 @@ class C45Constructor(TreeConstructor):
                     tree.label = new_tree.label
                     tree.left = new_tree.left
                     tree.right = new_tree.right
-                    print(self.calculate_error_rate(tree, testing_feature_vectors, labels, significance))
-
-                    # Recalculate the error rate and return it
-
-                return error_rate
+                    return self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
+                else:
+                    return left_child_error_rate + right_child_error_rate
             
 
-outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0]*4)
-temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70, 75]*4)
-humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96, 70]*4)
-windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1]*4)
+outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
+temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70]*1)
+humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96]*1)
+windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0]*1)
 
-play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0]*4)
+play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1]*1)
 
 feature_vectors_df = DataFrame()
 feature_vectors_df['outlook'] = outlook
@@ -252,9 +249,6 @@ feature_vectors_df['windy'] = windy
 
 labels_df = DataFrame()
 labels_df['cat'] = play
-
-frame = DataFrame(feature_vectors_df.copy())
-frame['cat'] = labels_df.copy()
 
 tree_constructor = C45Constructor()
 # tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
@@ -271,8 +265,11 @@ for train, test in kf:
     decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(play)))
     tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
-    print(test_feature_vectors_df, test_labels_df)
+    frame = DataFrame(test_feature_vectors_df.copy())
+    frame['cat'] = test_labels_df.copy()
+    print(frame)
     tree_constructor.post_prune(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
+    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     decision_tree.visualise('../tree_pruned' + str(i), with_pruning_ratio=True)
     print(i)
     i += 1
