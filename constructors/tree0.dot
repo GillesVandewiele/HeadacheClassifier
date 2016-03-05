@@ -1,20 +1,2 @@
 digraph Tree {
 node [shape=box] ;
-0 [label="outlook <= 0.5\ngini = 0.4592\nsamples = 14\nvalue = [5, 9]"] ;
-1 [label="humidity <= 77.5\ngini = 0.48\nsamples = 5\nvalue = [3, 2]"] ;
-0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2]"] ;
-1 -> 2 ;
-3 [label="gini = 0.0\nsamples = 3\nvalue = [3, 0]"] ;
-1 -> 3 ;
-4 [label="windy <= 0.5\ngini = 0.3457\nsamples = 9\nvalue = [2, 7]"] ;
-0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
-5 [label="gini = 0.0\nsamples = 5\nvalue = [0, 5]"] ;
-4 -> 5 ;
-6 [label="outlook <= 1.5\ngini = 0.5\nsamples = 4\nvalue = [2, 2]"] ;
-4 -> 6 ;
-7 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2]"] ;
-6 -> 7 ;
-8 [label="gini = 0.0\nsamples = 2\nvalue = [2, 0]"] ;
-6 -> 8 ;
-}

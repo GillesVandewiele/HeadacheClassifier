@@ -4,7 +4,7 @@ import numpy as np
 from skimage.measure.tests.test_fit import test_ransac_invalid_input
 from sklearn.externals.six import StringIO
 from sklearn import tree
-from pandas import DataFrame
+from pandas import DataFrame, read_csv
 from sklearn.cross_validation import KFold
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
@@ -23,14 +23,14 @@ class CARTconstructor(TreeConstructor):
         return KFold(len(data.index), n_folds=k, shuffle=True)
 
 
-    def construct_tree(self, training_feature_vectors, labels, default):
+    def construct_tree(self, training_feature_vectors, labels):
         self.features = list(training_feature_vectors.columns[:4])
         print"* features:", self.features
 
         self.y = labels['cat']
         self.X = training_feature_vectors[self.features]
 
-        self.dt = DecisionTreeClassifier(min_samples_split=1, random_state=99)
+        self.dt = DecisionTreeClassifier()
         self.dt.fit(self.X, self.y)
 
 
@@ -44,7 +44,7 @@ class CARTconstructor(TreeConstructor):
     def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
         pass
 
-    def visualize_tree(tree, feature_names, filename):
+    def visualize_tree(tree, feature_names,labelnames,  filename):
         """Create tree png using graphviz.
 
         Args
@@ -54,7 +54,7 @@ class CARTconstructor(TreeConstructor):
         """
         with open(filename+".dot", 'w') as f:
             export_graphviz(tree.dt, out_file=f,
-                            feature_names=feature_names)
+                            feature_names=feature_names, class_names=labelnames)
 
         command = ["dot", "-Tpdf", filename+".dot", "-o", filename+".pdf"]
         try:
@@ -63,21 +63,38 @@ class CARTconstructor(TreeConstructor):
             exit("Could not run dot, ie graphviz, to "
                  "produce visualization")
 
-outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
-temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70]*1)
-humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96]*1)
-windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0]*1)
+# outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
+# temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70]*1)
+# humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96]*1)
+# windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0]*1)
+#
+# play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1]*1)
+#
+# feature_vectors_df = DataFrame()
+# feature_vectors_df['outlook'] = outlook
+# feature_vectors_df['temp'] = temp
+# feature_vectors_df['humidity'] = humidity
+# feature_vectors_df['windy'] = windy
+#
+# labels_df = DataFrame()
+# labels_df['cat'] = play
 
-play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1]*1)
+# Read csv into pandas frame
+columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+           'number of vessels', 'thal', 'disease']
+df = read_csv('../heart.dat', sep=' ')
+df = df.iloc[np.random.permutation(len(df))]
+df = df.reset_index(drop=True)
+df.columns = columns
 
-feature_vectors_df = DataFrame()
-feature_vectors_df['outlook'] = outlook
-feature_vectors_df['temp'] = temp
-feature_vectors_df['humidity'] = humidity
-feature_vectors_df['windy'] = windy
-
+# Seperate the dataframe into a class dataframe and feature dataframe
 labels_df = DataFrame()
-labels_df['cat'] = play
+labels_df['cat'] = df['disease']
+df = df.drop('disease', axis=1)
+feature_vectors_df = df.copy()
+
+
 
 tree_constructor = CARTconstructor()
 # tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
@@ -92,8 +109,8 @@ for train, test in kf:
     train_labels_df = DataFrame(labels_df, index=train)
     test_labels_df = DataFrame(labels_df, index=test)
     CARTdt = CARTconstructor()
-    CARTdt.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(play)))
-    CARTdt.visualize_tree(CARTdt.features, "tree"+str(i))
+    CARTdt.construct_tree(feature_vectors_df.copy(), labels_df)
+    CARTdt.visualize_tree(CARTdt.features, labels_df[['cat']], "tree"+str(i))
 
     i +=1
     # tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
