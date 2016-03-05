@@ -1,13 +1,8 @@
-import operator
-from math import log2, sqrt
-
-from pandas import DataFrame, Series
+import numpy as np
+from pandas import DataFrame
 from sklearn.cross_validation import KFold
 
 from constructors.treeconstructor import TreeConstructor
-import numpy as np
-from scipy.stats import norm
-
 from decisiontree import DecisionTree
 
 
