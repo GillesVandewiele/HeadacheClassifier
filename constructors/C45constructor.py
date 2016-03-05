@@ -1,5 +1,5 @@
 import operator
-from math import log2, sqrt
+from math import sqrt, log
 
 from pandas import DataFrame, Series, read_csv
 from sklearn.cross_validation import KFold
@@ -23,7 +23,8 @@ class C45Constructor(TreeConstructor):
         normalized_values = np.fromiter(map(lambda x: x / sum(values_list), values_list), dtype=np.float)
 
         # Calculate the log of the normalized values (negative because these values are in [0,1])
-        log_values = np.fromiter((map(lambda x: log2(x), normalized_values)), dtype=np.float)
+
+        log_values = np.fromiter((map(lambda x: log(x,2), normalized_values)), dtype=np.float)
 
         # Take sum of normalized_values * log_values, multiply with (-1) to get positive float
         return -sum(np.multiply(normalized_values, log_values))
