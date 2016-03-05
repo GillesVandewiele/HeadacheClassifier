@@ -1,8 +1,12 @@
-import numpy as np
+import subprocess
 
-import sklearn
+import numpy as np
+from skimage.measure.tests.test_fit import test_ransac_invalid_input
+from sklearn.externals.six import StringIO
+from sklearn import tree
 from pandas import DataFrame
 from sklearn.cross_validation import KFold
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
 from constructors.treeconstructor import TreeConstructor
 from decisiontree import DecisionTree
@@ -18,51 +22,46 @@ class CARTconstructor(TreeConstructor):
     def cross_validation(self, data, k):
         return KFold(len(data.index), n_folds=k, shuffle=True)
 
-    def divide_data(self, data, feature, value):
-        raise NotImplementedError("This method is not to be used in the cart constructor, because sklearn optimizes this automatically")
 
-    def all_feature_vectors_equal(self, training_feature_vectors):
-        return len(training_feature_vectors.index) == (training_feature_vectors.duplicated(keep='first').sum() + 1)
+    def construct_tree(self, training_feature_vectors, labels, default):
+        self.features = list(training_feature_vectors.columns[:4])
+        print"* features:", self.features
 
-    def anova_f_test(self):
-        raise NotImplementedError("This method needs to be implemented")
+        self.y = labels['cat']
+        self.X = training_feature_vectors[self.features]
 
-    def pearson_chi_square_test(self):
-        raise NotImplementedError("This method needs to be implemented")
+        self.dt = DecisionTreeClassifier(min_samples_split=1, random_state=99)
+        self.dt.fit(self.X, self.y)
 
-    def construct_tree(self, training_feature_vectors, labels, default, max_nr_nodes=1, discrete_thresh=5):
-        """
-        Construct a tree from a given array of feature vectors
-        :param discrete_thresh:
-        :param max_nr_nodes:
-        :param default:
-        :param training_feature_vectors: a pandas dataframe containing the features
-        :param labels: a pandas dataframe containing the labels in the same order
-        :return: decision_tree: a DecisionTree object
-        """
-        cols = training_feature_vectors.columns
 
-        data = DataFrame(training_feature_vectors)
-        data['cat'] = labels
-        unique_labels = np.unique(labels)
 
-        # Calculate split feature
-        feature_p_values = {}
-        for feature in cols:
-            if len(data[feature].values) > discrete_thresh:
-                # Continuous variable, perform ANOVA F test
-                feature_p_values[feature] = self.anova_f_test()
-            else:
-                # Discrete variable, perform Pearson's chi-square test
-                feature_p_values[feature] = self.pearson_chi_square_test()
 
 
     def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance):
+
         pass
 
     def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
         pass
 
+    def visualize_tree(tree, feature_names, filename):
+        """Create tree png using graphviz.
+
+        Args
+        ----
+        tree -- scikit-learn DecsisionTree.
+        feature_names -- list of feature names.
+        """
+        with open(filename+".dot", 'w') as f:
+            export_graphviz(tree.dt, out_file=f,
+                            feature_names=feature_names)
+
+        command = ["dot", "-Tpdf", filename+".dot", "-o", filename+".pdf"]
+        try:
+            subprocess.check_call(command)
+        except:
+            exit("Could not run dot, ie graphviz, to "
+                 "produce visualization")
 
 outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
 temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70]*1)
@@ -92,12 +91,18 @@ for train, test in kf:
     test_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=test)
     train_labels_df = DataFrame(labels_df, index=train)
     test_labels_df = DataFrame(labels_df, index=test)
-    decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(play)))
-    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
-    decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
-    frame = DataFrame(test_feature_vectors_df.copy())
-    frame['cat'] = test_labels_df.copy()
-    print(frame)
+    CARTdt = CARTconstructor()
+    CARTdt.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(play)))
+    CARTdt.visualize_tree(CARTdt.features, "tree"+str(i))
+
+    i +=1
+    # tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
+    #
+
+    # decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
+    # frame = DataFrame(test_feature_vectors_df.copy())
+    # frame['cat'] = test_labels_df.copy()
+    # print(frame)
     """
     tree_constructor.post_prune(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
