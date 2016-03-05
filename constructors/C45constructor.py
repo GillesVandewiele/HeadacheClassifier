@@ -23,6 +23,7 @@ class C45Constructor(TreeConstructor):
         normalized_values = np.fromiter(map(lambda x: x / sum(values_list), values_list), dtype=np.float)
 
         # Calculate the log of the normalized values (negative because these values are in [0,1])
+
         log_values = np.fromiter((map(lambda x: log(x,2), normalized_values)), dtype=np.float)
 
         # Take sum of normalized_values * log_values, multiply with (-1) to get positive float
