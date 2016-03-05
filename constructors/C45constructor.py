@@ -1,7 +1,7 @@
 import operator
 from math import log2, sqrt
 
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, read_csv
 from sklearn.cross_validation import KFold
 
 from constructors.treeconstructor import TreeConstructor
@@ -130,6 +130,26 @@ class C45Constructor(TreeConstructor):
         return node
 
     def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance):
+        # If we replace a node by a leaf with its most occuring class, what would then be the error rate?
+        #evaluations = tree.evaluate_multiple(testing_feature_vectors)
+        if tree.value is None:
+            print(labels.values.flatten())
+        #if evaluations.shape[0] == 0:
+        #    return 0.0
+        if len(labels.index) == 0:
+            return 0.0
+        else:
+            error_count = len(labels.index) - np.max(np.bincount(labels.values.flatten()))
+
+            # From count to rate, doing +1 to avoid division by zero
+            error_rate = error_count / (len(labels.index)+1)
+
+            if tree.value is None:
+                print("halloooo", error_rate * norm.cdf(significance/2) * sqrt((error_rate * (1 - error_rate)) / (len(labels.index)+1)))
+
+            # error rate = |S| * e(T, S) * Z_(alpha/2) * sqrt((e(T,S) * (1-e(T,S)))/|S|)
+            return error_rate * norm.cdf(significance/2) * sqrt((error_rate * (1 - error_rate)) / (len(labels.index)+1))
+        """
         # Calculate the differences between predicted and correct classes
         # labels is a pandas dataframe, having x rows and just 1 column (the label)
         differences = tree.evaluate_multiple(testing_feature_vectors) - labels.values[:, 0]
@@ -142,19 +162,29 @@ class C45Constructor(TreeConstructor):
 
         # error rate = |S| * e(T, S) * Z_(alpha/2) * sqrt((e(T,S) * (1-e(T,S)))/|S|)
         return error_rate * norm.cdf(significance/2) * sqrt((error_rate * (1 - error_rate)) / (len(labels.values)+1))
+        """
 
     def set_error_rate(self, tree, testing_feature_vectors, labels):
+        """
         # Calculate the differences between predicted and correct classes
         # labels is a pandas dataframe, having x rows and just 1 column (the label)
-
         differences = tree.evaluate_multiple(testing_feature_vectors) - labels.values[:, 0]
 
         # If the difference between classes is not zero, the predictor made an error
         error_count = np.count_nonzero(differences)
 
+        """
+        # evaluations = tree.evaluate_multiple(testing_feature_vectors)
+        #if evaluations.shape[0] == 0:
+        #    return 0.0
+        #error_count = evaluations.shape[0] - np.max(np.bincount(evaluations))
+        if len(labels.index) == 0:
+            return 0.0
+
+        error_count = len(labels.index) - np.max(np.bincount(labels.values.flatten()))
+
         # Calculate the error_rate
         error_rate = error_count / (len(labels.values)+1)
-
         # Set the pruning ratio of our tree (0.69 is the standard normal distribution of alpha = 0.25)
         tree.pruning_ratio = error_rate * norm.cdf(0.125/2) * sqrt((error_rate * (1 - error_rate)) / (len(labels.values)+1))
 
@@ -186,20 +216,35 @@ class C45Constructor(TreeConstructor):
         #   recursive call to calculate error rate of subtrees left and right, eventually proning them
 
         # If the tree value is None, we are in a leaf, just calculate the error rate and return it
+        error_rate = self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
         if tree.value is None:
-            return self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
+            return error_rate
         else:
             # Else, we will need to split up the data for further recursive calls
             data = DataFrame(testing_feature_vectors)
             data['cat'] = labels
             node = self.divide_data(data, tree.label, tree.value)
             # Already calculate the error rate recursively
-            error_rate = self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
             left_child_error_rate = self.post_prune(tree.left, node.left.data.drop('cat', axis=1),
                                                     node.left.data[['cat']], significance)
             right_child_error_rate = self.post_prune(tree.right, node.right.data.drop('cat', axis=1),
                                                         node.right.data[['cat']], significance)
+            print("error rate = ", error_rate)
+            print("left child error = ", left_child_error_rate)
+            print("right child error = ", right_child_error_rate)
 
+            if error_rate < (left_child_error_rate + right_child_error_rate)/2:
+                new_class = np.argmax(np.bincount(tree.evaluate_multiple(tree.data)))
+                tree.value = None
+                tree.label = int(new_class)
+                tree.left = None
+                tree.right = None
+
+                return error_rate
+
+            else:
+                return (left_child_error_rate + right_child_error_rate)/2
+            """
             # If the left and right children their values are None, they are both leafs
             if tree.left.value is None and tree.right.value is None:
                 # Prune if there is an improvement in error rate, the tree becomes a leaf
@@ -232,14 +277,48 @@ class C45Constructor(TreeConstructor):
                     return self.calculate_error_rate(tree, testing_feature_vectors, labels, significance)
                 else:
                     return left_child_error_rate + right_child_error_rate
-            
+            """
 
-outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0]*1)
-temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70, 75]*1)
-humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96, 70]*1)
-windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1]*1)
+columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+           'number of vessels', 'thal', 'disease']
+df = read_csv('../heart.dat', sep=' ')
+df = df.iloc[np.random.permutation(len(df))]
+df = df.reset_index(drop=True)
+df.columns = columns
 
-play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0]*1)
+labels_df = DataFrame()
+labels_df['cat'] = df['disease']
+df = df.drop('disease', axis=1)
+feature_vectors_df = df.copy()
+print(feature_vectors_df)
+
+tree_constructor = C45Constructor()
+kf = tree_constructor.cross_validation(feature_vectors_df, 2)
+
+i = 0
+for train, test in kf:
+    train_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=train)
+    test_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=test)
+    train_labels_df = DataFrame(labels_df, index=train)
+    test_labels_df = DataFrame(labels_df, index=test)
+    decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, default=0)
+    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
+    decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
+    frame = DataFrame(test_feature_vectors_df.copy())
+    frame['cat'] = test_labels_df.copy()
+    print(frame)
+    tree_constructor.post_prune(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
+    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
+    decision_tree.visualise('../tree_pruned' + str(i), with_pruning_ratio=True)
+
+"""
+outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 0]*4)
+temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70, 75]*4)
+humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96, 70]*4)
+windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1]*4)
+
+play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0]*4)
 
 feature_vectors_df = DataFrame()
 feature_vectors_df['outlook'] = outlook
@@ -273,6 +352,7 @@ for train, test in kf:
     decision_tree.visualise('../tree_pruned' + str(i), with_pruning_ratio=True)
     print(i)
     i += 1
+"""
 """
 train_feature_vectors_df = DataFrame(feature_vectors_df, index=)
 
