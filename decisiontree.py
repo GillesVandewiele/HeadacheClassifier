@@ -76,12 +76,12 @@ class DecisionTree(object):
 
     def to_string(self, tab=0):
         if self.value is None:
-            print('\t'*tab, '[', self.label, ' || pruning_ratio = ', self.pruning_ratio, ']')
+            print '\t'*tab + '[', self.label, ']'
         else:
-            print('\t'*tab, self.label, ' <= ', self.value, ' || pruning_ratio = ', self.pruning_ratio)
-            print('\t'*(tab+1), 'LEFT:')
+            print '\t'*tab + self.label, ' <= ', self.value
+            print '\t'*(tab+1)+ 'LEFT:'
             self.left.to_string(tab=tab+1)
-            print('\t'*(tab+1), 'RIGHT:')
+            print '\t'*(tab+1)+ 'RIGHT:'
             self.right.to_string(tab=tab+1)
 
     def evaluate(self, feature_vector):
