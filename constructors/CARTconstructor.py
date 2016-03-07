@@ -4,7 +4,7 @@ import numpy as np
 from skimage.measure.tests.test_fit import test_ransac_invalid_input
 from sklearn.externals.six import StringIO
 from sklearn import tree
-from pandas import DataFrame, read_csv
+from pandas import DataFrame, read_csv, Series
 from sklearn.cross_validation import KFold
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
@@ -14,14 +14,14 @@ from decisiontree import DecisionTree
 
 class CARTconstructor(TreeConstructor):
     def split_criterion(self, node):
-        raise NotImplementedError("This method is not implemented, because we use the optimised sklearn pruning algorithm")
+        raise NotImplementedError(
+            "This method is not implemented, because we use the optimised sklearn pruning algorithm")
 
     def __init__(self):
         pass
 
     def cross_validation(self, data, k):
         return KFold(len(data.index), n_folds=k, shuffle=True)
-
 
     def construct_tree(self, training_feature_vectors, labels):
         self.features = list(training_feature_vectors.columns[:4])
@@ -33,10 +33,6 @@ class CARTconstructor(TreeConstructor):
         self.dt = DecisionTreeClassifier()
         self.dt.fit(self.X, self.y)
 
-
-
-
-
     def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance):
 
         pass
@@ -44,7 +40,7 @@ class CARTconstructor(TreeConstructor):
     def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
         pass
 
-    def visualize_tree(tree, feature_names,labelnames,  filename):
+    def visualize_tree(tree, feature_names, labelnames, filename):
         """Create tree png using graphviz.
 
         Args
@@ -52,16 +48,22 @@ class CARTconstructor(TreeConstructor):
         tree -- scikit-learn DecsisionTree.
         feature_names -- list of feature names.
         """
-        with open(filename+".dot", 'w') as f:
+        labels = Series(labelnames.values.ravel()).unique()
+        labels.sort()
+        labels = map(str, labels)
+        # labels = labelnames.unique()
+        print labels
+        with open(filename + ".dot", 'w') as f:
             export_graphviz(tree.dt, out_file=f,
-                            feature_names=feature_names, class_names=labelnames)
+                            feature_names=feature_names, class_names=labels)
 
-        command = ["dot", "-Tpdf", filename+".dot", "-o", filename+".pdf"]
+        command = ["dot", "-Tpdf", filename + ".dot", "-o", filename + ".pdf"]
         try:
             subprocess.check_call(command)
         except:
             exit("Could not run dot, ie graphviz, to "
                  "produce visualization")
+
 
 # outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
 # temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70]*1)
@@ -94,8 +96,6 @@ labels_df['cat'] = df['disease']
 df = df.drop('disease', axis=1)
 feature_vectors_df = df.copy()
 
-
-
 tree_constructor = CARTconstructor()
 # tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
 # tree.visualise('../tree')
@@ -108,11 +108,11 @@ for train, test in kf:
     test_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=test)
     train_labels_df = DataFrame(labels_df, index=train)
     test_labels_df = DataFrame(labels_df, index=test)
-    CARTdt = CARTconstructor()
-    CARTdt.construct_tree(feature_vectors_df.copy(), labels_df)
-    CARTdt.visualize_tree(CARTdt.features, labels_df[['cat']], "tree"+str(i))
 
-    i +=1
+    tree_constructor.construct_tree(train_feature_vectors_df.copy(), train_labels_df)
+    tree_constructor.visualize_tree(tree_constructor.features, train_labels_df[['cat']], "tree" + str(i))
+
+    i += 1
     # tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     #
 
