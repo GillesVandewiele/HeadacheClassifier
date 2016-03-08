@@ -210,7 +210,7 @@ class C45Constructor(TreeConstructor):
                 self.prune_node(tree.left, testing_feature_vectors)
                 self.prune_node(tree.right, testing_feature_vectors)
 
-    def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
+    def post_prune(self, tree, testing_feature_vectors, labels, significance=0.7):
         # if tree.left and tree.right are leafs:
         #   calculate error rate of tree and his two children
         # else:
@@ -303,7 +303,7 @@ for train, test in kf:
     test_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=test)
     train_labels_df = DataFrame(labels_df, index=train)
     test_labels_df = DataFrame(labels_df, index=test)
-    decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, default=0)
+    decision_tree = tree_constructor.construct_tree(train_feature_vectors_df.copy(), train_labels_df, default=0)
     tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
     decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
     frame = DataFrame(test_feature_vectors_df.copy())
