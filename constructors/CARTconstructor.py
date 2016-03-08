@@ -22,6 +22,14 @@ class CARTconstructor(TreeConstructor):
         return KFold(len(data.index), n_folds=k, shuffle=True)
 
     def construct_tree(self, training_feature_vectors, labels):
+        """
+        This method constructs an sklearn decision tree and trains it with the training data
+        The sklearn decision tree classifier is stored in the CARTconstructor.dt
+
+        :param training_feature_vectors: the feature vectors of the training samples
+        :param labels: the labels of the training samples
+        :return: void
+        """
         self.features = list(training_feature_vectors.columns)
         # print"* features:", self.features
 
@@ -31,9 +39,8 @@ class CARTconstructor(TreeConstructor):
         self.dt = DecisionTreeClassifier()
         self.dt.fit(self.X, self.y)
 
-    def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance):
-
-        pass
+    def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance=None):
+        return tree.dt.score(testing_feature_vectors, labels)
 
     def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
         pass
@@ -184,8 +191,8 @@ for train, test in kf:
     tree_constructor.visualize_tree(tree_constructor.features, train_labels_df[['cat']], "tree" + str(i))
     # tree_constructor.printTree()
     own_decision_tree = tree_constructor.convertToTree()
-    own_decision_tree.visualise(output_path="../boom"+str(i))
-    print tree_constructor.dt.score(test_feature_vectors_df, test_labels_df)
+    # own_decision_tree.visualise(output_path="../boom"+str(i))
+    print "Error rate: "+tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_feature_vectors_df)
     # own_decision_tree.to_string()
 
 
