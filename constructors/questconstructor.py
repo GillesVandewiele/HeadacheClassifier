@@ -1,8 +1,6 @@
 from pandas import DataFrame, read_csv
 import pandas as pd
 
-import operator
-
 from sklearn.cluster import k_means
 from sklearn.cross_validation import KFold
 from sklearn.feature_selection import chi2, f_classif
@@ -10,7 +8,6 @@ from sklearn.feature_selection import chi2, f_classif
 from constructors.treeconstructor import TreeConstructor
 import numpy as np
 import scipy
-
 from decisiontree import DecisionTree
 
 #ftp://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/13.0/TREE-QUEST.pdf
