@@ -39,8 +39,8 @@ class CARTconstructor(TreeConstructor):
         self.dt = DecisionTreeClassifier()
         self.dt.fit(self.X, self.y)
 
-    def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance=None):
-        return tree.dt.score(testing_feature_vectors, labels)
+    def calculate_error_rate(self, tree, testing_feature_vectors, labels):
+        return 1-tree.dt.score(testing_feature_vectors, labels)
 
     def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
         pass
@@ -69,7 +69,7 @@ class CARTconstructor(TreeConstructor):
             exit("Could not run dot, ie graphviz, to "
                  "produce visualization")
 
-    def convertToTree(self):
+    def convertToTree(self, verbose=False):
         #       # Using those arrays, we can parse the tree structure:
 
 
@@ -86,11 +86,10 @@ class CARTconstructor(TreeConstructor):
         classes = self.dt.classes_
         print classes
 
-
         # The tree structure can be traversed to compute various properties such
         # as the depth of each node and whether or not it is a leaf.
         node_depth = np.zeros(shape=n_nodes)
-        decision_trees = [None]*n_nodes
+        decision_trees = [None] * n_nodes
         for i in range(n_nodes):
             decision_trees[i] = DecisionTree()
         is_leaves = np.zeros(shape=n_nodes, dtype=bool)
@@ -105,8 +104,8 @@ class CARTconstructor(TreeConstructor):
                 stack.append((children_right[node_id], parent_depth + 1))
             else:
                 is_leaves[node_id] = True
-
-        print("The binary tree structure has %s nodes and has "
+        if verbose:
+            print("The binary tree structure has %s nodes and has "
               "the following tree structure:"
               % n_nodes)
 
@@ -115,7 +114,6 @@ class CARTconstructor(TreeConstructor):
             if children_left[i] > 0:
                 decision_trees[i].left = decision_trees[children_left[i]]
 
-
             if children_right[i] > 0:
                 decision_trees[i].right = decision_trees[children_right[i]]
 
@@ -123,24 +121,25 @@ class CARTconstructor(TreeConstructor):
                 # decision_trees[i].label = self.dt.classes_[self.dt.tree_.value[i][0][1]]
                 decision_trees[i].label = self.dt.classes_[np.argmax(self.dt.tree_.value[i][0])]
                 decision_trees[i].value = None
-                print(bcolors.OKBLUE + "%snode=%s leaf node."  % (node_depth[i] * "\t", i)) + bcolors.ENDC
+                if verbose:
+                    print(bcolors.OKBLUE + "%snode=%s leaf node." % (node_depth[i] * "\t", i)) + bcolors.ENDC
             else:
                 decision_trees[i].label = self.features[feature[i]]
                 decision_trees[i].value = threshold[i]
 
-                print("%snode=%s test node: go to node %s if %s %s <= %s %s else to "
+                if verbose:
+                    print("%snode=%s test node: go to node %s if %s %s <= %s %s else to "
                       "node %s."
                       % (node_depth[i] * "\t",
                          i,
                          children_left[i],
-                          bcolors.BOLD,
+                         bcolors.BOLD,
                          self.features[feature[i]],
                          threshold[i],
                          bcolors.ENDC,
                          children_right[i],
                          ))
         return decision_trees[0]
-
 
 
 # outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
@@ -178,7 +177,10 @@ tree_constructor = CARTconstructor()
 # tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
 # tree.visualise('../tree')
 
-kf = tree_constructor.cross_validation(feature_vectors_df, 2)
+number_of_folds = 50
+sum_error_rate = 0.0
+total_error_rate = -1
+kf = tree_constructor.cross_validation(feature_vectors_df, number_of_folds)
 
 i = 0
 for train, test in kf:
@@ -188,30 +190,19 @@ for train, test in kf:
     test_labels_df = DataFrame(labels_df, index=test)
 
     tree_constructor.construct_tree(train_feature_vectors_df.copy(), train_labels_df)
-    tree_constructor.visualize_tree(tree_constructor.features, train_labels_df[['cat']], "tree" + str(i))
+    # tree_constructor.visualize_tree(tree_constructor.features, labels_df[['cat']], "tree" + str(i))
     # tree_constructor.printTree()
     own_decision_tree = tree_constructor.convertToTree()
     # own_decision_tree.visualise(output_path="../boom"+str(i))
-    print "Error rate: "+tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_feature_vectors_df)
+    print "Prediction accuracy rate: %s" % str(1-tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df))
+    sum_error_rate += tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df)
     # own_decision_tree.to_string()
 
 
     i += 1
     print "\n\n-------------------------------\n\n"
-    # tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
-    #
 
-    # decision_tree.visualise('../tree' + str(i), with_pruning_ratio=True)
-    # frame = DataFrame(test_feature_vectors_df.copy())
-    # frame['cat'] = test_labels_df.copy()
-    # print(frame)
-    """
-    tree_constructor.post_prune(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
-    tree_constructor.set_error_rate(decision_tree, test_feature_vectors_df.copy(), test_labels_df.copy())
-    decision_tree.visualise('../tree_pruned' + str(i), with_pruning_ratio=True)
-    print(i)
-    i += 1
-    """
+print "\n\n\n\n\n\nTotal accuracy rate with %d folds: %s" % (number_of_folds, str(1 - sum_error_rate/number_of_folds))
 
 """
 train_feature_vectors_df = DataFrame(feature_vectors_df, index=)
