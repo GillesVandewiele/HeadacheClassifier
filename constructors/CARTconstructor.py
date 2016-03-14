@@ -177,7 +177,7 @@ tree_constructor = CARTconstructor()
 # tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
 # tree.visualise('../tree')
 
-number_of_folds = 50
+number_of_folds = 2
 sum_error_rate = 0.0
 total_error_rate = -1
 kf = tree_constructor.cross_validation(feature_vectors_df, number_of_folds)
@@ -197,7 +197,11 @@ for train, test in kf:
     print "Prediction accuracy rate: %s" % str(1-tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df))
     sum_error_rate += tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df)
     # own_decision_tree.to_string()
-
+    # predicted_labels = [None]*len(train_labels_df.index)
+    predicted_labels = own_decision_tree.evaluate_multiple(test_feature_vectors_df)
+    # for barf in range(len(train_labels_df.index)):
+    #     own_decision_tree.
+    own_decision_tree.plot_confusion_matrix(test_labels_df['cat'], predicted_labels)
 
     i += 1
     print "\n\n-------------------------------\n\n"

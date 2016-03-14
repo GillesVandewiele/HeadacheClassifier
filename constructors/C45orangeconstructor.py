@@ -39,7 +39,7 @@ c45 = Orange.classification.tree.C45Learner(orange_table)
 # Evaluate random record
 random_record = orange_feature_table[np.random.choice(len(orange_table), 1)]
 random_record_features_instance = Orange.data.Instance(orange_feature_table.domain, random_record)
-print(c45(random_record_features_instance))
+# print(c45(random_record_features_instance))
 
 
 def orange_dt_to_my_dt(orange_dt_root):
@@ -52,7 +52,12 @@ def orange_dt_to_my_dt(orange_dt_root):
         dt.right = orange_dt_to_my_dt(orange_dt_root.branch[1])
         return dt
 
-print(c45)
-print(c45.tree.leaf)
+# print(c45)
+# print(c45.tree.leaf)
 my_dt = orange_dt_to_my_dt(c45.tree)
+predicted_labels = my_dt.evaluate_multiple(feature_vectors_df)
+predicted_labels = [str(int(prediction)+1) for prediction in predicted_labels]
+# for barf in range(len(train_labels_df.index)):
+#     own_decision_tree.
+my_dt.plot_confusion_matrix(labels_df['cat']._values, predicted_labels, normalized=True)
 #my_dt.visualise("../orange_tree")
