@@ -83,7 +83,6 @@ class DecisionTree(object):
             self.left.to_string(tab=tab+1)
             print '\t'*(tab+1)+ 'RIGHT:'
             self.right.to_string(tab=tab+1)
-
     def evaluate(self, feature_vector):
         """
         Recursive method to evaluate a feature_vector, the feature_vector must be a dict, having the same
