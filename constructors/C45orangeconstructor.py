@@ -55,6 +55,7 @@ def orange_dt_to_my_dt(orange_dt_root):
 # print(c45)
 # print(c45.tree.leaf)
 my_dt = orange_dt_to_my_dt(c45.tree)
+
 predicted_labels = my_dt.evaluate_multiple(feature_vectors_df)
 predicted_labels = [str(int(prediction)+1) for prediction in predicted_labels]
 # for barf in range(len(train_labels_df.index)):
