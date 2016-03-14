@@ -432,6 +432,10 @@ decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), label
                                                 discrete_thresh=5, alpha=0.75)
 decision_tree.visualise("../quest")
 
+predicted_labels = decision_tree.evaluate_multiple(feature_vectors_df)
+# for barf in range(len(train_labels_df.index)):
+#     own_decision_tree.
+decision_tree.plot_confusion_matrix(labels_df['cat'], predicted_labels)
 """
 kf = tree_constructor.cross_validation(feature_vectors_df, 2)
 

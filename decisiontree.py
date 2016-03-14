@@ -1,4 +1,6 @@
+from pandas_confusion import ConfusionMatrix
 from graphviz import Source
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -105,3 +107,8 @@ class DecisionTree(object):
         for _index, feature_vector in feature_vectors.iterrows():
             results.append(self.evaluate(feature_vector))
         return np.asarray(results)
+    def plot_confusion_matrix(self, actual_labels, predicted_labels, normalized=False):
+        confusion_matrix = ConfusionMatrix(actual_labels, predicted_labels)
+        print("Confusion matrix:\n%s" % confusion_matrix)
+        confusion_matrix.plot(normalized=normalized)
+        plt.show()

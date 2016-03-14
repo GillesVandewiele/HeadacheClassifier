@@ -61,10 +61,9 @@ c45 = C45Constructor()
 decision_tree = c45.construct_tree(feature_vectors_df, labels_df)
 decision_tree.visualise('./c45')
 
-"""
-print(c45)
-print(c45.tree.leaf)
-my_dt = orange_dt_to_my_dt(c45.tree)
-"""
-
+predicted_labels = decision_tree.evaluate_multiple(feature_vectors_df)
+predicted_labels = [str(int(prediction)+1) for prediction in predicted_labels]
+# for barf in range(len(train_labels_df.index)):
+#     own_decision_tree.
+decision_tree.plot_confusion_matrix(labels_df['cat'], predicted_labels, normalized=True)
 #my_dt.visualise("../orange_tree")
