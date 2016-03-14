@@ -22,7 +22,7 @@ class QuestConstructor(TreeConstructor):
         pass
 
     def all_feature_vectors_equal(self, training_feature_vectors):
-        return len(training_feature_vectors.index) == (training_feature_vectors.duplicated(keep='first').sum() + 1)
+        return len(training_feature_vectors.index) == (training_feature_vectors.duplicated().sum() + 1)
 
 
     def pearson_chi_square_test(self, data, feature):
@@ -149,7 +149,8 @@ class QuestConstructor(TreeConstructor):
         data = DataFrame(training_feature_vectors.copy())
         data['cat'] = labels
 
-        if feature is None or len(training_feature_vectors.index) == 0:
+        if feature is None or len(training_feature_vectors.index) <= max_nr_nodes or len(np.unique(data['cat'])) == 1\
+                or self.all_feature_vectors_equal(training_feature_vectors):
             # Create leaf most occuring class
             print(np.bincount(data['cat']))
             label = np.argmax(np.bincount(data['cat']))
@@ -248,10 +249,18 @@ class QuestConstructor(TreeConstructor):
     def find_best_split_point(self, data, feature, type):
         unique_categories = np.unique(data['cat'])
         feature_mean_var_freq_per_class = []
+        max_value = []
+        min_value = []
+
         for category in unique_categories:
             data_feature_cat = data[(data.cat == category)][feature]
             feature_mean_var_freq_per_class.append([float(np.mean(data_feature_cat)), float(np.var(data_feature_cat)),
                                                      len(data_feature_cat), category])
+            max_value.append(np.max(data_feature_cat))
+            min_value.append(np.min(data_feature_cat))
+
+        max_value = np.max(max_value)
+        min_value = np.min(min_value)
 
         # First we transform the discrete variable to a continuous variable and then apply same QDA
         if type == QuestConstructor.DISCRETE:
@@ -340,17 +349,17 @@ class QuestConstructor(TreeConstructor):
         else:
             mean_a = means[0]
             mean_b = means[1]
-            var_a = means[0]
-            var_b = means[1]
+            var_a = variances[0]
+            var_b = variances[1]
             freq_a = frequencies[0]
             freq_b = frequencies[1]
 
-        split_point = self.calculate_split_point(mean_a, mean_b, var_a, var_b, freq_a, freq_b)
+        split_point = self.calculate_split_point(mean_a, mean_b, var_a, var_b, freq_a, freq_b, max_value, min_value)
 
         return split_point
 
-    def calculate_split_point(self, mean_a, mean_b, var_a, var_b, freq_a, freq_b):
-        if np.min([var_a, var_b] == 0):
+    def calculate_split_point(self, mean_a, mean_b, var_a, var_b, freq_a, freq_b, max_val, min_val):
+        if np.min([var_a, var_b]) == 0.0:
             if var_a < var_b:
                 if mean_a < mean_b:
                     return mean_a*(1+10**(-12))
@@ -365,20 +374,30 @@ class QuestConstructor(TreeConstructor):
         else:
             a = var_a - var_b
             b = 2*(mean_a*var_b - mean_b*var_a)
-            prob_a = freq_a / (freq_a + freq_b)
+            prob_a = float(float(freq_a) / float(freq_a + freq_b))
             prob_b = 1 - prob_a
             c = (mean_b**2)*var_a - (mean_a**2)*var_b + 2*var_a*var_b*np.log((prob_a * np.sqrt(var_b))/(prob_b * np.sqrt(var_a)))
 
             disc = b**2-4*a*c
             if disc == 0:
-                return (-b+np.sqrt(b**2-4*a*c))/2*a
-            elif disc > 0:
-                x1 = (-b+np.sqrt(b**2-4*a*c))/2*a
-                x2 = (-b-np.sqrt(b**2-4*a*c))/2*a
-                if abs(x1 - mean_a) < abs(x2 - mean_a):
-                    return x1
+                x1 = (-b+np.sqrt(disc))/(2*a)
+                if x1 < min_val or x1 > max_val:
+                    return (mean_a + mean_b)/2
                 else:
-                    return x2
+                    return x1
+            elif disc > 0:
+                x1 = (-b+np.sqrt(disc))/(2*a)
+                x2 = (-b-np.sqrt(disc))/(2*a)
+                if abs(x1 - mean_a) < abs(x2 - mean_a):
+                    if x1 < min_val or x1 > max_val:
+                        return (mean_a + mean_b)/2
+                    else:
+                        return x1
+                else:
+                    if x2 < min_val or x2 > max_val:
+                        return (mean_a + mean_b)/2
+                    else:
+                        return x2
             else:
                 return (mean_a + mean_b)/2
 
@@ -410,7 +429,7 @@ tree_constructor = QuestConstructor()
 # tree.visualise('../tree')
 
 decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(labels_df['cat'])),
-                                                discrete_thresh=5, alpha=0.25)
+                                                discrete_thresh=5, alpha=0.75)
 decision_tree.visualise("../quest")
 
 """
