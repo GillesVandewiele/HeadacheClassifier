@@ -2,6 +2,7 @@ from pandas import read_csv, DataFrame
 import numpy as np
 
 import Orange
+from sklearn import cross_validation
 
 from decisiontree import DecisionTree
 from pandas_to_orange import df2table
@@ -20,14 +21,15 @@ labels_df = DataFrame()
 labels_df['cat'] = df['disease']
 df = df.drop('disease', axis=1)
 feature_vectors_df = df.copy()
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(feature_vectors_df, labels_df,test_size=0.25)
 
 
 # First call df2table on the feature table
-orange_feature_table = df2table(feature_vectors_df)
+orange_feature_table = df2table(X_train)
 
 # Convert classes to strings and call df2table
-labels_df['cat'] = labels_df['cat'].apply(str)
-orange_labels_table = df2table(labels_df)
+y_train['cat'] = y_train['cat'].apply(str)
+orange_labels_table = df2table(y_train)
 
 # Merge two tables
 orange_table = Orange.data.Table([orange_feature_table, orange_labels_table])
@@ -56,9 +58,9 @@ def orange_dt_to_my_dt(orange_dt_root):
 # print(c45.tree.leaf)
 my_dt = orange_dt_to_my_dt(c45.tree)
 
-predicted_labels = my_dt.evaluate_multiple(feature_vectors_df)
-predicted_labels = [str(int(prediction)+1) for prediction in predicted_labels]
+predicted_labels = my_dt.evaluate_multiple(X_test)
+predicted_labels = [float(prediction)+1 for prediction in predicted_labels]
 # for barf in range(len(train_labels_df.index)):
 #     own_decision_tree.
-my_dt.plot_confusion_matrix(labels_df['cat']._values, predicted_labels, normalized=True)
+my_dt.plot_confusion_matrix(y_test['cat'], predicted_labels, normalized=True)
 #my_dt.visualise("../orange_tree")
