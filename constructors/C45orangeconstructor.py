@@ -61,6 +61,7 @@ X_train, X_test, y_train, y_test = cross_validation.train_test_split(feature_vec
 
 c45 = C45Constructor()
 decision_tree = c45.construct_tree(feature_vectors_df, labels_df)
+decision_tree.populate_samples([1,2], feature_vectors_df, labels_df['cat'].tolist())
 decision_tree.visualise('./c45')
 
 predicted_labels = decision_tree.evaluate_multiple(feature_vectors_df)

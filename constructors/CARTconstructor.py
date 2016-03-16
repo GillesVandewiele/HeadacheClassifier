@@ -36,7 +36,7 @@ class CARTconstructor(TreeConstructor):
         self.y = labels['cat']
         self.X = training_feature_vectors[self.features]
 
-        self.dt = DecisionTreeClassifier()
+        self.dt = DecisionTreeClassifier(min_samples_leaf=3)
         self.dt.fit(self.X, self.y)
 
     def calculate_error_rate(self, tree, testing_feature_vectors, labels):
@@ -194,14 +194,17 @@ for train, test in kf:
     # tree_constructor.printTree()
     own_decision_tree = tree_constructor.convertToTree()
     # own_decision_tree.visualise(output_path="../boom"+str(i))
-    print "Prediction accuracy rate: %s" % str(1-tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df))
+    # print "Prediction accuracy rate: %s" % str(1-tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df))
     sum_error_rate += tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df)
     # own_decision_tree.to_string()
     # predicted_labels = [None]*len(train_labels_df.index)
     predicted_labels = own_decision_tree.evaluate_multiple(test_feature_vectors_df)
     # for barf in range(len(train_labels_df.index)):
     #     own_decision_tree.
-    own_decision_tree.plot_confusion_matrix(test_labels_df['cat'], predicted_labels)
+    # own_decision_tree.plot_confusion_matrix(test_labels_df['cat'], predicted_labels)
+
+    own_decision_tree.populate_samples([1,2], train_feature_vectors_df, train_labels_df['cat'].tolist())
+    own_decision_tree.visualise('./CART')
 
     i += 1
     print "\n\n-------------------------------\n\n"

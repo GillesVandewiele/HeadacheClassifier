@@ -1,0 +1,75 @@
+digraph DT{
+node[fontname="Arial"];
+Node1 [label="number of vessels <= 0.5"];
+Node2 [label="exercise induced angina <= 0.5"];
+Node3 [label="age <= 56.5"];
+Node4 [label="1
+{1: 1.0}" shape="box"];
+Node3 -> Node4 [label="true"];
+Node5 [label="sex <= 0.5"];
+Node6 [label="1
+{1: 1.0}" shape="box"];
+Node5 -> Node6 [label="true"];
+Node7 [label="oldpeak <= 0.75"];
+Node8 [label="chest pain type <= 3.5"];
+Node9 [label="1
+{1: 0.5, 2: 0.5}" shape="box"];
+Node8 -> Node9 [label="true"];
+Node10 [label="1
+{1: 1.0}" shape="box"];
+Node8->Node10 [label="false"];
+Node7 -> Node8 [label="true"];
+Node11 [label="2
+{1: 0.33, 2: 0.67}" shape="box"];
+Node7->Node11 [label="false"];
+Node5->Node7 [label="false"];
+Node3->Node5 [label="false"];
+Node2 -> Node3 [label="true"];
+Node18 [label="thal <= 6.5"];
+Node19 [label="resting blood pressure <= 139.0"];
+Node20 [label="1
+{1: 1.0}" shape="box"];
+Node19 -> Node20 [label="true"];
+Node21 [label="1
+{1: 0.67, 2: 0.33}" shape="box"];
+Node19->Node21 [label="false"];
+Node18 -> Node19 [label="true"];
+Node22 [label="oldpeak <= 0.700000047684"];
+Node23 [label="1
+{1: 0.67, 2: 0.33}" shape="box"];
+Node22 -> Node23 [label="true"];
+Node24 [label="2
+{2: 1.0}" shape="box"];
+Node22->Node24 [label="false"];
+Node18->Node22 [label="false"];
+Node2->Node18 [label="false"];
+Node1 -> Node2 [label="true"];
+Node34 [label="chest pain type <= 3.5"];
+Node35 [label="slope peak <= 1.5"];
+Node36 [label="number of vessels <= 1.5"];
+Node37 [label="1
+{1: 1.0}" shape="box"];
+Node36 -> Node37 [label="true"];
+Node38 [label="2
+{1: 0.33, 2: 0.67}" shape="box"];
+Node36->Node38 [label="false"];
+Node35 -> Node36 [label="true"];
+Node39 [label="oldpeak <= 0.900000035763"];
+Node40 [label="2
+{1: 0.33, 2: 0.67}" shape="box"];
+Node39 -> Node40 [label="true"];
+Node41 [label="2
+{2: 1.0}" shape="box"];
+Node39->Node41 [label="false"];
+Node35->Node39 [label="false"];
+Node34 -> Node35 [label="true"];
+Node44 [label="age <= 66.0"];
+Node45 [label="2
+{2: 1.0}" shape="box"];
+Node44 -> Node45 [label="true"];
+Node46 [label="2
+{1: 0.25, 2: 0.75}" shape="box"];
+Node44->Node46 [label="false"];
+Node34->Node44 [label="false"];
+Node1->Node34 [label="false"];
+}
