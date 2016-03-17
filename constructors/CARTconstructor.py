@@ -18,6 +18,9 @@ class CARTconstructor(TreeConstructor):
     def __init__(self):
         pass
 
+    def get_name(self):
+        return "CART"
+
     def cross_validation(self, data, k):
         return KFold(len(data.index), n_folds=k, shuffle=True)
 
@@ -38,6 +41,8 @@ class CARTconstructor(TreeConstructor):
 
         self.dt = DecisionTreeClassifier()
         self.dt.fit(self.X, self.y)
+
+        return self.convertToTree()
 
     def calculate_error_rate(self, tree, testing_feature_vectors, labels):
         return 1-tree.dt.score(testing_feature_vectors, labels)
@@ -84,7 +89,6 @@ class CARTconstructor(TreeConstructor):
         feature = self.dt.tree_.feature
         threshold = self.dt.tree_.threshold
         classes = self.dt.classes_
-        print classes
 
         # The tree structure can be traversed to compute various properties such
         # as the depth of each node and whether or not it is a leaf.
@@ -157,7 +161,7 @@ class CARTconstructor(TreeConstructor):
 #
 # labels_df = DataFrame()
 # labels_df['cat'] = play
-
+"""
 # Read csv into pandas frame
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
@@ -207,7 +211,7 @@ for train, test in kf:
     print "\n\n-------------------------------\n\n"
 
 print "\n\n\n\n\n\nTotal accuracy rate with %d folds: %s" % (number_of_folds, str(1 - sum_error_rate/number_of_folds))
-
+"""
 """
 train_feature_vectors_df = DataFrame(feature_vectors_df, index=)
 

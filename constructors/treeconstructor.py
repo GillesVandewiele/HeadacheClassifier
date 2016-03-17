@@ -5,6 +5,9 @@ class TreeConstructor(object):
     def __init__(self):
         pass
 
+    def get_name(self):
+        raise NotImplementedError("This method needs to be implemented")
+
     def split_criterion(self, node):
         raise NotImplementedError("This method needs to be implemented")
 

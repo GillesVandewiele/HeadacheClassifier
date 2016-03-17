@@ -7,7 +7,14 @@ from constructors.treeconstructor import TreeConstructor
 from decisiontree import DecisionTree
 from pandas_to_orange import df2table
 
+
 class C45Constructor(TreeConstructor):
+
+    def __init__(self):
+        pass
+
+    def get_name(self):
+        return "C4.5"
 
 
     def construct_tree(self, training_feature_vectors, labels):
@@ -21,8 +28,6 @@ class C45Constructor(TreeConstructor):
 
         # Merge two tables
         orange_table = Orange.data.Table([orange_feature_table, orange_labels_table])
-        for d in orange_table[:3]:
-            print([d[i].value for i in range(len(d)-1)])
 
         return self.orange_dt_to_my_dt(Orange.classification.tree.C45Learner(orange_table).tree)
 
@@ -35,13 +40,13 @@ class C45Constructor(TreeConstructor):
     def orange_dt_to_my_dt(self, orange_dt_root):
         # Check if leaf
         if orange_dt_root.node_type == Orange.classification.tree.C45Node.Leaf:
-            return DecisionTree(left=None, right=None, label=orange_dt_root.leaf, data=None, value=None)
+            return DecisionTree(left=None, right=None, label=(int(orange_dt_root.leaf)+1), data=None, value=None)
         else:
             dt = DecisionTree(label=orange_dt_root.tested.name, data=None, value=orange_dt_root.cut)
             dt.left = self.orange_dt_to_my_dt(orange_dt_root.branch[0])
             dt.right = self.orange_dt_to_my_dt(orange_dt_root.branch[1])
             return dt
-
+"""
 # Read csv into pandas frame
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
@@ -66,4 +71,4 @@ predicted_labels = [str(int(prediction)+1) for prediction in predicted_labels]
 # for barf in range(len(train_labels_df.index)):
 #     own_decision_tree.
 decision_tree.plot_confusion_matrix(labels_df['cat'], predicted_labels, normalized=True)
-#my_dt.visualise("../orange_tree")
+"""
