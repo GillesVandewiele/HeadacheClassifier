@@ -1,0 +1,90 @@
+digraph DT{
+node[fontname="Arial"];
+Node1 [label="thal <= 3.0"];
+Node2 [label="chest pain type <= 3.0"];
+Node3 [label="<0>
+{'1': 0.9, '2': 0.1}" shape="box"];
+Node2 -> Node3 [label="true"];
+Node4 [label="number of vessels <= 0.0"];
+Node5 [label="age <= 54.0"];
+Node6 [label="<0>
+{'1': 1.0}" shape="box"];
+Node5 -> Node6 [label="true"];
+Node7 [label="exercise induced angina <= 0.0"];
+Node8 [label="slope peak <= 1.0"];
+Node9 [label="serum cholestoral <= 288.0"];
+Node10 [label="<0>
+{'1': 1.0}" shape="box"];
+Node9 -> Node10 [label="true"];
+Node11 [label="<1>
+{'2': 1.0}" shape="box"];
+Node9->Node11 [label="false"];
+Node8 -> Node9 [label="true"];
+Node12 [label="<0>
+{'1': 0.8, '2': 0.2}" shape="box"];
+Node8->Node12 [label="false"];
+Node7 -> Node8 [label="true"];
+Node14 [label="slope peak <= 1.0"];
+Node15 [label="<0>
+{'1': 1.0}" shape="box"];
+Node14 -> Node15 [label="true"];
+Node16 [label="<1>
+{'2': 1.0}" shape="box"];
+Node14->Node16 [label="false"];
+Node7->Node14 [label="false"];
+Node5->Node7 [label="false"];
+Node4 -> Node5 [label="true"];
+Node24 [label="sex <= 0.0"];
+Node25 [label="slope peak <= 1.0"];
+Node26 [label="<0>
+{'1': 1.0}" shape="box"];
+Node25 -> Node26 [label="true"];
+Node27 [label="<1>
+{'1': 0.25, '2': 0.75}" shape="box"];
+Node25->Node27 [label="false"];
+Node24 -> Node25 [label="true"];
+Node28 [label="<1>
+{'2': 1.0}" shape="box"];
+Node24->Node28 [label="false"];
+Node4->Node24 [label="false"];
+Node2->Node4 [label="false"];
+Node1 -> Node2 [label="true"];
+Node45 [label="number of vessels <= 0.0"];
+Node46 [label="exercise induced angina <= 0.0"];
+Node47 [label="fasting blood sugar <= 0.0"];
+Node48 [label="thal <= 6.0"];
+Node49 [label="<0>
+{'1': 1.0}" shape="box"];
+Node48 -> Node49 [label="true"];
+Node50 [label="age <= 52.0"];
+Node51 [label="<1>
+{'1': 0.22, '2': 0.78}" shape="box"];
+Node50 -> Node51 [label="true"];
+Node52 [label="<0>
+{'1': 0.82, '2': 0.18}" shape="box"];
+Node50->Node52 [label="false"];
+Node48->Node50 [label="false"];
+Node47 -> Node48 [label="true"];
+Node54 [label="<0>
+{'1': 1.0}" shape="box"];
+Node47->Node54 [label="false"];
+Node46 -> Node47 [label="true"];
+Node57 [label="oldpeak <= 1.5"];
+Node58 [label="serum cholestoral <= 255.0"];
+Node59 [label="<0>
+{'1': 0.83, '2': 0.17}" shape="box"];
+Node58 -> Node59 [label="true"];
+Node60 [label="<1>
+{'2': 1.0}" shape="box"];
+Node58->Node60 [label="false"];
+Node57 -> Node58 [label="true"];
+Node61 [label="<1>
+{'2': 1.0}" shape="box"];
+Node57->Node61 [label="false"];
+Node46->Node57 [label="false"];
+Node45 -> Node46 [label="true"];
+Node68 [label="<1>
+{'1': 0.09, '2': 0.91}" shape="box"];
+Node45->Node68 [label="false"];
+Node1->Node45 [label="false"];
+}

@@ -1,5 +1,6 @@
 from pandas import DataFrame, read_csv
 import pandas as pd
+from sklearn import cross_validation
 
 from sklearn.cluster import k_means
 from sklearn.cross_validation import KFold
@@ -420,25 +421,30 @@ df = df.iloc[np.random.permutation(len(df))]
 df = df.reset_index(drop=True)
 df.columns = columns
 
+
 # Seperate the dataframe into a class dataframe and feature dataframe
 labels_df = DataFrame()
 labels_df['cat'] = df['disease']
 df = df.drop('disease', axis=1)
 feature_vectors_df = df.copy()
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(feature_vectors_df, labels_df,test_size=0.25)
+
+
 #feature_vectors_df = feature_vectors_df.drop('number of vessels', axis=1)
 #feature_vectors_df = feature_vectors_df.drop('thal', axis=1)
 tree_constructor = QuestConstructor()
 # tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
 # tree.visualise('../tree')
 
-decision_tree = tree_constructor.construct_tree(feature_vectors_df.copy(), labels_df, np.argmax(np.bincount(labels_df['cat'])),
+decision_tree = tree_constructor.construct_tree(X_train, y_train, np.argmax(np.bincount(labels_df['cat'])),
                                                 discrete_thresh=5, alpha=0.75)
-decision_tree.visualise("../quest")
+# decision_tree.visualise("../quest")
 
-predicted_labels = decision_tree.evaluate_multiple(feature_vectors_df)
+
+predicted_labels = decision_tree.evaluate_multiple(X_test)
 # for barf in range(len(train_labels_df.index)):
 #     own_decision_tree.
-decision_tree.plot_confusion_matrix(labels_df['cat'], predicted_labels)
+decision_tree.plot_confusion_matrix(y_test['cat'], predicted_labels, normalized=True)
 """
 """
 kf = tree_constructor.cross_validation(feature_vectors_df, 2)

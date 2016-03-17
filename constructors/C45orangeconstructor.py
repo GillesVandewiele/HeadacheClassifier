@@ -2,6 +2,7 @@ from pandas import read_csv, DataFrame
 import numpy as np
 
 import Orange
+from sklearn import cross_validation
 
 from constructors.treeconstructor import TreeConstructor
 from decisiontree import DecisionTree
@@ -61,9 +62,11 @@ labels_df = DataFrame()
 labels_df['cat'] = df['disease']
 df = df.drop('disease', axis=1)
 feature_vectors_df = df.copy()
+X_train, X_test, y_train, y_test = cross_validation.train_test_split(feature_vectors_df, labels_df,test_size=0.25)
 
 c45 = C45Constructor()
 decision_tree = c45.construct_tree(feature_vectors_df, labels_df)
+decision_tree.populate_samples([1,2], feature_vectors_df, labels_df['cat'].tolist())
 decision_tree.visualise('./c45')
 
 predicted_labels = decision_tree.evaluate_multiple(feature_vectors_df)
