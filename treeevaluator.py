@@ -12,6 +12,7 @@ from sklearn.naive_bayes import GaussianNB
 from constructors.CARTconstructor import CARTconstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.C45orangeconstructor import C45Constructor
+from constructors.treemerger import DecisionTreeMerger
 
 
 class TreeEvaluator(object):
@@ -68,9 +69,42 @@ df = read_csv('heart.dat', sep=' ')
 df = df.iloc[np.random.permutation(len(df))]
 df = df.reset_index(drop=True)
 df.columns = columns
-df = df.drop(columns[:3], axis=1)
-df = df.drop(columns[4:7], axis=1)
-df = df.drop(columns[8:-1], axis=1)
+
+# Drop all columns but max heartrate and resting blood pressure
+features_column_names = ['max heartrate', 'resting blood pressure']
+labels_column_names = 'disease'
+column_names = ['max heartrate', 'resting blood pressure', 'disease']
+df = df[column_names]
+# df = df.drop(columns[:3], axis=1)
+# df = df.drop(columns[4:7], axis=1)
+# df = df.drop(columns[8:-1], axis=1)
+labels_df = DataFrame()
+labels_df['cat'] = df['disease'].copy()
+features_df = df.copy()
+features_df = features_df.drop('disease', axis=1)
+
+
+c45 = C45Constructor()
+cart = CARTconstructor()
+quest = QuestConstructor()
+tree_constructors = [quest, cart, c45]
+merger = DecisionTreeMerger()
+regions_list = []
+for tree_constructor in tree_constructors:
+    tree = tree_constructor.construct_tree(features_df, labels_df)
+    tree.populate_samples(features_df, labels_df['cat'])
+    #tree.visualise(tree_constructor.get_name()+"_2features")
+    regions = merger.decision_tree_to_decision_table(tree, features_df)
+    regions_list.append(regions)
+    merger.plot_regions("rect_"+tree_constructor.get_name()+".png", regions, ['1', '2'], features_column_names[0],
+                        features_column_names[1], x_max=np.max(features_df[features_column_names[0]].values),
+                        y_max=np.max(features_df[features_column_names[1]].values))
+merged_regions = merger.calculate_intersection(regions_list[0], regions_list[1], features_column_names)
+merger.plot_regions("intersected.png", merged_regions, ['1', '2'], features_column_names[0],
+                    features_column_names[1], x_max=np.max(features_df[features_column_names[0]].values),
+                    y_max=np.max(features_df[features_column_names[1]].values))
+
+
 """
 tree_evaluator = TreeEvaluator()
 quest = QuestConstructor()
@@ -80,318 +114,318 @@ tree_constructors = [quest, cart, c45]
 tree_evaluator.evaluate_trees(df, tree_constructors, n_folds=2)
 """
 
-def decision_tree_to_decision_table(tree, feature_vectors):
-    # Convert each path from the root to a leaf into a region, store it into a table
-    # Initialize an empty  region (will be passed on recursively)
-    region = {}
-    for column in feature_vectors.columns:
-        region[column] = [float("-inf"), float("inf")]
-        region["class"] = None
-    regions = tree_to_decision_table(tree, region, [])
-    return regions
-
-def tree_to_decision_table(tree, region, regions):
-    left_region = copy.deepcopy(region)
-    right_region = copy.deepcopy(region)
-    left_region[tree.label][1] = tree.value
-    right_region[tree.label][0] = tree.value
-
-    # Recursive method
-    if tree.left.value is None:
-        left_region["class"] = tree.left.label
-        regions.append(left_region)
-    else:
-        tree_to_decision_table(tree.left, left_region, regions)
-
-    if tree.right.value is None:
-        right_region["class"] = tree.right.label
-        regions.append(right_region)
-    else:
-        tree_to_decision_table(tree.right, right_region, regions)
-
-    return regions
-
-
-c45 = C45Constructor()
-cart = CARTconstructor()
-quest = QuestConstructor()
-labels_df = DataFrame()
-labels_df['cat'] = df['disease'].copy()
-df = df.drop('disease', axis=1)
-tree_c45 = c45.construct_tree(df, labels_df)
-#tree_c45.visualise("c45_2features")
-regions_c45 = decision_tree_to_decision_table(tree_c45, df)
-fig1 = plt.figure()
-ax1 = fig1.add_subplot(111, aspect='equal')
-plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-plt.xlabel('max heartrate')
-plt.ylabel('resting blood pressure')
-colors = ["", "red", "blue"]
-for region in regions_c45:
-    if region['max heartrate'][0] == float("-inf"):
-        x = 0
-    else:
-        x = region['max heartrate'][0]
-
-    if region['max heartrate'][1] == float("inf"):
-        width = np.max(df['max heartrate']) - x
-    else:
-        width = region['max heartrate'][1] - x
-
-    if region['resting blood pressure'][0] == float("-inf"):
-        y = 0
-    else:
-        y = region['resting blood pressure'][0]
-
-    if region['resting blood pressure'][1] == float("inf"):
-        height = np.max(df['resting blood pressure']) - y
-    else:
-        height = region['resting blood pressure'][1] - y
-
-
-    ax1.add_patch(
-        patches.Rectangle(
-            (x, y),   # (x,y)
-            width,          # width
-            height,          # height
-            facecolor=colors[region["class"]]
-        )
-    )
-
-fig1.savefig('rect_c45.png')
-
-tree_cart = cart.construct_tree(df, labels_df)
-#tree_cart.visualise("cart_2features")
-regions_cart = decision_tree_to_decision_table(tree_cart, df)
-fig1 = plt.figure()
-ax1 = fig1.add_subplot(111, aspect='equal')
-plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-plt.xlabel('max heartrate')
-plt.ylabel('resting blood pressure')
-colors = ["", "red", "blue"]
-for region in regions_cart:
-    if region['max heartrate'][0] == float("-inf"):
-        x = 0
-    else:
-        x = region['max heartrate'][0]
-
-    if region['max heartrate'][1] == float("inf"):
-        width = np.max(df['max heartrate']) - x
-    else:
-        width = region['max heartrate'][1] - x
-
-    if region['resting blood pressure'][0] == float("-inf"):
-        y = 0
-    else:
-        y = region['resting blood pressure'][0]
-
-    if region['resting blood pressure'][1] == float("inf"):
-        height = np.max(df['resting blood pressure']) - y
-    else:
-        height = region['resting blood pressure'][1] - y
-
-
-    ax1.add_patch(
-        patches.Rectangle(
-            (x, y),   # (x,y)
-            width,          # width
-            height,          # height
-            facecolor=colors[int(region["class"])]
-        )
-    )
-
-fig1.savefig('rect_cart.png')
-
-tree_quest = quest.construct_tree(df, labels_df)
-#tree_quest.visualise("quest_2features")
-regions_quest = decision_tree_to_decision_table(tree_quest, df)
-fig1 = plt.figure()
-ax1 = fig1.add_subplot(111, aspect='equal')
-plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-plt.xlabel('max heartrate')
-plt.ylabel('resting blood pressure')
-colors = ["", "red", "blue"]
-for region in regions_quest:
-    if region['max heartrate'][0] == float("-inf"):
-        x = 0
-    else:
-        x = region['max heartrate'][0]
-
-    if region['max heartrate'][1] == float("inf"):
-        width = np.max(df['max heartrate']) - x
-    else:
-        width = region['max heartrate'][1] - x
-
-    if region['resting blood pressure'][0] == float("-inf"):
-        y = 0
-    else:
-        y = region['resting blood pressure'][0]
-
-    if region['resting blood pressure'][1] == float("inf"):
-        height = np.max(df['resting blood pressure']) - y
-    else:
-        height = region['resting blood pressure'][1] - y
-
-
-    ax1.add_patch(
-        patches.Rectangle(
-            (x, y),   # (x,y)
-            width,          # width
-            height,          # height
-            facecolor=colors[region["class"]]
-        )
-    )
-
-fig1.savefig('rect_quest.png')
-
-print regions_quest
-print regions_c45
-
-class LineSegment(object):
-
-    def __init__(self, lower_bound, upper_bound, region_index):
-        self.lower_bound = lower_bound
-        self.upper_bound = upper_bound
-        self.region_index = region_index
-
-def calculate_intersection(regions1, regions2, features):
-    S_intersections = [None] * len(features)
-    for i in range(len(features)):
-        print "------------------" + features[i] + "------------------"
-        # Create B1 and B2: 2 arrays of line segments
-        box_set1 = []
-        for region_index in range(len(regions1)):
-            box_set1.append(LineSegment(regions1[region_index][features[i]][0], regions1[region_index][features[i]][1],
-                                        region_index))
-            box_set2 = []
-        for region_index in range(len(regions2)):
-            box_set2.append(LineSegment(regions2[region_index][features[i]][0], regions2[region_index][features[i]][1],
-                                        region_index))
-
-        # Sort the two boxsets by their lower bound
-        box_set1 = sorted(box_set1, key=lambda segment: segment.lower_bound)
-        box_set2 = sorted(box_set2, key=lambda segment: segment.lower_bound)
-
-        # Create a list of unique lower bounds, we iterate over these bounds later
-        unique_lower_bounds = []
-        for j in range(max(len(box_set1), len(box_set2))):
-            if j < len(box_set1) and box_set1[j].lower_bound not in unique_lower_bounds:
-                unique_lower_bounds.append(box_set1[j].lower_bound)
-
-            if j < len(box_set2) and box_set2[j].lower_bound not in unique_lower_bounds:
-                unique_lower_bounds.append(box_set2[j].lower_bound)
-
-        # Sort them
-        unique_lower_bounds = sorted(unique_lower_bounds)
-
-        box1_active_set = []
-        box2_active_set = []
-        intersections = []
-        for lower_bound in unique_lower_bounds:
-            # Update all active sets, a region is added when it's lower bound is lower than the current one
-            # It is removed when its upper bound is higher than the current lower bound
-            for j in range(len(box_set1)):
-                if box_set1[j].upper_bound <= lower_bound:
-                    if box_set1[j] in box1_active_set:
-                        box1_active_set.remove(box_set1[j])
-                elif box_set1[j].lower_bound <= lower_bound:
-                    if box_set1[j] not in box1_active_set:
-                        box1_active_set.append(box_set1[j])
-                else:
-                    break
-
-            for j in range(len(box_set2)):
-                if box_set2[j].upper_bound <= lower_bound:
-                    if box_set2[j] in box2_active_set:
-                        box2_active_set.remove(box_set2[j])
-                elif box_set2[j].lower_bound <= lower_bound:
-                    if box_set2[j] not in box2_active_set:
-                        box2_active_set.append(box_set2[j])
-                else:
-                    break
-
-            # All regions from the active set of B1 intersect with the regions in the active set of B2
-            for segment1 in box1_active_set:
-                for segment2 in box2_active_set:
-                    intersections.append((segment1.region_index, segment2.region_index))
-
-        S_intersections[i] = intersections
-
-    print S_intersections
-    intersection_regions_indices = S_intersections[0]
-    for k in range(1, len(S_intersections)):
-        intersection_regions_indices = tuple_list_intersections(intersection_regions_indices, S_intersections[k])
-
-    intersected_regions = []
-    for intersection_region_pair in intersection_regions_indices:
-        region = {}
-        for feature in features:
-            region[feature] = [max(regions1[intersection_region_pair[0]][feature][0],
-                                   regions2[intersection_region_pair[1]][feature][0]),
-                               min(regions1[intersection_region_pair[0]][feature][1],
-                                   regions2[intersection_region_pair[1]][feature][1])]
-        region["classes"] = [regions1[intersection_region_pair[0]]['class'], regions2[intersection_region_pair[1]]['class']]
-        intersected_regions.append(region)
-
-    print intersected_regions
-
-    fig1 = plt.figure()
-    ax1 = fig1.add_subplot(111, aspect='equal')
-    plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-    plt.xlabel('max heartrate')
-    plt.ylabel('resting blood pressure')
-    colors = ["", "red", "blue"]
-    for region in intersected_regions:
-        if region['max heartrate'][0] == float("-inf"):
-            x = 0
-        else:
-            x = region['max heartrate'][0]
-
-        if region['max heartrate'][1] == float("inf"):
-            width = np.max(df['max heartrate']) - x
-        else:
-            width = region['max heartrate'][1] - x
-
-        if region['resting blood pressure'][0] == float("-inf"):
-            y = 0
-        else:
-            y = region['resting blood pressure'][0]
-
-        if region['resting blood pressure'][1] == float("inf"):
-            height = np.max(df['resting blood pressure']) - y
-        else:
-            height = region['resting blood pressure'][1] - y
-
-        if region['classes'][0] == region['classes'][1]:
-            color = colors[region['classes'][0]]
-        else:
-            color = "purple"
-
-
-        ax1.add_patch(
-            patches.Rectangle(
-                (x, y),   # (x,y)
-                width,          # width
-                height,          # height
-                facecolor=color
-            )
-        )
-
-    fig1.savefig('intersect.png')
-
-def tuple_list_intersections(list1, list2):
-    if len(list2) > len(list1):
-        tuple_list_intersections(list2, list1)
-
-    intersections = []
-    for tuple in list1:
-        if tuple in list2 and tuple not in intersections:
-            intersections.append(tuple)
-
-    return intersections
-
-
-calculate_intersection(regions_c45, regions_quest, df.columns)
+# def decision_tree_to_decision_table(tree, feature_vectors):
+#     # Convert each path from the root to a leaf into a region, store it into a table
+#     # Initialize an empty  region (will be passed on recursively)
+#     region = {}
+#     for column in feature_vectors.columns:
+#         region[column] = [float("-inf"), float("inf")]
+#         region["class"] = None
+#     regions = tree_to_decision_table(tree, region, [])
+#     return regions
+#
+# def tree_to_decision_table(tree, region, regions):
+#     left_region = copy.deepcopy(region)
+#     right_region = copy.deepcopy(region)
+#     left_region[tree.label][1] = tree.value
+#     right_region[tree.label][0] = tree.value
+#
+#     # Recursive method
+#     if tree.left.value is None:
+#         left_region["class"] = tree.left.label
+#         regions.append(left_region)
+#     else:
+#         tree_to_decision_table(tree.left, left_region, regions)
+#
+#     if tree.right.value is None:
+#         right_region["class"] = tree.right.label
+#         regions.append(right_region)
+#     else:
+#         tree_to_decision_table(tree.right, right_region, regions)
+#
+#     return regions
+#
+#
+# c45 = C45Constructor()
+# cart = CARTconstructor()
+# quest = QuestConstructor()
+# labels_df = DataFrame()
+# labels_df['cat'] = df['disease'].copy()
+# df = df.drop('disease', axis=1)
+# tree_c45 = c45.construct_tree(df, labels_df)
+# #tree_c45.visualise("c45_2features")
+# regions_c45 = decision_tree_to_decision_table(tree_c45, df)
+# fig1 = plt.figure()
+# ax1 = fig1.add_subplot(111, aspect='equal')
+# plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
+# plt.xlabel('max heartrate')
+# plt.ylabel('resting blood pressure')
+# colors = ["", "red", "blue"]
+# for region in regions_c45:
+#     if region['max heartrate'][0] == float("-inf"):
+#         x = 0
+#     else:
+#         x = region['max heartrate'][0]
+#
+#     if region['max heartrate'][1] == float("inf"):
+#         width = np.max(df['max heartrate']) - x
+#     else:
+#         width = region['max heartrate'][1] - x
+#
+#     if region['resting blood pressure'][0] == float("-inf"):
+#         y = 0
+#     else:
+#         y = region['resting blood pressure'][0]
+#
+#     if region['resting blood pressure'][1] == float("inf"):
+#         height = np.max(df['resting blood pressure']) - y
+#     else:
+#         height = region['resting blood pressure'][1] - y
+#
+#
+#     ax1.add_patch(
+#         patches.Rectangle(
+#             (x, y),   # (x,y)
+#             width,          # width
+#             height,          # height
+#             facecolor=colors[region["class"]]
+#         )
+#     )
+#
+# fig1.savefig('rect_c45.png')
+#
+# tree_cart = cart.construct_tree(df, labels_df)
+# #tree_cart.visualise("cart_2features")
+# regions_cart = decision_tree_to_decision_table(tree_cart, df)
+# fig1 = plt.figure()
+# ax1 = fig1.add_subplot(111, aspect='equal')
+# plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
+# plt.xlabel('max heartrate')
+# plt.ylabel('resting blood pressure')
+# colors = ["", "red", "blue"]
+# for region in regions_cart:
+#     if region['max heartrate'][0] == float("-inf"):
+#         x = 0
+#     else:
+#         x = region['max heartrate'][0]
+#
+#     if region['max heartrate'][1] == float("inf"):
+#         width = np.max(df['max heartrate']) - x
+#     else:
+#         width = region['max heartrate'][1] - x
+#
+#     if region['resting blood pressure'][0] == float("-inf"):
+#         y = 0
+#     else:
+#         y = region['resting blood pressure'][0]
+#
+#     if region['resting blood pressure'][1] == float("inf"):
+#         height = np.max(df['resting blood pressure']) - y
+#     else:
+#         height = region['resting blood pressure'][1] - y
+#
+#
+#     ax1.add_patch(
+#         patches.Rectangle(
+#             (x, y),   # (x,y)
+#             width,          # width
+#             height,          # height
+#             facecolor=colors[int(region["class"])]
+#         )
+#     )
+#
+# fig1.savefig('rect_cart.png')
+#
+# tree_quest = quest.construct_tree(df, labels_df)
+# #tree_quest.visualise("quest_2features")
+# regions_quest = decision_tree_to_decision_table(tree_quest, df)
+# fig1 = plt.figure()
+# ax1 = fig1.add_subplot(111, aspect='equal')
+# plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
+# plt.xlabel('max heartrate')
+# plt.ylabel('resting blood pressure')
+# colors = ["", "red", "blue"]
+# for region in regions_quest:
+#     if region['max heartrate'][0] == float("-inf"):
+#         x = 0
+#     else:
+#         x = region['max heartrate'][0]
+#
+#     if region['max heartrate'][1] == float("inf"):
+#         width = np.max(df['max heartrate']) - x
+#     else:
+#         width = region['max heartrate'][1] - x
+#
+#     if region['resting blood pressure'][0] == float("-inf"):
+#         y = 0
+#     else:
+#         y = region['resting blood pressure'][0]
+#
+#     if region['resting blood pressure'][1] == float("inf"):
+#         height = np.max(df['resting blood pressure']) - y
+#     else:
+#         height = region['resting blood pressure'][1] - y
+#
+#
+#     ax1.add_patch(
+#         patches.Rectangle(
+#             (x, y),   # (x,y)
+#             width,          # width
+#             height,          # height
+#             facecolor=colors[region["class"]]
+#         )
+#     )
+#
+# fig1.savefig('rect_quest.png')
+#
+# print regions_quest
+# print regions_c45
+#
+# class LineSegment(object):
+#
+#     def __init__(self, lower_bound, upper_bound, region_index):
+#         self.lower_bound = lower_bound
+#         self.upper_bound = upper_bound
+#         self.region_index = region_index
+#
+# def calculate_intersection(regions1, regions2, features):
+#     S_intersections = [None] * len(features)
+#     for i in range(len(features)):
+#         print "------------------" + features[i] + "------------------"
+#         # Create B1 and B2: 2 arrays of line segments
+#         box_set1 = []
+#         for region_index in range(len(regions1)):
+#             box_set1.append(LineSegment(regions1[region_index][features[i]][0], regions1[region_index][features[i]][1],
+#                                         region_index))
+#             box_set2 = []
+#         for region_index in range(len(regions2)):
+#             box_set2.append(LineSegment(regions2[region_index][features[i]][0], regions2[region_index][features[i]][1],
+#                                         region_index))
+#
+#         # Sort the two boxsets by their lower bound
+#         box_set1 = sorted(box_set1, key=lambda segment: segment.lower_bound)
+#         box_set2 = sorted(box_set2, key=lambda segment: segment.lower_bound)
+#
+#         # Create a list of unique lower bounds, we iterate over these bounds later
+#         unique_lower_bounds = []
+#         for j in range(max(len(box_set1), len(box_set2))):
+#             if j < len(box_set1) and box_set1[j].lower_bound not in unique_lower_bounds:
+#                 unique_lower_bounds.append(box_set1[j].lower_bound)
+#
+#             if j < len(box_set2) and box_set2[j].lower_bound not in unique_lower_bounds:
+#                 unique_lower_bounds.append(box_set2[j].lower_bound)
+#
+#         # Sort them
+#         unique_lower_bounds = sorted(unique_lower_bounds)
+#
+#         box1_active_set = []
+#         box2_active_set = []
+#         intersections = []
+#         for lower_bound in unique_lower_bounds:
+#             # Update all active sets, a region is added when it's lower bound is lower than the current one
+#             # It is removed when its upper bound is higher than the current lower bound
+#             for j in range(len(box_set1)):
+#                 if box_set1[j].upper_bound <= lower_bound:
+#                     if box_set1[j] in box1_active_set:
+#                         box1_active_set.remove(box_set1[j])
+#                 elif box_set1[j].lower_bound <= lower_bound:
+#                     if box_set1[j] not in box1_active_set:
+#                         box1_active_set.append(box_set1[j])
+#                 else:
+#                     break
+#
+#             for j in range(len(box_set2)):
+#                 if box_set2[j].upper_bound <= lower_bound:
+#                     if box_set2[j] in box2_active_set:
+#                         box2_active_set.remove(box_set2[j])
+#                 elif box_set2[j].lower_bound <= lower_bound:
+#                     if box_set2[j] not in box2_active_set:
+#                         box2_active_set.append(box_set2[j])
+#                 else:
+#                     break
+#
+#             # All regions from the active set of B1 intersect with the regions in the active set of B2
+#             for segment1 in box1_active_set:
+#                 for segment2 in box2_active_set:
+#                     intersections.append((segment1.region_index, segment2.region_index))
+#
+#         S_intersections[i] = intersections
+#
+#     print S_intersections
+#     intersection_regions_indices = S_intersections[0]
+#     for k in range(1, len(S_intersections)):
+#         intersection_regions_indices = tuple_list_intersections(intersection_regions_indices, S_intersections[k])
+#
+#     intersected_regions = []
+#     for intersection_region_pair in intersection_regions_indices:
+#         region = {}
+#         for feature in features:
+#             region[feature] = [max(regions1[intersection_region_pair[0]][feature][0],
+#                                    regions2[intersection_region_pair[1]][feature][0]),
+#                                min(regions1[intersection_region_pair[0]][feature][1],
+#                                    regions2[intersection_region_pair[1]][feature][1])]
+#         region["classes"] = [regions1[intersection_region_pair[0]]['class'], regions2[intersection_region_pair[1]]['class']]
+#         intersected_regions.append(region)
+#
+#     print intersected_regions
+#
+#     fig1 = plt.figure()
+#     ax1 = fig1.add_subplot(111, aspect='equal')
+#     plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
+#     plt.xlabel('max heartrate')
+#     plt.ylabel('resting blood pressure')
+#     colors = ["", "red", "blue"]
+#     for region in intersected_regions:
+#         if region['max heartrate'][0] == float("-inf"):
+#             x = 0
+#         else:
+#             x = region['max heartrate'][0]
+#
+#         if region['max heartrate'][1] == float("inf"):
+#             width = np.max(df['max heartrate']) - x
+#         else:
+#             width = region['max heartrate'][1] - x
+#
+#         if region['resting blood pressure'][0] == float("-inf"):
+#             y = 0
+#         else:
+#             y = region['resting blood pressure'][0]
+#
+#         if region['resting blood pressure'][1] == float("inf"):
+#             height = np.max(df['resting blood pressure']) - y
+#         else:
+#             height = region['resting blood pressure'][1] - y
+#
+#         if region['classes'][0] == region['classes'][1]:
+#             color = colors[region['classes'][0]]
+#         else:
+#             color = "purple"
+#
+#
+#         ax1.add_patch(
+#             patches.Rectangle(
+#                 (x, y),   # (x,y)
+#                 width,          # width
+#                 height,          # height
+#                 facecolor=color
+#             )
+#         )
+#
+#     fig1.savefig('intersect.png')
+#
+# def tuple_list_intersections(list1, list2):
+#     if len(list2) > len(list1):
+#         tuple_list_intersections(list2, list1)
+#
+#     intersections = []
+#     for tuple in list1:
+#         if tuple in list2 and tuple not in intersections:
+#             intersections.append(tuple)
+#
+#     return intersections
+#
+#
+# calculate_intersection(regions_c45, regions_quest, df.columns)
 
 
 

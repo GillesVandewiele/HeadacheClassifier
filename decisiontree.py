@@ -54,7 +54,10 @@ class DecisionTree(object):
         """
         ratio_string = ('(' + str(self.pruning_ratio) + ')') if _with_pruning_ratio else ''
         if self.value is None:
-            s = 'Node' + str(count) + ' [label="' + str(self.label) + ratio_string + '\n'+self.class_probabilities.__str__()+'" shape="box"];\n'
+            if len(self.class_probabilities) > 0:
+                s = 'Node' + str(count) + ' [label="' + str(self.label) + ratio_string + '\n'+self.class_probabilities.__str__()+'" shape="box"];\n'
+            else:
+                s = 'Node' + str(count) + ' [label="' + str(self.label) + '" shape="box"];\n'
         else:
             s = 'Node' + str(count) + ' [label="' + str(self.label) + ' <= ' + str(self.value) + ratio_string + '"];\n'
             s += self.left.convert_node_to_dot(count=count + 1, _with_pruning_ratio=_with_pruning_ratio)
@@ -111,7 +114,6 @@ class DecisionTree(object):
             results.append(self.evaluate(feature_vector))
         return np.asarray(results)
 
-<<<<<<< HEAD
     def plot_confusion_matrix(self, actual_labels, predicted_labels, normalized=False, plot=False):
         confusion_matrix = sklearn.metrics.confusion_matrix(actual_labels, predicted_labels)
         return confusion_matrix
@@ -119,38 +121,35 @@ class DecisionTree(object):
         if plot:
             confusion_matrix.plot(normalized=normalized)
             plt.show()
-=======
-    def plot_confusion_matrix(self, actual_labels, predicted_labels, normalized=False):
-        confusion_matrix = ConfusionMatrix(actual_labels, predicted_labels)
-        print("Confusion matrix:\n%s" % confusion_matrix)
-        confusion_matrix.plot(normalized=normalized)
-        plt.show()
 
-    def calc_probabilities(self, node):
-        if node.value is not None:
-            self.calc_probabilities(node.left)
-            self.calc_probabilities(node.right)
+    def calc_probabilities(self):
+        if self.value is not None:
+            self.left.calc_probabilities()
+            self.right.calc_probabilities()
         else:
-            factor = 1.0/sum(node.class_probabilities.itervalues())
-            for i in node.class_probabilities:
-                node.class_probabilities[i] = round(node.class_probabilities[i]*factor,2)
+            sum_values = sum(self.class_probabilities.itervalues())
+            if sum_values != 0:
+                factor = 1.0/sum_values
+            else:
+                factor = 0
+            for i in self.class_probabilities:
+                self.class_probabilities[i] = round(self.class_probabilities[i]*factor,2)
             return
 
-
-
-    def populate_samples(self, classes, feature_vectors, labels):
+    def populate_samples(self, feature_vectors, labels):
         index = 0
         for _index, feature_vector in feature_vectors.iterrows():
             current_node = self
+            for label in np.unique(labels):
+                current_node.class_probabilities[str(label)] = 0.0
             while current_node.value is not None:
                 if feature_vector[current_node.label] <= current_node.value:
                     current_node = current_node.left
                 else:
                     current_node = current_node.right
-            if not labels[index] in current_node.class_probabilities:
-                current_node.class_probabilities[labels[index]] = 1
-            else:
-                current_node.class_probabilities[labels[index]] += 1
+                if len(current_node.class_probabilities) <= 0:
+                    for label in np.unique(labels):
+                        current_node.class_probabilities[str(label)] = 0.0
+            current_node.class_probabilities[str(labels[index])] += 1
             index+=1
-        self.calc_probabilities(self)
->>>>>>> 28327ed04e56277252a77e720c6e97f22ce7e59a
+        self.calc_probabilities()
