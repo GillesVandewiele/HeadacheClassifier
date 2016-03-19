@@ -158,7 +158,7 @@ class QuestConstructor(TreeConstructor):
             # Create leaf most occuring class
             #print(np.bincount(data['cat']))
             label = np.argmax(np.bincount(data['cat'].values.astype(int)))
-            return DecisionTree(label=label, value=None, data=data)
+            return DecisionTree(label=label.astype(str), value=None, data=data)
 
         split_point = self.find_best_split_point(data.copy(), feature, type)
         split_node = self.divide_data(data, feature, split_point)

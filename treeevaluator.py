@@ -34,10 +34,11 @@ class TreeEvaluator(object):
                 tree = tree_constructor.construct_tree(X_train, y_train)
                 tree.visualise(tree_constructor.get_name())
                 predicted_labels = tree.evaluate_multiple(X_test)
+                print tree_constructor.get_name(), predicted_labels
                 if tree_constructor not in tree_confusion_matrices:
-                    tree_confusion_matrices[tree_constructor] = [tree.plot_confusion_matrix(y_test['cat'].values, predicted_labels)]
+                    tree_confusion_matrices[tree_constructor] = [tree.plot_confusion_matrix(y_test['cat'].values.astype(str), predicted_labels)]
                 else:
-                    tree_confusion_matrices[tree_constructor].append(tree.plot_confusion_matrix(y_test['cat'].values, predicted_labels))
+                    tree_confusion_matrices[tree_constructor].append(tree.plot_confusion_matrix(y_test['cat'].values.astype(str), predicted_labels))
 
         fig = plt.figure()
         tree_confusion_matrices_mean = {}
@@ -68,11 +69,10 @@ df = read_csv('heart.dat', sep=' ')
 #df = df.reset_index(drop=True)
 df.columns = columns
 
-
 features_column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak']
 # labels_column_names = 'disease'
-column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak', 'disease']
-df = df[column_names]
+#column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak', 'disease']
+#df = df[column_names]
 # df = df.drop(columns[:3], axis=1)
 # df = df.drop(columns[4:7], axis=1)
 # df = df.drop(columns[8:-1], axis=1)
@@ -82,7 +82,7 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 features_column_names = features_df.columns
 
-np.random.seed(1117)
+np.random.seed(13333337)
 permutation = np.random.permutation(features_df.index)
 print permutation
 features_df = features_df.reindex(permutation)
@@ -100,6 +100,8 @@ c45 = C45Constructor()
 cart = CARTconstructor()
 quest = QuestConstructor()
 tree_constructors = [c45, cart, quest]
+evaluator = TreeEvaluator()
+#evaluator.evaluate_trees(df, tree_constructors)
 merger = DecisionTreeMerger()
 regions_list = []
 constructed_trees = []
@@ -120,16 +122,16 @@ feature_maxs = {}
 for feature in features_column_names:
     feature_mins[feature] = np.min(train_features_df[feature])
     feature_maxs[feature] = np.max(train_features_df[feature])
-merged_regions = merger.calculate_intersection(regions_list[0], regions_list[1], features_column_names, feature_maxs,
+merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2], features_column_names, feature_maxs,
                                                feature_mins)
-#merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
-#                                               feature_mins)
+merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
+                                               feature_mins)
 # merger.plot_regions("intersected.png", merged_regions, ['1', '2'], features_column_names[0],
 #                     features_column_names[1], x_max=np.max(features_df[features_column_names[0]].values),
 #                     y_max=np.max(features_df[features_column_names[1]].values),
 #                     x_min=np.min(features_df[features_column_names[0]].values),
 #                     y_min=np.min(features_df[features_column_names[1]].values))
--
+
 # We now artifically construct a decision tree in the following way:
 # For each region: we pick a sample in the middle of the region,
 #                  assign the class with highest prob to it and add it to a list
@@ -149,11 +151,11 @@ def generate_samples(regions, features):
             elif side > max_side2:
                 max_side3 = max_side2
                 max_side2 = side
-            elif side > max_side2:
+            elif side > max_side3:
                 max_side3 = side
 
 
-        number_of_samples_per_region = int(np.log2((max_side1+1)*(max_side2+1)*(max_side3+1)))
+        number_of_samples_per_region = int(np.log2((max_side1+1)*(max_side2+1)*(max_side3+1))*pow(np.max(region['class'].values(), 2)))
         print number_of_samples_per_region
 
         for k in range(number_of_samples_per_region):

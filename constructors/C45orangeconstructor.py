@@ -30,7 +30,7 @@ class C45Constructor(TreeConstructor):
         # Merge two tables
         orange_table = Orange.data.Table([orange_feature_table, orange_labels_table])
 
-        return self.orange_dt_to_my_dt(Orange.classification.tree.C45Learner(orange_table).tree)
+        return self.orange_dt_to_my_dt(Orange.classification.tree.C45Learner(orange_table, gain_ratio=False, cf=0.15).tree)
 
 # Evaluate random record
 #random_record = orange_feature_table[np.random.choice(len(orange_table), 1)]
@@ -41,7 +41,7 @@ class C45Constructor(TreeConstructor):
     def orange_dt_to_my_dt(self, orange_dt_root):
         # Check if leaf
         if orange_dt_root.node_type == Orange.classification.tree.C45Node.Leaf:
-            return DecisionTree(left=None, right=None, label=(int(orange_dt_root.leaf)+1), data=None, value=None)
+            return DecisionTree(left=None, right=None, label=str(int(orange_dt_root.leaf)+1), data=None, value=None)
         else:
             dt = DecisionTree(label=orange_dt_root.tested.name, data=None, value=orange_dt_root.cut)
             dt.left = self.orange_dt_to_my_dt(orange_dt_root.branch[0])
