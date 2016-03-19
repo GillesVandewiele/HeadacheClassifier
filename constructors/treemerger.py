@@ -80,25 +80,10 @@ class DecisionTreeMerger(object):
         plt.xlabel(x_feature)
         plt.ylabel(y_feature)
         for region in regions:
-            if region[x_feature][0] == float("-inf"):
-                x = 0
-            else:
-                x = region[x_feature][0]
-
-            if region[x_feature][1] == float("inf"):
-                width = x_max - x
-            else:
-                width = region[x_feature][1] - x
-
-            if region[y_feature][0] == float("-inf"):
-                y = 0
-            else:
-                y = region[y_feature][0]
-
-            if region[y_feature][1] == float("inf"):
-                height = y_max - y
-            else:
-                height = region[y_feature][1] - y
+            x = region[x_feature][0]
+            width = region[x_feature][1] - x
+            y = region[y_feature][0]
+            height = region[y_feature][1] - y
 
             if classes[0] in region['class'] and classes[1] in region['class']:
                 purple_tint = (region['class'][classes[0]], 0.0, region['class'][classes[1]])
@@ -120,7 +105,7 @@ class DecisionTreeMerger(object):
 
         fig1.savefig(output_path)
 
-    def calculate_intersection(self, regions1, regions2, features):
+    def calculate_intersection(self, regions1, regions2, features, feature_maxs, feature_mins):
         """
             Fancy method to calculate intersections. O(n*log(n)) instead of O(n^2)
 
@@ -209,6 +194,11 @@ class DecisionTreeMerger(object):
                                        regions2[intersection_region_pair[1]][feature][0]),
                                    min(regions1[intersection_region_pair[0]][feature][1],
                                        regions2[intersection_region_pair[1]][feature][1])]
+                # Convert all -inf and inf to the mins and max from those features
+                if region[feature][0] == float("-inf"):
+                    region[feature][0] = feature_mins[feature]
+                if region[feature][1] == float("inf"):
+                    region[feature][1] = feature_maxs[feature]
             region['class'] = {}
             for key in regions1[intersection_region_pair[0]]['class'].iterkeys():
                 region['class'][key] = (regions1[intersection_region_pair[0]]['class'][key] +
