@@ -22,6 +22,9 @@ class QuestConstructor(TreeConstructor):
     def __init__(self):
         pass
 
+    def get_name(self):
+        return "QUEST"
+
     def all_feature_vectors_equal(self, training_feature_vectors):
         return len(training_feature_vectors.index) == (training_feature_vectors.duplicated().sum() + 1)
 
@@ -138,7 +141,7 @@ class QuestConstructor(TreeConstructor):
                             data=data,
                             value=value)
 
-    def construct_tree(self, training_feature_vectors, labels, default, max_nr_nodes=1, discrete_thresh=5, alpha=0.1):
+    def construct_tree(self, training_feature_vectors, labels, default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.1):
         # First find the best split feature
         feature, type = self.find_split_feature(training_feature_vectors.copy(), labels.copy(),
                                                 discrete_thresh=discrete_thresh, alpha=alpha)
@@ -153,14 +156,14 @@ class QuestConstructor(TreeConstructor):
         if feature is None or len(training_feature_vectors.index) <= max_nr_nodes or len(np.unique(data['cat'])) == 1\
                 or self.all_feature_vectors_equal(training_feature_vectors):
             # Create leaf most occuring class
-            print(np.bincount(data['cat']))
-            label = np.argmax(np.bincount(data['cat']))
+            #print(np.bincount(data['cat']))
+            label = np.argmax(np.bincount(data['cat'].values.astype(int)))
             return DecisionTree(label=label, value=None, data=data)
 
         split_point = self.find_best_split_point(data.copy(), feature, type)
         split_node = self.divide_data(data, feature, split_point)
 
-        print(feature, split_point, len(split_node.left.data.index), len(split_node.right.data.index))
+        #print(feature, split_point, len(split_node.left.data.index), len(split_node.right.data.index))
 
 
         node = DecisionTree(label=split_node.label, value=split_node.value, data=split_node.data)
@@ -219,8 +222,8 @@ class QuestConstructor(TreeConstructor):
         chi2_values = np.where(np.isnan(chi2_values), 1, chi2_values)
         anova_f_values = np.where(np.isnan(anova_f_values), 1, anova_f_values)
 
-        print discrete_features, chi2_values
-        print continuous_features, anova_f_values
+        #print discrete_features, chi2_values
+        #print continuous_features, anova_f_values
 
         conc = np.concatenate([chi2_values, anova_f_values])
         conc_features = np.concatenate([discrete_features, continuous_features])
@@ -326,9 +329,9 @@ class QuestConstructor(TreeConstructor):
                 freq_a = frequencies[index_a]
                 sum_freq = sum(frequencies)
                 mean_b = sum([(frequencies[i]*means[i])/sum_freq for i in range(len(means)) if i != index_a])
-                variance_b = sum([(frequencies[i]*variances[i] + frequencies[i]*(means[i] - mean_b))/sum_freq for i in range(len(means)) if i != index_a])
+                var_b = sum([(frequencies[i]*variances[i] + frequencies[i]*(means[i] - mean_b))/sum_freq for i in range(len(means)) if i != index_a])
                 freq_b = sum([frequencies[i] for i in range(len(means)) if i != index_a])
-                print(mean_a, mean_b, mean_b, variance_b)
+                #print(mean_a, mean_b, mean_b, variance_b)
 
             # Else, apply kmeans clustering to divide the classes in 2 superclasses
             else:
@@ -344,7 +347,7 @@ class QuestConstructor(TreeConstructor):
                 freq_a = sum([frequencies[i] for i in indices_a])
                 freq_b = sum([frequencies[i] for i in indices_b])
 
-                print([mean_a, mean_b], [var_a, var_b], [freq_a, freq_b])
+               # print([mean_a, mean_b], [var_a, var_b], [freq_a, freq_b])
 
         # If there are only two classes, those are the superclasses already
         else:
@@ -408,7 +411,7 @@ class QuestConstructor(TreeConstructor):
     def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
         pass
 
-
+"""
 # Read csv into pandas frame
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
@@ -444,6 +447,7 @@ predicted_labels = decision_tree.evaluate_multiple(X_test)
 decision_tree.plot_confusion_matrix(y_test['cat'], predicted_labels, normalized=True)
 decision_tree.populate_samples(X_train, y_train['cat'].tolist())
 decision_tree.visualise('./QUEST')
+"""
 """
 kf = tree_constructor.cross_validation(feature_vectors_df, 2)
 
