@@ -442,6 +442,8 @@ predicted_labels = decision_tree.evaluate_multiple(X_test)
 # for barf in range(len(train_labels_df.index)):
 #     own_decision_tree.
 decision_tree.plot_confusion_matrix(y_test['cat'], predicted_labels, normalized=True)
+decision_tree.populate_samples(X_train, y_train['cat'].tolist())
+decision_tree.visualise('./QUEST')
 """
 kf = tree_constructor.cross_validation(feature_vectors_df, 2)
 

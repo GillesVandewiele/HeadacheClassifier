@@ -129,7 +129,7 @@ class DecisionTree(object):
 
 
 
-    def populate_samples(self, classes, feature_vectors, labels):
+    def populate_samples(self, feature_vectors, labels):
         index = 0
         for _index, feature_vector in feature_vectors.iterrows():
             current_node = self
