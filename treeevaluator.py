@@ -2,6 +2,8 @@ import random
 from pandas import DataFrame, read_csv
 
 import operator
+
+import math
 import sklearn
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,6 +13,7 @@ from constructors.CARTconstructor import CARTconstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.C45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
+from decisiontree import DecisionTree
 
 
 class TreeEvaluator(object):
@@ -69,10 +72,11 @@ df = read_csv('heart.dat', sep=' ')
 #df = df.reset_index(drop=True)
 df.columns = columns
 
-features_column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak']
+#features_column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak']
+features_column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral']
 # labels_column_names = 'disease'
-#column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak', 'disease']
-#df = df[column_names]
+column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral', 'disease']
+df = df[column_names]
 # df = df.drop(columns[:3], axis=1)
 # df = df.drop(columns[4:7], axis=1)
 # df = df.drop(columns[8:-1], axis=1)
@@ -82,9 +86,8 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 features_column_names = features_df.columns
 
-np.random.seed(13333337)
+np.random.seed(133337)
 permutation = np.random.permutation(features_df.index)
-print permutation
 features_df = features_df.reindex(permutation)
 features_df = features_df.reset_index(drop=True)
 labels_df = labels_df.reindex(permutation)
@@ -122,62 +125,208 @@ feature_maxs = {}
 for feature in features_column_names:
     feature_mins[feature] = np.min(train_features_df[feature])
     feature_maxs[feature] = np.max(train_features_df[feature])
-merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2], features_column_names, feature_maxs,
+merged_regions = merger.calculate_intersection(regions_list[2], regions_list[1], features_column_names, feature_maxs,
                                                feature_mins)
-merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
-                                               feature_mins)
+#merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
+#                                               feature_mins)
 # merger.plot_regions("intersected.png", merged_regions, ['1', '2'], features_column_names[0],
 #                     features_column_names[1], x_max=np.max(features_df[features_column_names[0]].values),
 #                     y_max=np.max(features_df[features_column_names[1]].values),
 #                     x_min=np.min(features_df[features_column_names[0]].values),
 #                     y_min=np.min(features_df[features_column_names[1]].values))
 
-# We now artifically construct a decision tree in the following way:
-# For each region: we pick a sample in the middle of the region,
-#                  assign the class with highest prob to it and add it to a list
-def generate_samples(regions, features):
-    _samples = DataFrame()
-    for region in regions:
-        region_samples = []
-        max_side1 = 0
-        max_side2 = 0
-        max_side3 = 0
-        for _feature in features:
-            side = (region[_feature][1] - region[_feature][0])
-            if side > max_side1:
-                max_side3 = max_side2
-                max_side2 = max_side1
-                max_side1 = side
-            elif side > max_side2:
-                max_side3 = max_side2
-                max_side2 = side
-            elif side > max_side3:
-                max_side3 = side
+
+def calculate_entropy(values_list):
+        if sum(values_list) == 0:
+            return 0
+        # Normalize the values by dividing each value by the sum of all values in the list
+        normalized_values = map(lambda x: float(x) / float(sum(values_list)), values_list)
+
+        # Calculate the log of the normalized values (negative because these values are in [0,1])
+
+        log_values = map(lambda x: np.log(x)/np.log(2), normalized_values)
+
+        # Take sum of normalized_values * log_values, multiply with (-1) to get positive float
+        return -sum(np.multiply(normalized_values, log_values))
 
 
-        number_of_samples_per_region = int(np.log2((max_side1+1)*(max_side2+1)*(max_side3+1))*pow(np.max(region['class'].values(), 2)))
-        print number_of_samples_per_region
+def split_criterion(node):
+        """
+        Calculates information gain ratio (ratio because normal gain tends to have a strong bias in favor of tests with
+        many outcomes) for a subtree
+        :param node: the node where the information gain needs to be calculated for
+        :return: the information gain: information (entropy) in node - sum(weighted information in its children)
+        """
+        counts_before_split = np.asarray(node.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
+        total_count_before_split = sum(counts_before_split)
+        info_before_split = calculate_entropy(counts_before_split)
 
-        for k in range(number_of_samples_per_region):
-            region_samples.append({})
+        if len(node.left.data[['cat', node.label]].groupby(['cat']).count().values) > 0:
+            left_counts = np.asarray(node.left.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
+        else:
+            left_counts = [0]
+        total_left_count = sum(left_counts)
+        if len(node.right.data[['cat', node.label]].groupby(['cat']).count().values) > 0:
+            right_counts = np.asarray(node.right.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
+        else:
+            right_counts = [0]
+        total_right_count = sum(right_counts)
 
-        for _feature in features:
-            for index in range(number_of_samples_per_region):
-                region_samples[index][_feature] = region[_feature][0] + random.random() * \
-                                                                        ((region[_feature][1] - region[_feature][0])+1)
+        # Information gain after split = weighted entropy of left child + weighted entropy of right child
+        # weight = number of nodes in child / sum of nodes in left and right child
+        info_after_split = float(total_left_count) / float(total_count_before_split) * calculate_entropy(left_counts) \
+                           + float(total_right_count) / float(total_count_before_split) * calculate_entropy(right_counts)
 
-        for sample in region_samples:
-            sample['cat'] = max(region['class'].iteritems(), key=operator.itemgetter(1))[0]
-            _samples = _samples.append(sample, ignore_index=True)
-    return _samples
+        return (info_before_split - info_after_split) / info_before_split
 
-samples = generate_samples(merged_regions, features_column_names)
-print samples
-sample_labels_df = samples[['cat']]
-sample_features_df = samples.copy()
-sample_features_df = sample_features_df.drop('cat', axis=1)
-new_tree = c45.construct_tree(sample_features_df, sample_labels_df)
-new_tree.populate_samples(train_features_df, train_labels_df['cat'])
+
+def divide_data(data, feature, value):
+        """
+        Divide the data in two subsets, thanks pandas
+        :param data: the dataframe to divide
+        :param feature: on which column of the dataframe are we splitting?
+        :param value: what threshold do we use to split
+        :return: node: initialised decision tree object
+        """
+        return DecisionTree(left=DecisionTree(data=data[data[feature] <= value]),
+                            right=DecisionTree(data=data[data[feature] > value]),
+                            label=feature,
+                            data=data,
+                            value=value)
+
+def dec(input_, output_):
+    if type(input_) is list:
+        for subitem in input_:
+            dec(subitem, output_)
+    else:
+        output_.append(input_)
+
+
+def regions_to_tree(features_df, labels_df, regions, features, feature_mins, feature_maxs, max_samples=1):
+    # Initialize the feature bounds on their mins and maxs
+    bounds = {}
+    for _feature in features:
+        bounds[_feature] = [feature_mins[_feature], feature_maxs[_feature]]
+
+    # For each feature f, we look for a line that for each f' != f goes from bounds[f'][0] to bounds[f'][1]
+    lines = {}
+    for _feature in features:
+        print "checking for lines ", _feature
+        connected_lower_upper_regions = {}
+        for other_feature in features:  # Complexity O(d^2) already
+            if _feature != other_feature:
+                # Check if we can find 2 points, where the _feature values are the same, and other_feature values
+                # are equal to their required lower and upper bound. Then check if we can draw a line between
+                # these two points. We always check the left line of the region, except for the most left regions
+
+                # First find all lower regions: their lower bound is equal to the required lower bound (saved in bounds)
+                # and it cannot be the most left line (this is the case when the lower bounds for _feature is equal
+                # to its minimum
+                lower_regions = []
+                for region in regions:  # Complexity O(d^2 * |B|)
+                    if region[other_feature][0] == bounds[other_feature][0] \
+                            and region[_feature][0] != feature_mins[_feature] \
+                            and region[_feature][0] != feature_maxs[_feature]:
+                        lower_regions.append(region)
+
+                # Now find upper regions with the same value for _feature as a region in lower_regions
+                lower_upper_regions = []
+                for region in regions:
+                    if region[other_feature][1] == bounds[other_feature][1]:
+                        for lower_region in lower_regions:  # Even a little bit more complexity here
+                            if lower_region[_feature][0] == region[_feature][0]:
+                                lower_upper_regions.append([lower_region, region])
+
+                # Now check if we can draw a line between the lower and upper region
+                connected_lower_upper_regions[other_feature] = []
+                for lower_upper_region in lower_upper_regions:
+                    lowest_upper_bound = lower_upper_region[0][other_feature][1]
+                    highest_lower_bound = lower_upper_region[1][other_feature][0]
+                    still_searching = True
+                    while still_searching:
+                        # Line is connected when either the highest lower bound and lowest upper bound
+                        # are adjacent (number of regions along the line is even). Or when
+                        # both the lower bounds are equal (odd case, handled further)
+                        if highest_lower_bound == lowest_upper_bound:
+                            connected_lower_upper_regions[other_feature].append(lower_upper_region)
+                            break
+
+                        found_new_lower_bound = False
+                        found_new_upper_bound = False
+                        for region in regions:  # O boy, this complexity is getting out of hand
+                            if found_new_upper_bound and found_new_lower_bound:
+                                break
+
+                            if region[_feature][0] == lower_upper_region[0][_feature][0] \
+                                and region[other_feature][0] == lowest_upper_bound:
+                                found_new_upper_bound = True
+                                lowest_upper_bound = region[other_feature][1]
+
+                            if region[_feature][0] == lower_upper_region[1][_feature][0] \
+                                and region[other_feature][1] == highest_lower_bound:
+                                found_new_lower_bound = True
+                                if region[other_feature][1] == lowest_upper_bound:  # This is the odd case
+                                    connected_lower_upper_regions[other_feature].append(lower_upper_region)
+                                highest_lower_bound = region[other_feature][0]
+
+                        still_searching = found_new_lower_bound and found_new_upper_bound
+
+        # Now for all these connected_lower_upper_regions in each dimension, we need to find all line
+        # where the value of f is equal (the bounds constraint are already fulfilled)
+        if sum([1 if len(value) > 0 else 0 for value in connected_lower_upper_regions.values()]) == len(features)-1:
+            # We found a line fulfilling bounds constraints in all other dimensions
+            lines[_feature] = []
+            temp = []
+            dec(connected_lower_upper_regions.values(), temp)
+            for region in temp:
+                if region[_feature][0] not in lines[_feature]:
+                    lines[_feature].append(region[_feature][0])
+
+    print lines
+
+    # When we looped over each possible feature and found each possible split line, we split the data
+    # Using the feature and value of the line and pick the best one
+    data = DataFrame(features_df)
+    data['cat'] = labels_df
+    info_gains = {}
+    for key in lines:
+        for value in lines[key]:
+            node = divide_data(data, key, value)
+            split_crit = split_criterion(node)
+            if split_crit > 0:
+                info_gains[node] = split_criterion(node)
+
+    print info_gains
+
+    if len(info_gains) > 0:
+        best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
+        node = DecisionTree(label=best_split_node.label, value=best_split_node.value, data=best_split_node.data)
+    else:
+        node = DecisionTree(label=str(np.argmax(np.bincount(labels_df['cat'].values.astype(int)))), data=data, value=None)
+        return node
+    print node.label, node.value
+
+    ##########################################################################
+
+    # We call recursively with the splitted data and set the bounds of feature f
+    # for left child: set upper bounds to the value of the chosen line
+    # for right child: set lower bounds to value of chosen line
+    feature_mins_right = feature_mins.copy()
+    feature_mins_right[node.label] = node.value
+    feature_maxs_left = feature_maxs.copy()
+    feature_maxs_left[node.label] = node.value
+    if len(best_split_node.left.data) >= max_samples and len(best_split_node.right.data) >= max_samples:
+        node.left = regions_to_tree(best_split_node.left.data.drop('cat', axis=1), best_split_node.left.data[['cat']],
+                                    regions, features, feature_mins, feature_maxs_left)
+        node.right = regions_to_tree(best_split_node.right.data.drop('cat', axis=1), best_split_node.right.data[['cat']],
+                                    regions, features, feature_mins_right, feature_maxs)
+    else:
+        node.label = str(np.argmax(np.bincount(labels_df['cat'].values.astype(int))))
+        node.value = None
+
+    return node
+
+new_tree = regions_to_tree(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
 new_tree.visualise("new_tree")
 
 trees = [constructed_trees[0], constructed_trees[1], constructed_trees[2], new_tree]
@@ -209,12 +358,92 @@ for tree in trees:
 
 pl.show()
 
+# We now artifically construct a decision tree in the following way:
+# For each region: we pick a sample in the middle of the region,
+#                  assign the class with highest prob to it and add it to a list
+# def generate_samples(regions, features):
+#     _samples = DataFrame()
+#     for region in regions:
+#         region_samples = []
+#         max_side1 = 0
+#         max_side2 = 0
+#         max_side3 = 0
+#         for _feature in features:
+#             side = (region[_feature][1] - region[_feature][0])
+#             if side > max_side1:
+#                 max_side3 = max_side2
+#                 max_side2 = max_side1
+#                 max_side1 = side
+#             elif side > max_side2:
+#                 max_side3 = max_side2
+#                 max_side2 = side
+#             elif side > max_side3:
+#                 max_side3 = side
+#
+#
+#         number_of_samples_per_region = int(np.log2((max_side1+1)*(max_side2+1)*(max_side3+1))*pow(np.max(region['class'].values(), 2)))
+#         print number_of_samples_per_region
+#
+#         for k in range(number_of_samples_per_region):
+#             region_samples.append({})
+#
+#         for _feature in features:
+#             for index in range(number_of_samples_per_region):
+#                 region_samples[index][_feature] = region[_feature][0] + random.random() * \
+#                                                                         ((region[_feature][1] - region[_feature][0])+1)
+#
+#         for sample in region_samples:
+#             sample['cat'] = max(region['class'].iteritems(), key=operator.itemgetter(1))[0]
+#             _samples = _samples.append(sample, ignore_index=True)
+#     return _samples
+#
+# samples = generate_samples(merged_regions, features_column_names)
+# print samples
+# sample_labels_df = samples[['cat']]
+# sample_features_df = samples.copy()
+# sample_features_df = sample_features_df.drop('cat', axis=1)
+# new_tree = c45.construct_tree(sample_features_df, sample_labels_df)
+# new_tree.populate_samples(train_features_df, train_labels_df['cat'])
+# new_tree.visualise("new_tree")
+#
+# trees = [constructed_trees[0], constructed_trees[1], constructed_trees[2], new_tree]
+#
+# tree_confusion_matrices = {}
+# for tree in trees:
+#     predicted_labels = tree.evaluate_multiple(test_features_df)
+#     if tree not in tree_confusion_matrices:
+#         tree_confusion_matrices[tree] = [tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))]
+#     else:
+#         tree_confusion_matrices[tree].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
+#
+# fig = plt.figure()
+# tree_confusion_matrices_mean = {}
+# counter = 1
+# for tree in trees:
+#     tree_confusion_matrices_mean[tree] = np.zeros(tree_confusion_matrices[tree][0].shape)
+#     for i in range(1):
+#         tree_confusion_matrices_mean[tree] = np.add(tree_confusion_matrices_mean[tree], tree_confusion_matrices[tree][i])
+#     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], len(tree_confusion_matrices[tree]))
+#     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], np.matrix.sum(np.asmatrix(tree_confusion_matrices_mean[tree]))).round(3)
+#
+#     ax = fig.add_subplot(len(trees), 1, counter)
+#     cax = ax.matshow(tree_confusion_matrices[tree], cmap=plt.get_cmap('RdYlGn'))
+#     for (j,i),label in np.ndenumerate(tree_confusion_matrices[tree]):
+#         ax.text(i,j,label,ha='center',va='center')
+#     fig.colorbar(cax)
+#     counter += 1
+#
+# pl.show()
+
 
 # Each of the lines in our rectangle, is a split on a specific feature and specific value
 # We now build a tree from these splits:
 #   Starting at the root node, we consider each of the splits and pick the best one (impurity metric)
 #   Then we remove that split from the set and divide the rectangles in two using that split
 #   We call recursively, creating its left and right child
+
+
+
 """
 tree_evaluator = TreeEvaluator()
 quest = QuestConstructor()
@@ -223,328 +452,3 @@ c45 = C45Constructor()
 tree_constructors = [quest, cart, c45]
 tree_evaluator.evaluate_trees(df, tree_constructors, n_folds=2)
 """
-
-# def decision_tree_to_decision_table(tree, feature_vectors):
-#     # Convert each path from the root to a leaf into a region, store it into a table
-#     # Initialize an empty  region (will be passed on recursively)
-#     region = {}
-#     for column in feature_vectors.columns:
-#         region[column] = [float("-inf"), float("inf")]
-#         region["class"] = None
-#     regions = tree_to_decision_table(tree, region, [])
-#     return regions
-#
-# def tree_to_decision_table(tree, region, regions):
-#     left_region = copy.deepcopy(region)
-#     right_region = copy.deepcopy(region)
-#     left_region[tree.label][1] = tree.value
-#     right_region[tree.label][0] = tree.value
-#
-#     # Recursive method
-#     if tree.left.value is None:
-#         left_region["class"] = tree.left.label
-#         regions.append(left_region)
-#     else:
-#         tree_to_decision_table(tree.left, left_region, regions)
-#
-#     if tree.right.value is None:
-#         right_region["class"] = tree.right.label
-#         regions.append(right_region)
-#     else:
-#         tree_to_decision_table(tree.right, right_region, regions)
-#
-#     return regions
-#
-#
-# c45 = C45Constructor()
-# cart = CARTconstructor()
-# quest = QuestConstructor()
-# labels_df = DataFrame()
-# labels_df['cat'] = df['disease'].copy()
-# df = df.drop('disease', axis=1)
-# tree_c45 = c45.construct_tree(df, labels_df)
-# #tree_c45.visualise("c45_2features")
-# regions_c45 = decision_tree_to_decision_table(tree_c45, df)
-# fig1 = plt.figure()
-# ax1 = fig1.add_subplot(111, aspect='equal')
-# plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-# plt.xlabel('max heartrate')
-# plt.ylabel('resting blood pressure')
-# colors = ["", "red", "blue"]
-# for region in regions_c45:
-#     if region['max heartrate'][0] == float("-inf"):
-#         x = 0
-#     else:
-#         x = region['max heartrate'][0]
-#
-#     if region['max heartrate'][1] == float("inf"):
-#         width = np.max(df['max heartrate']) - x
-#     else:
-#         width = region['max heartrate'][1] - x
-#
-#     if region['resting blood pressure'][0] == float("-inf"):
-#         y = 0
-#     else:
-#         y = region['resting blood pressure'][0]
-#
-#     if region['resting blood pressure'][1] == float("inf"):
-#         height = np.max(df['resting blood pressure']) - y
-#     else:
-#         height = region['resting blood pressure'][1] - y
-#
-#
-#     ax1.add_patch(
-#         patches.Rectangle(
-#             (x, y),   # (x,y)
-#             width,          # width
-#             height,          # height
-#             facecolor=colors[region["class"]]
-#         )
-#     )
-#
-# fig1.savefig('rect_c45.png')
-#
-# tree_cart = cart.construct_tree(df, labels_df)
-# #tree_cart.visualise("cart_2features")
-# regions_cart = decision_tree_to_decision_table(tree_cart, df)
-# fig1 = plt.figure()
-# ax1 = fig1.add_subplot(111, aspect='equal')
-# plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-# plt.xlabel('max heartrate')
-# plt.ylabel('resting blood pressure')
-# colors = ["", "red", "blue"]
-# for region in regions_cart:
-#     if region['max heartrate'][0] == float("-inf"):
-#         x = 0
-#     else:
-#         x = region['max heartrate'][0]
-#
-#     if region['max heartrate'][1] == float("inf"):
-#         width = np.max(df['max heartrate']) - x
-#     else:
-#         width = region['max heartrate'][1] - x
-#
-#     if region['resting blood pressure'][0] == float("-inf"):
-#         y = 0
-#     else:
-#         y = region['resting blood pressure'][0]
-#
-#     if region['resting blood pressure'][1] == float("inf"):
-#         height = np.max(df['resting blood pressure']) - y
-#     else:
-#         height = region['resting blood pressure'][1] - y
-#
-#
-#     ax1.add_patch(
-#         patches.Rectangle(
-#             (x, y),   # (x,y)
-#             width,          # width
-#             height,          # height
-#             facecolor=colors[int(region["class"])]
-#         )
-#     )
-#
-# fig1.savefig('rect_cart.png')
-#
-# tree_quest = quest.construct_tree(df, labels_df)
-# #tree_quest.visualise("quest_2features")
-# regions_quest = decision_tree_to_decision_table(tree_quest, df)
-# fig1 = plt.figure()
-# ax1 = fig1.add_subplot(111, aspect='equal')
-# plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-# plt.xlabel('max heartrate')
-# plt.ylabel('resting blood pressure')
-# colors = ["", "red", "blue"]
-# for region in regions_quest:
-#     if region['max heartrate'][0] == float("-inf"):
-#         x = 0
-#     else:
-#         x = region['max heartrate'][0]
-#
-#     if region['max heartrate'][1] == float("inf"):
-#         width = np.max(df['max heartrate']) - x
-#     else:
-#         width = region['max heartrate'][1] - x
-#
-#     if region['resting blood pressure'][0] == float("-inf"):
-#         y = 0
-#     else:
-#         y = region['resting blood pressure'][0]
-#
-#     if region['resting blood pressure'][1] == float("inf"):
-#         height = np.max(df['resting blood pressure']) - y
-#     else:
-#         height = region['resting blood pressure'][1] - y
-#
-#
-#     ax1.add_patch(
-#         patches.Rectangle(
-#             (x, y),   # (x,y)
-#             width,          # width
-#             height,          # height
-#             facecolor=colors[region["class"]]
-#         )
-#     )
-#
-# fig1.savefig('rect_quest.png')
-#
-# print regions_quest
-# print regions_c45
-#
-# class LineSegment(object):
-#
-#     def __init__(self, lower_bound, upper_bound, region_index):
-#         self.lower_bound = lower_bound
-#         self.upper_bound = upper_bound
-#         self.region_index = region_index
-#
-# def calculate_intersection(regions1, regions2, features):
-#     S_intersections = [None] * len(features)
-#     for i in range(len(features)):
-#         print "------------------" + features[i] + "------------------"
-#         # Create B1 and B2: 2 arrays of line segments
-#         box_set1 = []
-#         for region_index in range(len(regions1)):
-#             box_set1.append(LineSegment(regions1[region_index][features[i]][0], regions1[region_index][features[i]][1],
-#                                         region_index))
-#             box_set2 = []
-#         for region_index in range(len(regions2)):
-#             box_set2.append(LineSegment(regions2[region_index][features[i]][0], regions2[region_index][features[i]][1],
-#                                         region_index))
-#
-#         # Sort the two boxsets by their lower bound
-#         box_set1 = sorted(box_set1, key=lambda segment: segment.lower_bound)
-#         box_set2 = sorted(box_set2, key=lambda segment: segment.lower_bound)
-#
-#         # Create a list of unique lower bounds, we iterate over these bounds later
-#         unique_lower_bounds = []
-#         for j in range(max(len(box_set1), len(box_set2))):
-#             if j < len(box_set1) and box_set1[j].lower_bound not in unique_lower_bounds:
-#                 unique_lower_bounds.append(box_set1[j].lower_bound)
-#
-#             if j < len(box_set2) and box_set2[j].lower_bound not in unique_lower_bounds:
-#                 unique_lower_bounds.append(box_set2[j].lower_bound)
-#
-#         # Sort them
-#         unique_lower_bounds = sorted(unique_lower_bounds)
-#
-#         box1_active_set = []
-#         box2_active_set = []
-#         intersections = []
-#         for lower_bound in unique_lower_bounds:
-#             # Update all active sets, a region is added when it's lower bound is lower than the current one
-#             # It is removed when its upper bound is higher than the current lower bound
-#             for j in range(len(box_set1)):
-#                 if box_set1[j].upper_bound <= lower_bound:
-#                     if box_set1[j] in box1_active_set:
-#                         box1_active_set.remove(box_set1[j])
-#                 elif box_set1[j].lower_bound <= lower_bound:
-#                     if box_set1[j] not in box1_active_set:
-#                         box1_active_set.append(box_set1[j])
-#                 else:
-#                     break
-#
-#             for j in range(len(box_set2)):
-#                 if box_set2[j].upper_bound <= lower_bound:
-#                     if box_set2[j] in box2_active_set:
-#                         box2_active_set.remove(box_set2[j])
-#                 elif box_set2[j].lower_bound <= lower_bound:
-#                     if box_set2[j] not in box2_active_set:
-#                         box2_active_set.append(box_set2[j])
-#                 else:
-#                     break
-#
-#             # All regions from the active set of B1 intersect with the regions in the active set of B2
-#             for segment1 in box1_active_set:
-#                 for segment2 in box2_active_set:
-#                     intersections.append((segment1.region_index, segment2.region_index))
-#
-#         S_intersections[i] = intersections
-#
-#     print S_intersections
-#     intersection_regions_indices = S_intersections[0]
-#     for k in range(1, len(S_intersections)):
-#         intersection_regions_indices = tuple_list_intersections(intersection_regions_indices, S_intersections[k])
-#
-#     intersected_regions = []
-#     for intersection_region_pair in intersection_regions_indices:
-#         region = {}
-#         for feature in features:
-#             region[feature] = [max(regions1[intersection_region_pair[0]][feature][0],
-#                                    regions2[intersection_region_pair[1]][feature][0]),
-#                                min(regions1[intersection_region_pair[0]][feature][1],
-#                                    regions2[intersection_region_pair[1]][feature][1])]
-#         region["classes"] = [regions1[intersection_region_pair[0]]['class'], regions2[intersection_region_pair[1]]['class']]
-#         intersected_regions.append(region)
-#
-#     print intersected_regions
-#
-#     fig1 = plt.figure()
-#     ax1 = fig1.add_subplot(111, aspect='equal')
-#     plt.axis([np.min(df['max heartrate']), np.max(df['max heartrate']), np.min(df['resting blood pressure']), np.max(df['resting blood pressure'])])
-#     plt.xlabel('max heartrate')
-#     plt.ylabel('resting blood pressure')
-#     colors = ["", "red", "blue"]
-#     for region in intersected_regions:
-#         if region['max heartrate'][0] == float("-inf"):
-#             x = 0
-#         else:
-#             x = region['max heartrate'][0]
-#
-#         if region['max heartrate'][1] == float("inf"):
-#             width = np.max(df['max heartrate']) - x
-#         else:
-#             width = region['max heartrate'][1] - x
-#
-#         if region['resting blood pressure'][0] == float("-inf"):
-#             y = 0
-#         else:
-#             y = region['resting blood pressure'][0]
-#
-#         if region['resting blood pressure'][1] == float("inf"):
-#             height = np.max(df['resting blood pressure']) - y
-#         else:
-#             height = region['resting blood pressure'][1] - y
-#
-#         if region['classes'][0] == region['classes'][1]:
-#             color = colors[region['classes'][0]]
-#         else:
-#             color = "purple"
-#
-#
-#         ax1.add_patch(
-#             patches.Rectangle(
-#                 (x, y),   # (x,y)
-#                 width,          # width
-#                 height,          # height
-#                 facecolor=color
-#             )
-#         )
-#
-#     fig1.savefig('intersect.png')
-#
-# def tuple_list_intersections(list1, list2):
-#     if len(list2) > len(list1):
-#         tuple_list_intersections(list2, list1)
-#
-#     intersections = []
-#     for tuple in list1:
-#         if tuple in list2 and tuple not in intersections:
-#             intersections.append(tuple)
-#
-#     return intersections
-#
-#
-# calculate_intersection(regions_c45, regions_quest, df.columns)
-
-
-
-"""
-labels_df = DataFrame()
-labels_df['cat'] = df['disease'].copy()
-df = df.drop('disease', axis=1)
-feature_vectors_df = df.copy()
-gnb = GaussianNB()
-y_pred = gnb.fit(feature_vectors_df, labels_df['cat'])
-"""
-

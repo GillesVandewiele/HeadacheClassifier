@@ -85,7 +85,7 @@ class DecisionTree(object):
         if self.value is None:
             print '\t' * tab + '[', self.label, ']'
         else:
-            print '\t' * tab + self.label, ' <= ', self.value
+            print '\t' * tab + self.label, ' <= ', str(self.value)
             print '\t' * (tab + 1) + 'LEFT:'
             self.left.to_string(tab=tab + 1)
             print '\t' * (tab + 1) + 'RIGHT:'

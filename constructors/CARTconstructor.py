@@ -39,7 +39,7 @@ class CARTconstructor(TreeConstructor):
         self.y = labels['cat']
         self.X = training_feature_vectors[self.features]
 
-        self.dt = DecisionTreeClassifier(min_samples_leaf=1)
+        self.dt = DecisionTreeClassifier(min_samples_leaf=3)
         self.dt.fit(self.X, self.y)
 
         return self.convertToTree()
