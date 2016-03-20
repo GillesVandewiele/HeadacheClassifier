@@ -1,5 +1,5 @@
 import random
-from pandas import DataFrame, read_csv
+from pandas import read_csv, DataFrame
 
 import operator
 
