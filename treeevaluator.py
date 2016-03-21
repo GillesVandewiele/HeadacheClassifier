@@ -72,10 +72,12 @@ df = read_csv('heart.dat', sep=' ')
 #df = df.reset_index(drop=True)
 df.columns = columns
 
-#features_column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak']
-features_column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral']
+features_column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
+                         'max heartrate', 'oldpeak', 'number of vessels', 'thal']
+#features_column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral']
 # labels_column_names = 'disease'
-column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral', 'disease']
+column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'max heartrate',
+                'oldpeak','number of vessels', 'thal', 'disease']
 df = df[column_names]
 # df = df.drop(columns[:3], axis=1)
 # df = df.drop(columns[4:7], axis=1)
@@ -273,7 +275,7 @@ def regions_to_tree(features_df, labels_df, regions, features, feature_mins, fea
 
         # Now for all these connected_lower_upper_regions in each dimension, we need to find all line
         # where the value of f is equal (the bounds constraint are already fulfilled)
-        if sum([1 if len(value) > 0 else 0 for value in connected_lower_upper_regions.values()]) == len(features)-1:
+        if sum([1 if len(value) > 0 else 0 for value in connected_lower_upper_regions.values()]) == int(len(features)/2):
             # We found a line fulfilling bounds constraints in all other dimensions
             lines[_feature] = []
             temp = []
@@ -281,7 +283,7 @@ def regions_to_tree(features_df, labels_df, regions, features, feature_mins, fea
             for region in temp:
                 if region[_feature][0] not in lines[_feature]:
                     lines[_feature].append(region[_feature][0])
-
+        a = 5
     print lines
 
     # When we looped over each possible feature and found each possible split line, we split the data

@@ -1,40 +1,45 @@
 digraph DT{
 node[fontname="Arial"];
-Node1 [label="max heartrate <= 140.477121414"];
-Node2 [label="oldpeak <= 0.648262371135"];
-Node3 [label="1
-{'1': 0.72, '2': 0.28}" shape="box"];
+Node1 [label="number of vessels <= 1.07934645593"];
+Node2 [label="max heartrate <= 134.16786438"];
+Node3 [label="oldpeak <= 0.789123011847"];
+Node4 [label="1
+{'1': 0.69, '2': 0.31}" shape="box"];
+Node3 -> Node4 [label="true"];
+Node5 [label="2
+{'1': 0.16, '2': 0.84}" shape="box"];
+Node3->Node5 [label="false"];
 Node2 -> Node3 [label="true"];
-Node4 [label="2
-{'1': 0.13, '2': 0.87}" shape="box"];
-Node2->Node4 [label="false"];
-Node1 -> Node2 [label="true"];
-Node5 [label="max heartrate <= 146.150182511"];
-Node6 [label="2
-{'1': 0.35, '2': 0.65}" shape="box"];
-Node5 -> Node6 [label="true"];
-Node7 [label="max heartrate <= 163.228070175"];
-Node8 [label="oldpeak <= 2.0858715891"];
+Node6 [label="thal <= 6.50475739291"];
+Node7 [label="number of vessels <= 0.773274038559"];
+Node8 [label="oldpeak <= 2.73330886374"];
 Node9 [label="1
-{'1': 0.72, '2': 0.28}" shape="box"];
+{'1': 0.95, '2': 0.05}" shape="box"];
 Node8 -> Node9 [label="true"];
-Node10 [label="serum cholestoral <= 243.425851058"];
-Node11 [label="1
+Node10 [label="1
 {'1': 0.5, '2': 0.5}" shape="box"];
-Node10 -> Node11 [label="true"];
-Node12 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node10->Node12 [label="false"];
 Node8->Node10 [label="false"];
 Node7 -> Node8 [label="true"];
-Node14 [label="oldpeak <= 2.11287299323"];
+Node11 [label="1
+{'1': 0.57, '2': 0.43}" shape="box"];
+Node7->Node11 [label="false"];
+Node6 -> Node7 [label="true"];
+Node13 [label="max heartrate <= 159.278000944"];
+Node14 [label="2
+{'1': 0.32, '2': 0.68}" shape="box"];
+Node13 -> Node14 [label="true"];
 Node15 [label="1
-{'1': 0.87, '2': 0.13}" shape="box"];
-Node14 -> Node15 [label="true"];
-Node16 [label="1
-{'1': 0.5, '2': 0.5}" shape="box"];
-Node14->Node16 [label="false"];
-Node7->Node14 [label="false"];
-Node5->Node7 [label="false"];
-Node1->Node5 [label="false"];
+{'1': 0.71, '2': 0.29}" shape="box"];
+Node13->Node15 [label="false"];
+Node6->Node13 [label="false"];
+Node2->Node6 [label="false"];
+Node1 -> Node2 [label="true"];
+Node24 [label="thal <= 3.37442488359"];
+Node25 [label="2
+{'1': 0.47, '2': 0.53}" shape="box"];
+Node24 -> Node25 [label="true"];
+Node26 [label="2
+{'1': 0.04, '2': 0.96}" shape="box"];
+Node24->Node26 [label="false"];
+Node1->Node24 [label="false"];
 }
