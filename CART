@@ -1,165 +1,215 @@
 digraph DT{
 node[fontname="Arial"];
-Node1 [label="max heartrate <= 147.5"];
-Node2 [label="oldpeak <= 0.5"];
-Node3 [label="resting blood pressure <= 158.0"];
-Node4 [label="resting blood pressure <= 126.0"];
-Node5 [label="serum cholestoral <= 205.0"];
-Node6 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node5 -> Node6 [label="true"];
-Node7 [label="serum cholestoral <= 240.5"];
-Node8 [label="2
-{'1': 0.33, '2': 0.67}" shape="box"];
-Node7 -> Node8 [label="true"];
-Node9 [label="1
-{'1': 0.75, '2': 0.25}" shape="box"];
-Node7->Node9 [label="false"];
-Node5->Node7 [label="false"];
+Node1 [label="oldpeak <= 1.70000004768"];
+Node2 [label="resting blood pressure <= 157.5"];
+Node3 [label="max heartrate <= 114.0"];
+Node4 [label="oldpeak <= 0.600000023842"];
+Node5 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
 Node4 -> Node5 [label="true"];
-Node11 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node4->Node11 [label="false"];
+Node6 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node4->Node6 [label="false"];
 Node3 -> Node4 [label="true"];
+Node7 [label="max heartrate <= 177.5"];
+Node8 [label="serum cholestoral <= 228.0"];
+Node9 [label="resting blood pressure <= 126.5"];
+Node10 [label="oldpeak <= 0.700000047684"];
+Node11 [label="serum cholestoral <= 197.5"];
+Node12 [label="max heartrate <= 157.0"];
+Node13 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node12 -> Node13 [label="true"];
 Node14 [label="2
-{'1': 0.25, '2': 0.75}" shape="box"];
-Node3->Node14 [label="false"];
-Node2 -> Node3 [label="true"];
-Node18 [label="resting blood pressure <= 115.0"];
-Node19 [label="serum cholestoral <= 230.5"];
-Node20 [label="max heartrate <= 125.5"];
-Node21 [label="1
-{'1': 0.67, '2': 0.33}" shape="box"];
-Node20 -> Node21 [label="true"];
-Node22 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node20->Node22 [label="false"];
-Node19 -> Node20 [label="true"];
-Node23 [label="2
-{'1': 0.25, '2': 0.75}" shape="box"];
-Node19->Node23 [label="false"];
-Node18 -> Node19 [label="true"];
-Node25 [label="serum cholestoral <= 232.5"];
-Node26 [label="serum cholestoral <= 225.5"];
-Node27 [label="oldpeak <= 1.5"];
-Node28 [label="serum cholestoral <= 206.5"];
-Node29 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node28 -> Node29 [label="true"];
-Node30 [label="2
 {'1': 0.33, '2': 0.67}" shape="box"];
-Node28->Node30 [label="false"];
-Node27 -> Node28 [label="true"];
-Node31 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node27->Node31 [label="false"];
-Node26 -> Node27 [label="true"];
-Node33 [label="1
-{'1': 0.6, '2': 0.4}" shape="box"];
-Node26->Node33 [label="false"];
-Node25 -> Node26 [label="true"];
-Node36 [label="serum cholestoral <= 300.5"];
-Node37 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node36 -> Node37 [label="true"];
-Node38 [label="resting blood pressure <= 131.0"];
-Node39 [label="2
-{'1': 0.33, '2': 0.67}" shape="box"];
-Node38 -> Node39 [label="true"];
-Node40 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node38->Node40 [label="false"];
-Node36->Node38 [label="false"];
-Node25->Node36 [label="false"];
-Node18->Node25 [label="false"];
-Node2->Node18 [label="false"];
-Node1 -> Node2 [label="true"];
-Node68 [label="max heartrate <= 177.5"];
-Node69 [label="oldpeak <= 2.45000004768"];
-Node70 [label="serum cholestoral <= 227.5"];
-Node71 [label="serum cholestoral <= 178.5"];
-Node72 [label="1
-{'1': 0.5, '2': 0.5}" shape="box"];
-Node71 -> Node72 [label="true"];
-Node73 [label="max heartrate <= 171.0"];
-Node74 [label="1
+Node12->Node14 [label="false"];
+Node11 -> Node12 [label="true"];
+Node15 [label="1
 {'1': 1.0, '2': 0.0}" shape="box"];
-Node73 -> Node74 [label="true"];
-Node75 [label="1
-{'1': 0.67, '2': 0.33}" shape="box"];
-Node73->Node75 [label="false"];
-Node71->Node73 [label="false"];
-Node70 -> Node71 [label="true"];
-Node77 [label="serum cholestoral <= 231.0"];
-Node78 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node77 -> Node78 [label="true"];
-Node79 [label="serum cholestoral <= 247.5"];
-Node80 [label="resting blood pressure <= 119.0"];
-Node81 [label="1
-{'1': 0.67, '2': 0.33}" shape="box"];
-Node80 -> Node81 [label="true"];
-Node82 [label="1
+Node11->Node15 [label="false"];
+Node10 -> Node11 [label="true"];
+Node17 [label="max heartrate <= 125.5"];
+Node18 [label="1
 {'1': 1.0, '2': 0.0}" shape="box"];
-Node80->Node82 [label="false"];
-Node79 -> Node80 [label="true"];
-Node83 [label="serum cholestoral <= 294.0"];
-Node84 [label="serum cholestoral <= 279.5"];
-Node85 [label="max heartrate <= 170.0"];
-Node86 [label="serum cholestoral <= 256.5"];
-Node87 [label="resting blood pressure <= 129.0"];
-Node88 [label="2
-{'1': 0.25, '2': 0.75}" shape="box"];
-Node87 -> Node88 [label="true"];
-Node89 [label="1
-{'1': 0.67, '2': 0.33}" shape="box"];
-Node87->Node89 [label="false"];
-Node86 -> Node87 [label="true"];
-Node90 [label="oldpeak <= 0.75"];
-Node91 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node90 -> Node91 [label="true"];
-Node92 [label="2
-{'1': 0.33, '2': 0.67}" shape="box"];
-Node90->Node92 [label="false"];
-Node86->Node90 [label="false"];
-Node85 -> Node86 [label="true"];
-Node95 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node85->Node95 [label="false"];
-Node84 -> Node85 [label="true"];
-Node99 [label="2
-{'1': 0.0, '2': 1.0}" shape="box"];
-Node84->Node99 [label="false"];
-Node83 -> Node84 [label="true"];
-Node104 [label="oldpeak <= 0.10000000149"];
-Node105 [label="resting blood pressure <= 122.5"];
-Node106 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node105 -> Node106 [label="true"];
-Node107 [label="serum cholestoral <= 304.5"];
-Node108 [label="1
-{'1': 0.67, '2': 0.33}" shape="box"];
-Node107 -> Node108 [label="true"];
-Node109 [label="2
-{'1': 0.4, '2': 0.6}" shape="box"];
-Node107->Node109 [label="false"];
-Node105->Node107 [label="false"];
-Node104 -> Node105 [label="true"];
-Node111 [label="1
-{'1': 1.0, '2': 0.0}" shape="box"];
-Node104->Node111 [label="false"];
-Node83->Node104 [label="false"];
-Node79->Node83 [label="false"];
-Node77->Node79 [label="false"];
-Node70->Node77 [label="false"];
-Node69 -> Node70 [label="true"];
-Node157 [label="2
+Node17 -> Node18 [label="true"];
+Node19 [label="2
 {'1': 0.2, '2': 0.8}" shape="box"];
-Node69->Node157 [label="false"];
-Node68 -> Node69 [label="true"];
-Node173 [label="1
+Node17->Node19 [label="false"];
+Node10->Node17 [label="false"];
+Node9 -> Node10 [label="true"];
+Node23 [label="serum cholestoral <= 178.5"];
+Node24 [label="1
+{'1': 0.75, '2': 0.25}" shape="box"];
+Node23 -> Node24 [label="true"];
+Node25 [label="1
 {'1': 1.0, '2': 0.0}" shape="box"];
-Node68->Node173 [label="false"];
-Node1->Node68 [label="false"];
+Node23->Node25 [label="false"];
+Node9->Node23 [label="false"];
+Node8 -> Node9 [label="true"];
+Node31 [label="serum cholestoral <= 231.0"];
+Node32 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node31 -> Node32 [label="true"];
+Node33 [label="oldpeak <= 1.15000009537"];
+Node34 [label="oldpeak <= 0.15000000596"];
+Node35 [label="serum cholestoral <= 276.5"];
+Node36 [label="serum cholestoral <= 256.5"];
+Node37 [label="resting blood pressure <= 109.0"];
+Node38 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node37 -> Node38 [label="true"];
+Node39 [label="resting blood pressure <= 126.0"];
+Node40 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node39 -> Node40 [label="true"];
+Node41 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node39->Node41 [label="false"];
+Node37->Node39 [label="false"];
+Node36 -> Node37 [label="true"];
+Node43 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node36->Node43 [label="false"];
+Node35 -> Node36 [label="true"];
+Node46 [label="max heartrate <= 158.5"];
+Node47 [label="2
+{'1': 0.2, '2': 0.8}" shape="box"];
+Node46 -> Node47 [label="true"];
+Node48 [label="resting blood pressure <= 126.5"];
+Node49 [label="1
+{'1': 0.5, '2': 0.5}" shape="box"];
+Node48 -> Node49 [label="true"];
+Node50 [label="1
+{'1': 0.75, '2': 0.25}" shape="box"];
+Node48->Node50 [label="false"];
+Node46->Node48 [label="false"];
+Node35->Node46 [label="false"];
+Node34 -> Node35 [label="true"];
+Node57 [label="serum cholestoral <= 276.0"];
+Node58 [label="serum cholestoral <= 273.5"];
+Node59 [label="serum cholestoral <= 262.5"];
+Node60 [label="serum cholestoral <= 246.0"];
+Node61 [label="max heartrate <= 162.5"];
+Node62 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node61 -> Node62 [label="true"];
+Node63 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
+Node61->Node63 [label="false"];
+Node60 -> Node61 [label="true"];
+Node64 [label="resting blood pressure <= 122.0"];
+Node65 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
+Node64 -> Node65 [label="true"];
+Node66 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node64->Node66 [label="false"];
+Node60->Node64 [label="false"];
+Node59 -> Node60 [label="true"];
+Node69 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node59->Node69 [label="false"];
+Node58 -> Node59 [label="true"];
+Node73 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node58->Node73 [label="false"];
+Node57 -> Node58 [label="true"];
+Node78 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node57->Node78 [label="false"];
+Node34->Node57 [label="false"];
+Node33 -> Node34 [label="true"];
+Node96 [label="max heartrate <= 148.5"];
+Node97 [label="serum cholestoral <= 279.0"];
+Node98 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node97 -> Node98 [label="true"];
+Node99 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node97->Node99 [label="false"];
+Node96 -> Node97 [label="true"];
+Node100 [label="max heartrate <= 167.5"];
+Node101 [label="serum cholestoral <= 247.0"];
+Node102 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
+Node101 -> Node102 [label="true"];
+Node103 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node101->Node103 [label="false"];
+Node100 -> Node101 [label="true"];
+Node104 [label="2
+{'1': 0.25, '2': 0.75}" shape="box"];
+Node100->Node104 [label="false"];
+Node96->Node100 [label="false"];
+Node33->Node96 [label="false"];
+Node31->Node33 [label="false"];
+Node8->Node31 [label="false"];
+Node7 -> Node8 [label="true"];
+Node169 [label="resting blood pressure <= 144.0"];
+Node170 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node169 -> Node170 [label="true"];
+Node171 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
+Node169->Node171 [label="false"];
+Node7->Node169 [label="false"];
+Node3->Node7 [label="false"];
+Node2 -> Node3 [label="true"];
+Node228 [label="max heartrate <= 150.5"];
+Node229 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node228 -> Node229 [label="true"];
+Node230 [label="resting blood pressure <= 175.0"];
+Node231 [label="1
+{'1': 0.75, '2': 0.25}" shape="box"];
+Node230 -> Node231 [label="true"];
+Node232 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node230->Node232 [label="false"];
+Node228->Node230 [label="false"];
+Node2->Node228 [label="false"];
+Node1 -> Node2 [label="true"];
+Node266 [label="max heartrate <= 142.5"];
+Node267 [label="resting blood pressure <= 148.0"];
+Node268 [label="serum cholestoral <= 300.5"];
+Node269 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node268 -> Node269 [label="true"];
+Node270 [label="2
+{'1': 0.2, '2': 0.8}" shape="box"];
+Node268->Node270 [label="false"];
+Node267 -> Node268 [label="true"];
+Node271 [label="oldpeak <= 3.15000009537"];
+Node272 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
+Node271 -> Node272 [label="true"];
+Node273 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node271->Node273 [label="false"];
+Node267->Node271 [label="false"];
+Node266 -> Node267 [label="true"];
+Node276 [label="oldpeak <= 2.45000004768"];
+Node277 [label="serum cholestoral <= 249.5"];
+Node278 [label="1
+{'1': 1.0, '2': 0.0}" shape="box"];
+Node277 -> Node278 [label="true"];
+Node279 [label="2
+{'1': 0.25, '2': 0.75}" shape="box"];
+Node277->Node279 [label="false"];
+Node276 -> Node277 [label="true"];
+Node280 [label="resting blood pressure <= 131.0"];
+Node281 [label="1
+{'1': 0.5, '2': 0.5}" shape="box"];
+Node280 -> Node281 [label="true"];
+Node282 [label="max heartrate <= 146.0"];
+Node283 [label="2
+{'1': 0.33, '2': 0.67}" shape="box"];
+Node282 -> Node283 [label="true"];
+Node284 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node282->Node284 [label="false"];
+Node280->Node282 [label="false"];
+Node276->Node280 [label="false"];
+Node266->Node276 [label="false"];
+Node1->Node266 [label="false"];
 }

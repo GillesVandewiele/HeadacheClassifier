@@ -86,7 +86,7 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 features_column_names = features_df.columns
 
-np.random.seed(133337)
+np.random.seed(2355838997)
 permutation = np.random.permutation(features_df.index)
 features_df = features_df.reindex(permutation)
 features_df = features_df.reset_index(drop=True)
@@ -125,16 +125,15 @@ feature_maxs = {}
 for feature in features_column_names:
     feature_mins[feature] = np.min(train_features_df[feature])
     feature_maxs[feature] = np.max(train_features_df[feature])
-merged_regions = merger.calculate_intersection(regions_list[2], regions_list[1], features_column_names, feature_maxs,
+merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2], features_column_names, feature_maxs,
                                                feature_mins)
-#merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
-#                                               feature_mins)
+merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
+                                              feature_mins)
 # merger.plot_regions("intersected.png", merged_regions, ['1', '2'], features_column_names[0],
 #                     features_column_names[1], x_max=np.max(features_df[features_column_names[0]].values),
 #                     y_max=np.max(features_df[features_column_names[1]].values),
 #                     x_min=np.min(features_df[features_column_names[0]].values),
 #                     y_min=np.min(features_df[features_column_names[1]].values))
-
 
 def calculate_entropy(values_list):
         if sum(values_list) == 0:
