@@ -147,7 +147,6 @@ merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2],
 merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
                                               feature_mins)
 
-
 new_tree = merger.regions_to_tree(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
 new_tree.visualise(os.path.join(os.path.join('..', 'data'), 'new_tree'))
 
