@@ -17,13 +17,33 @@ def evaluate_trees(features_df, labels_df, n_folds=2):
         y_train = DataFrame(labels_df, index=train)
         y_test = DataFrame(labels_df, index=test)
 
-        rf = RandomForestClassifier(n_estimators=50, n_jobs=-1)
+        rf = RandomForestClassifier(n_estimators=1000, n_jobs=-1)
         rf.fit(X_train.values.tolist(), y_train['cat'].tolist())
+        # importances = rf.feature_importances_
+        # std = np.std([tree.feature_importances_ for tree in rf.estimators_],
+        #      axis=0)
+        # indices = np.argsort(importances)[::-1]
+        #
+        # # Print the feature ranking
+        # print("Feature ranking:")
+        #
+        # for f in range(X_train.shape[1]):
+        #     print("%d. feature %d (%f)" % (f + 1, indices[f], importances[indices[f]]))
+        #
+        # # Plot the feature importances of the forest
+        # plt.figure()
+        # plt.title("Feature importances")
+        # plt.bar(range(X_train.shape[1]), importances[indices],
+        #        color="r", yerr=std[indices], align="center")
+        # plt.xticks(range(X_train.shape[1]), indices)
+        # plt.xlim([-1, X_train.shape[1]])
+        # plt.show()
+
         predicted_labels = []
         for index, vector in enumerate(X_test.values):
             predicted_labels.append(rf.predict(vector.reshape(1, -1))[0])
 
-        y_test_np = y_test['cat']._values
+        y_test_np = y_test['cat']
         predicted_labels_np = np.array(predicted_labels)
         y_test_np = np.array(y_test_np)
         equal_positions = 1.0 * np.sum(predicted_labels_np == y_test_np)
@@ -57,4 +77,26 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 features_column_names = features_df.columns
 
-evaluate_trees(features_df=features_df, labels_df=labels_df, n_folds=2)
+rf = RandomForestClassifier(n_estimators=1000, n_jobs=-1)
+rf.fit(DataFrame(features_df.values.tolist()), labels_df['cat'].tolist())
+importances = rf.feature_importances_
+std = np.std([tree.feature_importances_ for tree in rf.estimators_],
+     axis=0)
+indices = np.argsort(importances)[::-1]
+
+# Print the feature ranking
+print("Feature ranking:")
+
+for f in range(DataFrame(features_df.values.tolist()).shape[1]):
+    print("%d. feature %s [%d] (%f)" % (f + 1, features_column_names[f], indices[f], importances[indices[f]]))
+
+# Plot the feature importances of the forest
+plt.figure()
+plt.title("Feature importances")
+plt.bar(range(DataFrame(features_df.values.tolist()).shape[1]), importances[indices],
+       color="r", yerr=std[indices], align="center")
+plt.xticks(range(DataFrame(features_df.values.tolist()).shape[1]), indices)
+plt.xlim([-1, DataFrame(features_df.values.tolist()).shape[1]])
+plt.show()
+
+evaluate_trees(features_df=features_df, labels_df=labels_df, n_folds=10)
