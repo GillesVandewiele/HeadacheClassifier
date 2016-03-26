@@ -1,7 +1,14 @@
 import copy
+import random
+from pandas import DataFrame
+
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
+
+import operator
+
+from objects.decisiontree import DecisionTree
 
 
 class LineSegment(object):
@@ -218,3 +225,347 @@ class DecisionTreeMerger(object):
                     intersections.append(tuple)
 
             return intersections
+
+    def generate_samples(self, regions, features):
+        # TODO: make a distinction between continuous and discrete features! & clean this code
+        _samples = DataFrame()
+        for region in regions:
+            region_samples = []
+            max_side1 = 0
+            max_side2 = 0
+            max_side3 = 0
+            for _feature in features:
+                side = (region[_feature][1] - region[_feature][0])
+                if side > max_side1:
+                    max_side3 = max_side2
+                    max_side2 = max_side1
+                    max_side1 = side
+                elif side > max_side2:
+                    max_side3 = max_side2
+                    max_side2 = side
+                elif side > max_side3:
+                    max_side3 = side
+
+            number_of_samples_per_region = int(np.log2((max_side1+1)*(max_side2+1)*(max_side3+1))*pow(np.max(region['class'].values(), 2)))
+            print number_of_samples_per_region
+
+            for k in range(number_of_samples_per_region):
+                region_samples.append({})
+
+            for _feature in features:
+                for index in range(number_of_samples_per_region):
+                    region_samples[index][_feature] = region[_feature][0] + random.random() * \
+                                                                            ((region[_feature][1] - region[_feature][0])+1)
+
+            for sample in region_samples:
+                sample['cat'] = max(region['class'].iteritems(), key=operator.itemgetter(1))[0]
+                _samples = _samples.append(sample, ignore_index=True)
+        return _samples
+
+    def calculate_entropy(self, values_list):
+        if sum(values_list) == 0:
+            return 0
+        # Normalize the values by dividing each value by the sum of all values in the list
+        normalized_values = map(lambda x: float(x) / float(sum(values_list)), values_list)
+
+        # Calculate the log of the normalized values (negative because these values are in [0,1])
+
+        log_values = map(lambda x: np.log(x)/np.log(2), normalized_values)
+
+        # Take sum of normalized_values * log_values, multiply with (-1) to get positive float
+        return -sum(np.multiply(normalized_values, log_values))
+
+    def split_criterion(self, node):
+        """
+        Calculates information gain ratio (ratio because normal gain tends to have a strong bias in favor of tests with
+        many outcomes) for a subtree
+        :param node: the node where the information gain needs to be calculated for
+        :return: the information gain: information (entropy) in node - sum(weighted information in its children)
+        """
+        counts_before_split = np.asarray(node.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
+        total_count_before_split = sum(counts_before_split)
+        info_before_split = self.calculate_entropy(counts_before_split)
+
+        if len(node.left.data[['cat', node.label]].groupby(['cat']).count().values) > 0:
+            left_counts = np.asarray(node.left.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
+        else:
+            left_counts = [0]
+        total_left_count = sum(left_counts)
+        if len(node.right.data[['cat', node.label]].groupby(['cat']).count().values) > 0:
+            right_counts = np.asarray(node.right.data[['cat', node.label]].groupby(['cat']).count().values[:, 0])
+        else:
+            right_counts = [0]
+        total_right_count = sum(right_counts)
+
+        # Information gain after split = weighted entropy of left child + weighted entropy of right child
+        # weight = number of nodes in child / sum of nodes in left and right child
+        info_after_split = float(total_left_count) / float(total_count_before_split) * self.calculate_entropy(left_counts) \
+                           + float(total_right_count) / float(total_count_before_split) * self.calculate_entropy(right_counts)
+
+        return (info_before_split - info_after_split) / info_before_split
+
+    def divide_data(self, data, feature, value):
+            """
+            Divide the data in two subsets, thanks pandas
+            :param data: the dataframe to divide
+            :param feature: on which column of the dataframe are we splitting?
+            :param value: what threshold do we use to split
+            :return: node: initialised decision tree object
+            """
+            return DecisionTree(left=DecisionTree(data=data[data[feature] <= value]),
+                                right=DecisionTree(data=data[data[feature] > value]),
+                                label=feature,
+                                data=data,
+                                value=value)
+
+    def dec(self, input_, output_):
+        if type(input_) is list:
+            for subitem in input_:
+                self.dec(subitem, output_)
+        else:
+            output_.append(input_)
+
+    def regions_to_tree(self, features_df, labels_df, regions, features, feature_mins, feature_maxs, max_samples=3):
+        # TODO: this method is really ugly and inefficient! Needs improvement!!
+        # Initialize the feature bounds on their mins and maxs
+        bounds = {}
+        for _feature in features:
+            bounds[_feature] = [feature_mins[_feature], feature_maxs[_feature]]
+
+        # For each feature f, we look for a line that for each f' != f goes from bounds[f'][0] to bounds[f'][1]
+        lines = {}
+        for _feature in features:
+            print "checking for lines ", _feature
+            connected_lower_upper_regions = {}
+            for other_feature in features:  # Complexity O(d^2) already
+                if _feature != other_feature:
+                    # Check if we can find 2 points, where the _feature values are the same, and other_feature values
+                    # are equal to their required lower and upper bound. Then check if we can draw a line between
+                    # these two points. We always check the left line of the region, except for the most left regions
+
+                    # First find all lower regions: their lower bound is equal to the required lower bound (saved in bounds)
+                    # and it cannot be the most left line (this is the case when the lower bounds for _feature is equal
+                    # to its minimum
+                    lower_regions = []
+                    for region in regions:  # Complexity O(d^2 * |B|)
+                        if region[other_feature][0] == bounds[other_feature][0]:
+                            lower_regions.append(region)
+
+                    # Now find upper regions with the same value for _feature as a region in lower_regions
+                    lower_upper_regions = []
+                    for region in regions:
+                        if region[other_feature][1] == bounds[other_feature][1]:
+                            for lower_region in lower_regions:  # Even a little bit more complexity here
+                                if lower_region[_feature][0] == region[_feature][0] \
+                                        and lower_region[_feature][1] == region[_feature][1]:
+                                    lower_upper_regions.append([lower_region, region])
+
+                    # for lower_upper_region in lower_upper_regions:
+                    #     print lower_upper_region
+
+                    # Now check if we can draw a line between the lower and upper region
+                    connected_lower_upper_regions[other_feature] = []
+                    for lower_upper_region in lower_upper_regions:
+                        lowest_upper_bound = lower_upper_region[0][other_feature][1]
+                        highest_lower_bound = lower_upper_region[1][other_feature][0]
+                        still_searching = True
+                        while still_searching:
+                            # Line is connected when either the highest lower bound and lowest upper bound
+                            # are adjacent (number of regions along the line is even). Or when
+                            # both the lower bounds are equal (odd case, handled further)
+                            if highest_lower_bound == lowest_upper_bound:
+                                connected_lower_upper_regions[other_feature].append(lower_upper_region)
+                                break
+
+                            found_new_lower_bound = False
+                            found_new_upper_bound = False
+                            for region in regions:  # O boy, this complexity is getting out of hand
+                                if found_new_upper_bound and found_new_lower_bound:
+                                    break
+
+                                if region[_feature][0] == lower_upper_region[0][_feature][0] \
+                                    and region[other_feature][0] == lowest_upper_bound:
+                                    found_new_upper_bound = True
+                                    lowest_upper_bound = region[other_feature][1]
+
+                                if region[_feature][0] == lower_upper_region[1][_feature][0] \
+                                    and region[other_feature][1] == highest_lower_bound:
+                                    found_new_lower_bound = True
+                                    if region[other_feature][1] == lowest_upper_bound:  # This is the odd case
+                                        connected_lower_upper_regions[other_feature].append(lower_upper_region)
+                                    highest_lower_bound = region[other_feature][0]
+
+                            still_searching = found_new_lower_bound and found_new_upper_bound
+
+            # Now for all these connected_lower_upper_regions in each dimension, we need to find all line
+            # where the value of f is equal (the bounds constraint are already fulfilled)
+            if sum([1 if len(value) > 0 else 0 for value in connected_lower_upper_regions.values()]) >= len(features)/2:
+                # We found a line fulfilling bounds constraints in all other dimensions
+                lines[_feature] = []
+                temp = []
+                self.dec(connected_lower_upper_regions.values(), temp)
+                for region in temp:
+                    if region[_feature][0] not in lines[_feature]:
+                        lines[_feature].append(region[_feature][0])
+            a = 5
+        print lines
+
+        # When we looped over each possible feature and found each possible split line, we split the data
+        # Using the feature and value of the line and pick the best one
+        data = DataFrame(features_df)
+        data['cat'] = labels_df
+        info_gains = {}
+        for key in lines:
+            for value in lines[key]:
+                node = self.divide_data(data, key, value)
+                split_crit = self.split_criterion(node)
+                if split_crit > 0:
+                    info_gains[node] = self.split_criterion(node)
+
+        print info_gains
+
+        if len(info_gains) > 0:
+            best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
+            node = DecisionTree(label=best_split_node.label, value=best_split_node.value, data=best_split_node.data)
+        else:
+            node = DecisionTree(label=str(np.argmax(np.bincount(labels_df['cat'].values.astype(int)))), data=data, value=None)
+            return node
+        print node.label, node.value
+
+        ##########################################################################
+
+        # We call recursively with the splitted data and set the bounds of feature f
+        # for left child: set upper bounds to the value of the chosen line
+        # for right child: set lower bounds to value of chosen line
+        feature_mins_right = feature_mins.copy()
+        feature_mins_right[node.label] = node.value
+        feature_maxs_left = feature_maxs.copy()
+        feature_maxs_left[node.label] = node.value
+        if len(best_split_node.left.data) >= max_samples and len(best_split_node.right.data) >= max_samples:
+            node.left = self.regions_to_tree(best_split_node.left.data.drop('cat', axis=1), best_split_node.left.data[['cat']],
+                                        regions, features, feature_mins, feature_maxs_left)
+            node.right = self.regions_to_tree(best_split_node.right.data.drop('cat', axis=1), best_split_node.right.data[['cat']],
+                                        regions, features, feature_mins_right, feature_maxs)
+        else:
+            node.label = str(np.argmax(np.bincount(labels_df['cat'].values.astype(int))))
+            node.value = None
+
+        return node
+
+    # TODO: write algorithm that returns all possible lines in regions
+
+
+    # def regions_to_tree_improved(features_df, labels_df, regions, features, feature_mins, feature_maxs, max_samples=1):
+    # # First we create a pandas dataframe with all left-upper points and their widths for each dimension of each region
+    # points_columns = []
+    # for _feature in features:
+    #     points_columns.append(_feature)
+    #     points_columns.append(_feature+'_width')
+    # points = DataFrame(columns=points_columns)
+    # for region in regions:
+    #     entry = {}
+    #     for _feature in features:
+    #         entry[_feature] = region[_feature][0]
+    #         entry[_feature+'_width'] = region[_feature][1] - region[_feature][0]
+    #     points = points.append(entry, ignore_index=True)
+    #
+    # print points
+    #
+    # lines_columns = []
+    # for _feature in features:
+    #     lines_columns.append(_feature+'_1')
+    #     lines_columns.append(_feature+'_2')
+    # lines = DataFrame(columns=lines_columns)
+    #
+    # # For each point and each feature, if point+feature_widths is in the points set as well, there is a line
+    # # running there, we try to draw the line as far as possible and add it to a new dataframe
+    # for point_index in range(len(points.index)):
+    #     for _feature in features:  # try drawing a line across this dimension
+    #         current_point = point_index
+    #         other_features = list(set(features) - set([_feature]))
+    #         searching = True
+    #         while searching:
+    #             boolean_series = (points[_feature] == (points.iloc[current_point][_feature] +
+    #                                                    points.iloc[current_point][_feature+'_width'])).values
+    #             boolean_series &= (points[_feature + '_width'] != 0).values
+    #
+    #             for other_feature in other_features:
+    #                 if sum(boolean_series) == 0:
+    #                     searching = False
+    #                     break
+    #                 boolean_series &= (points[other_feature] == points.iloc[current_point][other_feature]).values
+    #                 boolean_series &= (points[other_feature+'_width'] != 0).values
+    #
+    #             entry = {}
+    #             for ___feature in features:
+    #                 entry[___feature+'_1'] = points.iloc[point_index][___feature]
+    #                 entry[___feature+'_2'] = points.iloc[current_point][___feature] + \
+    #                                          points.iloc[current_point][___feature+'_width']
+    #             lines = lines.append(entry, ignore_index=True)
+    #
+    #             found_line = np.where(boolean_series == True)
+    #
+    #             if len(found_line[0]) > 0:
+    #                 current_point = found_line[0][0]
+    #             else:
+    #                 searching = False
+    #
+    # print lines
+    #
+    # split_lines = {}
+    # for _feature in features:  # try drawing a line across this dimension
+    #     split_lines[_feature] = []
+    #     other_features = list(set(features) - set([_feature]))
+    #     boolean_series = (lines[other_features[0]+'_1'] == feature_mins[other_features[0]])
+    #     boolean_series &= (lines[other_features[0]+'_2'] == feature_maxs[other_features[0]])
+    #     print np.where(boolean_series==True)
+    #     for k in range(1, len(other_features)):
+    #         boolean_series &= (lines[other_features[k]+'_1'] == feature_mins[other_features[k]])
+    #         boolean_series &= (lines[other_features[k]+'_2'] == feature_maxs[other_features[k]])
+    #         print np.where(boolean_series==True)
+    #     if sum(boolean_series) > 0:
+    #         for index in np.where(boolean_series==True)[0]:
+    #             split_lines[_feature].append(lines.iloc[index][_feature+'_1'])
+    # for key in split_lines:
+    #     split_lines[key] = np.unique(split_lines[key])
+    #
+    # print split_lines
+    #
+    # # When we looped over each possible feature and found each possible split line, we split the data
+    # # Using the feature and value of the line and pick the best one
+    # data = DataFrame(features_df)
+    # data['cat'] = labels_df
+    # info_gains = {}
+    # for key in split_lines:
+    #     for value in split_lines[key]:
+    #         node = divide_data(data, key, value)
+    #         split_crit = split_criterion(node)
+    #         if split_crit > 0:
+    #             info_gains[node] = split_criterion(node)
+    #
+    # if len(info_gains) > 0:
+    #     best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
+    #     node = DecisionTree(label=best_split_node.label, value=best_split_node.value, data=best_split_node.data)
+    # else:
+    #     node = DecisionTree(label=str(np.argmax(np.bincount(labels_df['cat'].values.astype(int)))), data=data, value=None)
+    #     return node
+    #
+    # ##########################################################################
+    #
+    # # We call recursively with the splitted data and set the bounds of feature f
+    # # for left child: set upper bounds to the value of the chosen line
+    # # for right child: set lower bounds to value of chosen line
+    # feature_mins_right = feature_mins.copy()
+    # feature_mins_right[node.label] = node.value
+    # feature_maxs_left = feature_maxs.copy()
+    # feature_maxs_left[node.label] = node.value
+    # if len(best_split_node.left.data) >= max_samples and len(best_split_node.right.data) >= max_samples:
+    #     node.left = regions_to_tree_improved(best_split_node.left.data.drop('cat', axis=1), best_split_node.left.data[['cat']],
+    #                                 regions, features, feature_mins, feature_maxs_left)
+    #     node.right = regions_to_tree_improved(best_split_node.right.data.drop('cat', axis=1), best_split_node.right.data[['cat']],
+    #                                 regions, features, feature_mins_right, feature_maxs)
+    # else:
+    #     node.label = str(np.argmax(np.bincount(labels_df['cat'].values.astype(int))))
+    #     node.value = None
+    #
+    # return node

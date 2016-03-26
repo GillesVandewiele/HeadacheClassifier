@@ -33,7 +33,7 @@ def evaluate_trees(features_df, labels_df, n_folds=2):
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']
-df = read_csv('heart.dat', sep=' ')
+df = read_csv('data/heart.dat', sep=' ')
 # df = df.iloc[np.random.permutation(len(df))]
 # df = df.reset_index(drop=True)
 df.columns = columns
