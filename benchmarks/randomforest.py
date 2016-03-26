@@ -1,9 +1,11 @@
 # Read csv into pandas frame
 import matplotlib.pyplot as plt
+from pandas import read_csv, DataFrame
+
 import numpy as np
 import sklearn
-from pandas import read_csv, DataFrame
 from sklearn.ensemble import RandomForestClassifier
+from util.boruta_py import boruta_py
 
 
 def plot_confusion_matrix(cm, title='Confusion matrix'):
@@ -58,6 +60,51 @@ def evaluate_random_forests(features_df, labels_df, n_folds=2):
     plot_confusion_matrix(sum)
 
 
+def RF_feature_extraction(features, labels):
+    rf = RandomForestClassifier(n_estimators=100, class_weight='auto', n_jobs=-1)
+    rf.fit(features, labels)
+    importances = rf.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in rf.estimators_],
+                 axis=0)
+    indices = np.argsort(importances)[::-1]
+    # Print the feature ranking
+    print("Feature ranking:")
+    for f in range(DataFrame(features).shape[1]):
+        print("%3d. feature %-25s [%2d] (%9f)" % (
+            f + 1, features_column_names[indices[f]], indices[f], importances[indices[f]]))
+
+    # Plot the feature importances of the forest
+    plt.figure()
+    plt.title("Feature importances")
+    plt.bar(range(DataFrame(features).shape[1]), importances[indices],
+            color="r", yerr=std[indices], align="center")
+    plt.xticks(range(DataFrame(features).shape[1]), indices)
+    plt.xlim([-1, DataFrame(features).shape[1]])
+    plt.show()
+
+
+def boruta_py_feature_extraction(features, labels, column_names):
+    rf = RandomForestClassifier(n_jobs=-1, class_weight='auto')
+    feat_selector = boruta_py.BorutaPy(rf, n_estimators='auto', verbose=0)
+    feat_selector.fit(features, labels)
+
+    print "\n\n\n\n"
+    # check selected features
+    # print feat_selector.support_
+    
+    # check ranking of features
+    print "Ranking features: "
+    print feat_selector.ranking_
+
+    # call transform() on X to filter it down to selected features
+    # X_filtered = feat_selector.transform(features)
+    # print X_filtered
+    print "Most important features (%2d):" % sum(feat_selector.support_)
+    for i in range(len(feat_selector.support_)):
+        if feat_selector.support_[i]:
+            print "feature %2d: %-25s" % (i, column_names[i])
+
+
 # TODO: De run code moet hier weg
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
@@ -85,26 +132,9 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 features_column_names = features_df.columns
 
-rf = RandomForestClassifier(n_estimators=50, n_jobs=-1)
-rf.fit(DataFrame(features_df.values.tolist()), labels_df['cat'].tolist())
-importances = rf.feature_importances_
-std = np.std([tree.feature_importances_ for tree in rf.estimators_],
-             axis=0)
-indices = np.argsort(importances)[::-1]
+RF_feature_extraction(features_df.values, labels_df['cat'])
 
-# Print the feature ranking
-print("Feature ranking:")
+boruta_py_feature_extraction(features_df.values, labels_df['cat'].tolist(), column_names=column_names)
 
-for f in range(DataFrame(features_df.values.tolist()).shape[1]):
-    print("%d. feature %s [%d] (%f)" % (f + 1, features_column_names[indices[f]], indices[f], importances[indices[f]]))
 
-# Plot the feature importances of the forest
-plt.figure()
-plt.title("Feature importances")
-plt.bar(range(DataFrame(features_df.values.tolist()).shape[1]), importances[indices],
-        color="r", yerr=std[indices], align="center")
-plt.xticks(range(DataFrame(features_df.values.tolist()).shape[1]), indices)
-plt.xlim([-1, DataFrame(features_df.values.tolist()).shape[1]])
-plt.show()
-
-evaluate_random_forests(features_df=features_df, labels_df=labels_df, n_folds=10)
+# evaluate_random_forests(features_df=features_df, labels_df=labels_df, n_folds=10)
