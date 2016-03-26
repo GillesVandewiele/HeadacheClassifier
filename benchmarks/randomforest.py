@@ -109,6 +109,7 @@ def boruta_py_feature_extraction(features, labels, column_names):
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']
+
 df = read_csv('../data/heart.dat', sep=' ')
 # df = df.iloc[np.random.permutation(len(df))]
 # df = df.reset_index(drop=True)

@@ -230,7 +230,7 @@ class QuestConstructor(TreeConstructor):
             # We can now transform all discrete attributes to continous ones!
             discrete_values = data[feature].values
             continous_values = []
-            discrete_dummies = data_feature_all_cats[dummies].values
+            discrete_dummies = data_feature_all_cats[dummies].values.astype(float)
             for i in range(len(discrete_values)):
                 new_value = np.dot(np.dot(np.dot(np.reshape(largest_eigenvector, (1, -1)), D_sqrt_inv), Q_t), discrete_dummies[i])
                 continous_values.append(new_value[0])
