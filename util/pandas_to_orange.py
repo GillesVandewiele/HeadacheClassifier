@@ -1,3 +1,13 @@
+"""
+    Written by Kiani Lannoye & Gilles Vandewiele
+    Commissioned by UGent.
+
+    Design of a diagnose- and follow-up platform for patients with chronic headaches
+
+    Contains util methods to convert pandas dataframes to orange tables and vice versa
+"""
+
+
 import pandas as pd
 import numpy as np
 import Orange

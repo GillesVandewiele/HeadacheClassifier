@@ -1,22 +1,30 @@
+"""
+    Written by Kiani Lannoye & Gilles Vandewiele
+    Commissioned by UGent.
+
+    Design of a diagnose- and follow-up platform for patients with chronic headaches
+"""
+
 import subprocess
 
 import numpy as np
-from pandas import DataFrame, read_csv, Series
+from pandas import Series
 from sklearn.cross_validation import KFold
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
-from colors import bcolors
+from util.colors import bcolors
 from constructors.treeconstructor import TreeConstructor
-from decisiontree import DecisionTree
+from objects.decisiontree import DecisionTree
 
 
-class CARTconstructor(TreeConstructor):
-    def split_criterion(self, node):
-        raise NotImplementedError(
-            "This method is not implemented, because we use the optimised sklearn pruning algorithm")
+class CARTConstructor(TreeConstructor):
+    """
+    This class contains an implementation of CART, written by Breiman. It uses an extern library
+    for this called sklearn.
+    """
 
-    def __init__(self):
-        pass
+    def __init__(self, min_samples_leaf=3):
+        self.min_samples_leaf = min_samples_leaf
 
     def get_name(self):
         return "CART"
@@ -39,7 +47,7 @@ class CARTconstructor(TreeConstructor):
         self.y = labels['cat']
         self.X = training_feature_vectors[self.features]
 
-        self.dt = DecisionTreeClassifier(min_samples_leaf=3)
+        self.dt = DecisionTreeClassifier(min_samples_leaf=self.min_samples_leaf)
         self.dt.fit(self.X, self.y)
 
         return self.convertToTree()
@@ -75,12 +83,10 @@ class CARTconstructor(TreeConstructor):
                  "produce visualization")
 
     def convertToTree(self, verbose=False):
-        #       # Using those arrays, we can parse the tree structure:
-
-
-        # label = naam feature waarop je splitst
-        # value = is de value van de feature waarop je splitst
-        # ownDecisionTree.
+        # Using those arrays, we can parse the tree structure:
+            # label = naam feature waarop je splitst
+            # value = is de value van de feature waarop je splitst
+            # ownDecisionTree.
 
 
         n_nodes = self.dt.tree_.node_count
@@ -144,92 +150,3 @@ class CARTconstructor(TreeConstructor):
                          children_right[i],
                          ))
         return decision_trees[0]
-
-
-# outlook = np.asarray([0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 2]*1)
-# temp = np.asarray([75, 80, 85, 72, 69, 72, 83, 64, 81, 71, 65, 75, 68, 70]*1)
-# humidity = np.asarray([70, 90, 85, 95, 70, 90, 78, 65, 75, 80, 70, 80, 80, 96]*1)
-# windy = np.asarray([1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0]*1)
-#
-# play = np.asarray([1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1]*1)
-#
-# feature_vectors_df = DataFrame()
-# feature_vectors_df['outlook'] = outlook
-# feature_vectors_df['temp'] = temp
-# feature_vectors_df['humidity'] = humidity
-# feature_vectors_df['windy'] = windy
-#
-# labels_df = DataFrame()
-# labels_df['cat'] = play
-"""
-# Read csv into pandas frame
-columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-           'number of vessels', 'thal', 'disease']
-df = read_csv('../heart.dat', sep=' ')
-df = df.iloc[np.random.permutation(len(df))]
-df = df.reset_index(drop=True)
-df.columns = columns
-
-# Seperate the dataframe into a class dataframe and feature dataframe
-labels_df = DataFrame()
-labels_df['cat'] = df['disease']
-df = df.drop('disease', axis=1)
-feature_vectors_df = df.copy()
-
-tree_constructor = CARTconstructor()
-# tree = tree_constructor.construct_tree(feature_vectors_df, labels_df, np.argmax(np.bincount(play)))
-# tree.visualise('../tree')
-
-number_of_folds = 2
-sum_error_rate = 0.0
-total_error_rate = -1
-kf = tree_constructor.cross_validation(feature_vectors_df, number_of_folds)
-
-i = 0
-for train, test in kf:
-    train_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=train)
-    test_feature_vectors_df = DataFrame(feature_vectors_df.copy(), index=test)
-    train_labels_df = DataFrame(labels_df, index=train)
-    test_labels_df = DataFrame(labels_df, index=test)
-
-    tree_constructor.construct_tree(train_feature_vectors_df.copy(), train_labels_df)
-    # tree_constructor.visualize_tree(tree_constructor.features, labels_df[['cat']], "tree" + str(i))
-    # tree_constructor.printTree()
-    own_decision_tree = tree_constructor.convertToTree()
-    # own_decision_tree.visualise(output_path="../boom"+str(i))
-    # print "Prediction accuracy rate: %s" % str(1-tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df))
-    sum_error_rate += tree_constructor.calculate_error_rate(tree_constructor, test_feature_vectors_df, test_labels_df)
-    # own_decision_tree.to_string()
-    # predicted_labels = [None]*len(train_labels_df.index)
-    predicted_labels = own_decision_tree.evaluate_multiple(test_feature_vectors_df)
-    # for barf in range(len(train_labels_df.index)):
-    #     own_decision_tree.
-    # own_decision_tree.plot_confusion_matrix(test_labels_df['cat'], predicted_labels)
-
-    own_decision_tree.populate_samples([1,2], train_feature_vectors_df, train_labels_df['cat'].tolist())
-    own_decision_tree.visualise('./CART')
-
-    i += 1
-    print "\n\n-------------------------------\n\n"
-
-print "\n\n\n\n\n\nTotal accuracy rate with %d folds: %s" % (number_of_folds, str(1 - sum_error_rate/number_of_folds))
-"""
-"""
-train_feature_vectors_df = DataFrame(feature_vectors_df, index=)
-
-input_vector = DataFrame()
-input_vector['outlook'] = np.asarray([1])
-input_vector['temp'] = np.asarray([69])
-input_vector['humidity'] = np.asarray([97])
-input_vector['windy'] = np.asarray([0])
-print(tree.evaluate(input_vector))
-"""
-
-
-# TODO: predict probabilities: http://aaaipress.org/Papers/Workshops/2006/WS-06-06/WS06-06-005.pdf
-# TODO                         http://cseweb.ucsd.edu/~elkan/calibrated.pdf
-
-# TODO: pruning
-
-# TODO: multivariate splits possible? Split on multiple attributes at once (in C4.5)

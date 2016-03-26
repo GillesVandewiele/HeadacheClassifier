@@ -1,19 +1,17 @@
-import random
 from pandas import read_csv, DataFrame
 
 import operator
-
-import math
+import os
 import sklearn
 import numpy as np
 import matplotlib.pyplot as plt
 import pylab as pl
 
-from constructors.CARTconstructor import CARTconstructor
+from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
-from constructors.C45orangeconstructor import C45Constructor
+from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
-from decisiontree import DecisionTree
+from objects.decisiontree import DecisionTree
 
 
 class TreeEvaluator(object):
@@ -67,15 +65,15 @@ class TreeEvaluator(object):
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']
-df = read_csv('heart.dat', sep=' ')
+df = read_csv(os.path.join(os.path.join('..', 'data'), 'heart.dat'), sep=' ')
 #df = df.iloc[np.random.permutation(len(df))]
 #df = df.reset_index(drop=True)
 df.columns = columns
 
 #features_column_names = ['max heartrate', 'resting blood pressure', 'serum cholestoral', 'oldpeak']
-features_column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral']
+features_column_names = ['number of vessels', 'thal', 'max heartrate', 'age']
 # labels_column_names = 'disease'
-column_names = ['oldpeak', 'max heartrate', 'resting blood pressure', 'serum cholestoral', 'disease']
+column_names = ['number of vessels', 'thal', 'max heartrate', 'age', 'disease']
 df = df[column_names]
 # df = df.drop(columns[:3], axis=1)
 # df = df.drop(columns[4:7], axis=1)
@@ -100,7 +98,7 @@ test_labels_df = labels_df.tail(int(0.2*len(labels_df.index)))
 
 
 c45 = C45Constructor()
-cart = CARTconstructor()
+cart = CARTConstructor()
 quest = QuestConstructor()
 tree_constructors = [c45, cart, quest]
 evaluator = TreeEvaluator()
@@ -111,7 +109,7 @@ constructed_trees = []
 for tree_constructor in tree_constructors:
     tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
     tree.populate_samples(train_features_df, train_labels_df['cat'])
-    tree.visualise(tree_constructor.get_name())
+    tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
     regions = merger.decision_tree_to_decision_table(tree, train_features_df)
     regions_list.append(regions)
     constructed_trees.append(tree)
@@ -125,10 +123,12 @@ feature_maxs = {}
 for feature in features_column_names:
     feature_mins[feature] = np.min(train_features_df[feature])
     feature_maxs[feature] = np.max(train_features_df[feature])
+
 merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2], features_column_names, feature_maxs,
                                                feature_mins)
 merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
                                               feature_mins)
+
 # merger.plot_regions("intersected.png", merged_regions, ['1', '2'], features_column_names[0],
 #                     features_column_names[1], x_max=np.max(features_df[features_column_names[0]].values),
 #                     y_max=np.max(features_df[features_column_names[1]].values),
@@ -272,7 +272,7 @@ def regions_to_tree(features_df, labels_df, regions, features, feature_mins, fea
 
         # Now for all these connected_lower_upper_regions in each dimension, we need to find all line
         # where the value of f is equal (the bounds constraint are already fulfilled)
-        if sum([1 if len(value) > 0 else 0 for value in connected_lower_upper_regions.values()]) == len(features)-1:
+        if sum([1 if len(value) > 0 else 0 for value in connected_lower_upper_regions.values()]) > int(len(features)/2):
             # We found a line fulfilling bounds constraints in all other dimensions
             lines[_feature] = []
             temp = []
@@ -280,7 +280,7 @@ def regions_to_tree(features_df, labels_df, regions, features, feature_mins, fea
             for region in temp:
                 if region[_feature][0] not in lines[_feature]:
                     lines[_feature].append(region[_feature][0])
-
+        a = 5
     print lines
 
     # When we looped over each possible feature and found each possible split line, we split the data

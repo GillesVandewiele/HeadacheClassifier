@@ -1,110 +1,41 @@
-from pandas import DataFrame, read_csv
+"""
+    Written by Kiani Lannoye & Gilles Vandewiele
+    Commissioned by UGent.
+
+    Design of a diagnose- and follow-up platform for patients with chronic headaches
+"""
+
+from pandas import DataFrame
 import pandas as pd
-from sklearn import cross_validation
 
 from sklearn.cluster import k_means
-from sklearn.cross_validation import KFold
 from sklearn.feature_selection import chi2, f_classif
 
 from constructors.treeconstructor import TreeConstructor
 import numpy as np
-import scipy
-from decisiontree import DecisionTree
-
-#ftp://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/13.0/TREE-QUEST.pdf
+from objects.decisiontree import DecisionTree
 
 
 class QuestConstructor(TreeConstructor):
+    """
+    Contains our own implementation of the QUEST algorithm. The algorithm can be found on:
+    ftp://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/13.0/TREE-QUEST.pdf
+    """
 
     CONTINUOUS = "continuous"
     DISCRETE = "discrete"
 
-    def __init__(self):
-        pass
+    def __init__(self, default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.1):
+        self.default = default
+        self.max_nr_nodes = max_nr_nodes
+        self.discrete_thresh = discrete_thresh
+        self.alpha = alpha
 
     def get_name(self):
         return "QUEST"
 
     def all_feature_vectors_equal(self, training_feature_vectors):
         return len(training_feature_vectors.index) == (training_feature_vectors.duplicated().sum() + 1)
-
-
-    def pearson_chi_square_test(self, data, feature):
-        # First we construct a frequency matrix: F(i, j) = how many samples of class j have feature = i
-        unique_values = np.unique(data[feature])
-        unique_categories = np.unique(data['cat'])
-        frequency_matrix = {}
-        expected_matrix = {}
-
-        # For each possible value of feature
-        for feature_value in unique_values:
-            frequency_row = {}
-            # For each possible category
-            for category in unique_categories:
-                frequency_row[category] = len(data[(data.cat == category) & (data[feature] == feature_value)])
-            frequency_matrix[feature_value] = frequency_row
-
-        # Calculate total sum, map(sum, freq_matrix) will return a sum for each list in the matrix
-        sum([sum([w for w in v.itervalues()]) for v in frequency_matrix.itervalues()])
-        total_sum = sum([sum([w for w in v.values()]) for v in frequency_matrix.values()])
-
-        # Calculated expected frequency for each category and feature value
-        for feature_value in unique_values:
-            expected_row = {}
-            for category in unique_categories:
-                expectancy_num = sum(frequency_matrix[feature_value].values())*sum([v[category] for v in frequency_matrix.values()])
-                expected_row[category] = float(expectancy_num / total_sum)
-            expected_matrix[feature_value] = expected_row
-
-        # Calculate chi_square (using expected_ and frequency_matrix)
-        chi_square = 0.0
-
-        for feature_value in unique_values:
-            for category in unique_categories:
-                if expected_matrix[feature_value][category] != 0:
-                    chi_square += (frequency_matrix[feature_value][category] - expected_matrix[feature_value][
-                        category]) ** 2 / expected_matrix[feature_value][category]
-
-        # Return the p-value of the chi-squared score
-        return scipy.stats.chi2.sf(chi_square, (len(unique_values)-1)*(len(unique_categories)-1))
-
-    def anova_f_test(self, data, feature):
-        # Construct frequency matrix and count how many times each class occurs in the data
-        unique_values = np.unique(data[feature])
-        unique_categories = np.unique(data['cat'])
-        frequency_matrix = {}
-        occurence_per_category = {}
-        number_of_samples = len(data.index)
-        sample_mean_per_category = {}
-
-        for category in unique_categories:
-            occurence_per_category[category] = len(data[data.cat == category])
-
-        # For each possible value of feature
-        for feature_value in unique_values:
-            frequency_row = {}
-            # For each possible category
-            for category in unique_categories:
-                frequency_row[category] = len(data[(data.cat == category) & (data[feature] == feature_value)])
-            frequency_matrix[feature_value] = frequency_row
-
-        for category in unique_categories:
-            sample_mean_per_category[category] = sum([v*frequency_matrix[v][category] for v in frequency_matrix.keys()])/occurence_per_category[category]
-
-        sample_mean = sum(data[feature])/number_of_samples
-
-        f_score_num = 0.0
-        for category in unique_categories:
-            f_score_num += (occurence_per_category[category] * (sample_mean_per_category[category]-sample_mean)**2)/(len(unique_categories)-1)
-
-        f_score_denum = 0.0
-        for value, cat in data[[feature, 'cat']].values:
-            f_score_denum += (value-sample_mean_per_category[cat])**2 / (number_of_samples - len(unique_categories))
-
-        f_score = float(f_score_num / f_score_denum)
-
-        return scipy.stats.f.sf(f_score, len(unique_categories)-1, number_of_samples - len(unique_categories))
-
 
     def levene_f_test(self, data):
         # For each feature and each class, calculate the mean per class
@@ -124,9 +55,6 @@ class QuestConstructor(TreeConstructor):
 
         return f_classif(data[feature_columns], np.ravel(data['cat']))
 
-    def cross_validation(self, data, k):
-        return KFold(len(data.index), n_folds=k, shuffle=True)
-
     def divide_data(self, data, feature, value):
         """
         Divide the data in two subsets, thanks pandas
@@ -141,44 +69,40 @@ class QuestConstructor(TreeConstructor):
                             data=data,
                             value=value)
 
-    def construct_tree(self, training_feature_vectors, labels, default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.1):
+    def construct_tree(self, training_feature_vectors, labels):
         # First find the best split feature
-        feature, type = self.find_split_feature(training_feature_vectors.copy(), labels.copy(),
-                                                discrete_thresh=discrete_thresh, alpha=alpha)
+        feature, type = self.find_split_feature(training_feature_vectors.copy(), labels.copy())
 
         # Can be removed later
         if len(labels) == 0:
-            return DecisionTree(label=default, value=None, data=None)
+            return DecisionTree(label=self.default, value=None, data=None)
 
         data = DataFrame(training_feature_vectors.copy())
         data['cat'] = labels
 
-        if feature is None or len(training_feature_vectors.index) <= max_nr_nodes or len(np.unique(data['cat'])) == 1\
-                or self.all_feature_vectors_equal(training_feature_vectors):
-            # Create leaf most occuring class
-            #print(np.bincount(data['cat']))
+        # Only pre-pruning enabled at this moment (QUEST already has very nice trees)
+        if feature is None or len(training_feature_vectors.index) <= self.max_nr_nodes \
+                or len(np.unique(data['cat'])) == 1 or self.all_feature_vectors_equal(training_feature_vectors):
+            # Create leaf with label most occurring class
             label = np.argmax(np.bincount(data['cat'].values.astype(int)))
             return DecisionTree(label=label.astype(str), value=None, data=data)
 
+        # If we don't need to pre-prune, we calculate the best possible splitting point for the best split feature
         split_point = self.find_best_split_point(data.copy(), feature, type)
+
+        # Divide the data using this best split feature and value and call recursively
         split_node = self.divide_data(data, feature, split_point)
-
-        #print(feature, split_point, len(split_node.left.data.index), len(split_node.right.data.index))
-
-
         node = DecisionTree(label=split_node.label, value=split_node.value, data=split_node.data)
         node.left = self.construct_tree(split_node.left.data.drop('cat', axis=1),
-                                        split_node.left.data[['cat']], default, max_nr_nodes, discrete_thresh, alpha)
+                                        split_node.left.data[['cat']])
         node.right = self.construct_tree(split_node.right.data.drop('cat', axis=1),
-                                         split_node.right.data[['cat']], default, max_nr_nodes, discrete_thresh, alpha)
+                                         split_node.right.data[['cat']])
 
         return node
 
-        # Find the split point
-
-    def find_split_feature(self, training_feature_vectors, labels, discrete_thresh=5, alpha=0.1):
+    def find_split_feature(self, training_feature_vectors, labels):
         """
-        Construct a tree from a given array of feature vectors
+        Find the best possible feature to split on (the value to split on will be calculated further)
         :param training_feature_vectors: a pandas dataframe containing the features
         :param labels: a pandas dataframe containing the labels in the same order
         :return: decision_tree: a DecisionTree object
@@ -195,54 +119,48 @@ class QuestConstructor(TreeConstructor):
         continuous_features = []
         discrete_features = []
         for feature in cols.values:
-            if len(np.unique(data[feature])) > discrete_thresh:
+            if len(np.unique(data[feature])) > self.discrete_thresh:
                 continuous_features.append(feature)
             else:
                 discrete_features.append(feature)
 
-        """
-        chi2_values = []
-        for discrete_feature in discrete_features:
-            chi2_values.append(self.pearson_chi_square_test(data, discrete_feature))
-
-        anova_f_values = []
-        for continuous_feature in continuous_features:
-            anova_f_values.append(self.anova_f_test(data, continuous_feature))
-        """
-
+        # For discrete features, we calculate chi^2 scores (p-value)
         if len(discrete_features) > 0:
             chi2_scores, chi2_values = chi2(training_feature_vectors[discrete_features], np.ravel(labels.values))
         else:
             chi2_values = []
+
+        # For continuous ones, we calculate anova f scores (p-value)
         if len(continuous_features) > 0:
-            anova_f_scores, anova_f_values = f_classif(training_feature_vectors[continuous_features], np.ravel(labels.values))
+            anova_f_scores, anova_f_values = f_classif(training_feature_vectors[continuous_features],
+                                                       np.ravel(labels.values))
         else:
             anova_f_values = []
 
+        # Remove nan's and pick the feature with the lowest score
         chi2_values = np.where(np.isnan(chi2_values), 1, chi2_values)
         anova_f_values = np.where(np.isnan(anova_f_values), 1, anova_f_values)
-
-        #print discrete_features, chi2_values
-        #print continuous_features, anova_f_values
-
         conc = np.concatenate([chi2_values, anova_f_values])
         conc_features = np.concatenate([discrete_features, continuous_features])
         best_feature_p_value = min(conc)
         best_feature = conc_features[np.argmin(conc)]
 
-        if best_feature_p_value < alpha/len(cols.values):
+        # If the p-value is smaller than a weighted threshold alpha, we found a feature
+        if best_feature_p_value < self.alpha/len(cols.values):
             if best_feature in continuous_features:
                 return best_feature, QuestConstructor.CONTINUOUS
             else:
                 return best_feature, QuestConstructor.DISCRETE
         else:
+            # Else, we apply levene f test (which is the same as anova, but with a conversion of
+            # the values as pre-process step)
             continuous_features_cat = [item for sublist in [continuous_features, ["cat"]] for item in sublist]
             if len(continuous_features) == 0:
                 return None, None
             levene_scores, levene_values = self.levene_f_test(data[continuous_features_cat].copy())
             best_feature_p_value = min(levene_values)
             best_feature = continuous_features[np.argmin(levene_values)]
-            if best_feature_p_value < alpha/(len(cols.values)+len(continuous_features)):
+            if best_feature_p_value < self.alpha/(len(cols.values)+len(continuous_features)):
                 if best_feature in continuous_features:
                     return best_feature, QuestConstructor.CONTINUOUS
                 else:
@@ -274,9 +192,10 @@ class QuestConstructor(TreeConstructor):
             mean_freq_per_class_dummies = []
             for category in unique_categories:
                 data_feature_cat = data_feature_all_cats[(data.cat == category)]
-                mean_freq_per_class_dummies.append([data_feature_cat.as_matrix(columns=dummies).mean(0), len(data_feature_cat.index)])
+                mean_freq_per_class_dummies.append([data_feature_cat.as_matrix(columns=dummies).mean(0),
+                                                    len(data_feature_cat.index)])
             overall_mean = data_feature_all_cats.as_matrix(columns=dummies).mean(0)
-            #print(mean_freq_per_class_dummies, overall_mean)
+
             split_point = 0
             # For each class we construct an I x I matrix (with I number of variables), some reshaping required
             B_temp = ([np.dot(np.transpose(np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1))),
@@ -286,8 +205,10 @@ class QuestConstructor(TreeConstructor):
             for i in range(1, len(B_temp)):
                 B = np.add(B, B_temp[i])
 
-            T_temp = [np.dot(np.transpose(np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i,:], overall_mean), (1, -1))),
-                             np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i,:], overall_mean), (1, -1)))
+            T_temp = [np.dot(np.transpose(np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i,:],
+                                                                 overall_mean), (1, -1))),
+                             np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i, :],
+                                                    overall_mean), (1, -1)))
                       for i in range(len(data_feature_all_cats.index))]
             T = T_temp[0]
             for i in range(1, len(T_temp)):
@@ -404,10 +325,4 @@ class QuestConstructor(TreeConstructor):
                         return x2
             else:
                 return (mean_a + mean_b)/2
-
-    def calculate_error_rate(self, tree, testing_feature_vectors, labels, significance):
-        pass
-
-    def post_prune(self, tree, testing_feature_vectors, labels, significance=0.125):
-        pass
 

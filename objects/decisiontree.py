@@ -1,3 +1,10 @@
+"""
+    Written by Kiani Lannoye & Gilles Vandewiele
+    Commissioned by UGent.
+
+    Design of a diagnose- and follow-up platform for patients with chronic headaches
+"""
+
 import sklearn
 from graphviz import Source
 import matplotlib.pyplot as plt
@@ -5,6 +12,10 @@ import numpy as np
 
 
 class DecisionTree(object):
+    """
+    This class contains the main object used throughout our project: a decision tree. It contains methods
+    to visualise and evaluate the trees.
+    """
     def __init__(self, right=None, left=None, label='', value=None, data=None, pruning_ratio=0):
         """
         Create a node of the decision tree
@@ -28,6 +39,7 @@ class DecisionTree(object):
         visualise the tree, calling convert_node_to_dot
         :param output_path: where the file needs to be saved
         :param with_pruning_ratio: if true, the error rate will be printed too
+        :param show_probabilities: if this is True, probabilities will be plotted in the leafs too
         :param _view: open the pdf after generation or not
         """
         src = Source(self.convert_to_dot(_with_pruning_ratio=with_pruning_ratio, show_probabilities=show_probabilities))
@@ -50,11 +62,12 @@ class DecisionTree(object):
         Convert node to dot format in order to visualize our tree using graphviz
         :param count: parameter used to give nodes unique names
         :param _with_pruning_ratio: if true, the error rate will be printed too
+        :param show_probabilities: if this is True, probabilities will be plotted in the leafs too
         :return: intermediate string of the tree in dot format, without preamble (this is no correct dot format yet!)
         """
         ratio_string = ('(' + str(self.pruning_ratio) + ')') if _with_pruning_ratio else ''
         if self.value is None:
-            if len(self.class_probabilities) > 0:
+            if len(self.class_probabilities) > 0 and show_probabilities:
                 s = 'Node' + str(count) + ' [label="' + str(self.label) + ratio_string + '\n'+self.class_probabilities.__str__()+'" shape="box"];\n'
             else:
                 s = 'Node' + str(count) + ' [label="' + str(self.label) + '" shape="box"];\n'
@@ -73,6 +86,7 @@ class DecisionTree(object):
         """
         Wrapper around convert_node_to_dot (need some preamble and close with })
         :param _with_pruning_ratio: if true, the error rate will be printed too
+        :param show_probabilities: if this is True, probabilities will be plotted in the leafs too
         :return: the tree in correct dot format
         """
         s = 'digraph DT{\n'
@@ -108,6 +122,11 @@ class DecisionTree(object):
                 return self.right.evaluate(feature_vector)
 
     def evaluate_multiple(self, feature_vectors):
+        """
+        Wrapper method to evaluate multiple vectors at once (just a for loop where evaluate is called)
+        :param feature_vectors: the feature_vectors you want to evaluate
+        :return: list of class labels
+        """
         results = []
 
         for _index, feature_vector in feature_vectors.iterrows():
@@ -116,11 +135,11 @@ class DecisionTree(object):
 
     def plot_confusion_matrix(self, actual_labels, predicted_labels, normalized=False, plot=False):
         confusion_matrix = sklearn.metrics.confusion_matrix(actual_labels, predicted_labels)
-        return confusion_matrix
-        #print("Confusion matrix:\n%s" % confusion_matrix)
         if plot:
             confusion_matrix.plot(normalized=normalized)
             plt.show()
+
+        return confusion_matrix
 
     def calc_probabilities(self):
         if self.value is not None:
@@ -133,7 +152,7 @@ class DecisionTree(object):
             else:
                 factor = 0
             for i in self.class_probabilities:
-                self.class_probabilities[i] = round(self.class_probabilities[i]*factor,2)
+                self.class_probabilities[i] = round(self.class_probabilities[i]*factor, 2)
             return
 
     def populate_samples(self, feature_vectors, labels):
@@ -151,5 +170,5 @@ class DecisionTree(object):
                     for label in np.unique(labels):
                         current_node.class_probabilities[str(label)] = 0.0
             current_node.class_probabilities[str(labels[index])] += 1
-            index+=1
+            index += 1
         self.calc_probabilities()

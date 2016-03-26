@@ -1,14 +1,13 @@
 # Read csv into pandas frame
-import matplotlib.pyplot as plt
 import numpy as np
-import pylab as pl
 import sklearn
 from pandas import read_csv, DataFrame
 from sklearn.ensemble import RandomForestClassifier
 
-
+# TODO: nieuwe methode naam please
 def evaluate_trees(features_df, labels_df, n_folds=2):
     kf = sklearn.cross_validation.KFold(len(labels_df.index), n_folds=n_folds)
+    # TODO: kan je ook geen confusion matrices genereren?
     tree_confusion_matrices = {}
 
     for train, test in kf:
@@ -50,7 +49,7 @@ def evaluate_trees(features_df, labels_df, n_folds=2):
         accuracy = equal_positions / len(predicted_labels)
         print accuracy
 
-
+# TODO: De run code moet hier weg
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']
