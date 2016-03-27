@@ -1,15 +1,14 @@
-import matplotlib.pyplot as plt
-import os
 from pandas import read_csv, DataFrame
 
 import lasagne
 import numpy as np
-import sys
+import sklearn
 from lasagne import layers
 from lasagne.updates import nesterov_momentum
-from nolearn.lasagne import NeuralNet, PrintLayerInfo, BatchIterator, TrainSplit
+from nolearn.lasagne import NeuralNet, PrintLayerInfo
 from sklearn.cross_validation import StratifiedKFold
-from sklearn.metrics import confusion_matrix
+
+from benchmarks.randomforest import plot_confusion_matrix
 
 
 def build_nn(nr_features):
@@ -47,7 +46,7 @@ def build_nn(nr_features):
         update_momentum=0.9,
 
         max_epochs=8000,
-        verbose=0, #set this to 1, if you want to check the val and train scores for each epoch while training.
+        verbose=0,  # set this to 1, if you want to check the val and train scores for each epoch while training.
     )
     return net1
 
@@ -62,6 +61,7 @@ def local_test(feature_vectors_df, labels_df, k=2):
     kf = StratifiedKFold(labeltjes, n_folds=k, shuffle=True)
     # kf = StratifiedKFold(len(feature_vectors_df.index), n_folds=k, shuffle=True)
     # kf = KFold(500, n_folds=k, shuffle=True, random_state=1337)
+    confusion_matrices_folds = []
 
     for train, test in kf:
         # Divide the train_images in a training and validation set (using KFold)
@@ -74,8 +74,6 @@ def local_test(feature_vectors_df, labels_df, k=2):
         # Logistic Regression for feature selection, higher C = more features will be deleted
 
         # Feature selection/reduction
-
-
         model = build_nn(nr_features=X_train.shape[1])
         model.initialize()
         layer_info = PrintLayerInfo()
@@ -100,21 +98,24 @@ def local_test(feature_vectors_df, labels_df, k=2):
 
         model = None
         del model
-        cm = confusion_matrix(y_test, preds)
-        plt.matshow(cm)
-        plt.title('Confusion matrix')
-        plt.colorbar()
-        plt.ylabel('True label')
-        plt.xlabel('Predicted label')
-        plt.show()
+        # Save the confusion matrix for this fold and plot it
+        confusion_matrix = sklearn.metrics.confusion_matrix(y_train, preds)
+        confusion_matrices_folds.append(confusion_matrix)
 
         # print preds.tolist()
         # print "number of ones: " + str(sum(preds))
         # print y_test
         # print c
-        print "Accuracy for fold: " + str(((len(c) * 1.0) / (len(y_test) * 1.0))) + "\n\n\n\n\n-----------------------------\n\n\n"
+        print "Accuracy for fold: " + str(
+            ((len(c) * 1.0) / (len(y_test) * 1.0))) + "\n\n\n\n\n-----------------------------\n\n\n"
+        #     Let's plot the confusion matrix of the avarage confusion matrix
+    sum = confusion_matrices_folds[0] * 1.0
+    for i in range(1, len(confusion_matrices_folds)):
+        sum += confusion_matrices_folds[i]
+    sum /= len(confusion_matrices_folds)
+    plot_confusion_matrix(sum)
 
-
+print "Test"
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']

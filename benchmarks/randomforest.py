@@ -5,6 +5,8 @@ from pandas import read_csv, DataFrame
 import numpy as np
 import sklearn
 from sklearn.ensemble import RandomForestClassifier
+
+from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
 from util.boruta_py import boruta_py
 
 
@@ -60,49 +62,7 @@ def evaluate_random_forests(features_df, labels_df, n_folds=2):
     plot_confusion_matrix(sum)
 
 
-def RF_feature_extraction(features, labels):
-    rf = RandomForestClassifier(n_estimators=100, class_weight='auto', n_jobs=-1)
-    rf.fit(features, labels)
-    importances = rf.feature_importances_
-    std = np.std([tree.feature_importances_ for tree in rf.estimators_],
-                 axis=0)
-    indices = np.argsort(importances)[::-1]
-    # Print the feature ranking
-    print("Feature ranking:")
-    for f in range(DataFrame(features).shape[1]):
-        print("%3d. feature %-25s [%2d] (%9f)" % (
-            f + 1, features_column_names[indices[f]], indices[f], importances[indices[f]]))
 
-    # Plot the feature importances of the forest
-    plt.figure()
-    plt.title("Feature importances")
-    plt.bar(range(DataFrame(features).shape[1]), importances[indices],
-            color="r", yerr=std[indices], align="center")
-    plt.xticks(range(DataFrame(features).shape[1]), indices)
-    plt.xlim([-1, DataFrame(features).shape[1]])
-    plt.show()
-
-
-def boruta_py_feature_extraction(features, labels, column_names):
-    rf = RandomForestClassifier(n_jobs=-1, class_weight='auto')
-    feat_selector = boruta_py.BorutaPy(rf, n_estimators='auto', verbose=0)
-    feat_selector.fit(features, labels)
-
-    print "\n\n\n\n"
-    # check selected features
-    # print feat_selector.support_
-    
-    # check ranking of features
-    print "Ranking features: "
-    print feat_selector.ranking_
-
-    # call transform() on X to filter it down to selected features
-    # X_filtered = feat_selector.transform(features)
-    # print X_filtered
-    print "Most important features (%2d):" % sum(feat_selector.support_)
-    for i in range(len(feat_selector.support_)):
-        if feat_selector.support_[i]:
-            print "feature %2d: %-25s" % (i, column_names[i])
 
 
 # TODO: De run code moet hier weg
@@ -131,11 +91,12 @@ labels_df = DataFrame()
 labels_df['cat'] = df['disease'].copy()
 features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
+#Not neccesary to normalize features for RF
+# features_df = (features_df - features_df.mean()) / (features_df.max() - features_df.min())
 features_column_names = features_df.columns
 
-RF_feature_extraction(features_df.values, labels_df['cat'])
-
-boruta_py_feature_extraction(features_df.values, labels_df['cat'].tolist(), column_names=column_names)
-
-
-# evaluate_random_forests(features_df=features_df, labels_df=labels_df, n_folds=10)
+print RF_feature_selection(features_df.values, labels_df['cat'], features_column_names=features_column_names)
+print "\n\n\n\n\n\n\n------------------------------------------------\n\n\n\n\n\n\n"
+print boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(), column_names=column_names)
+print "\n\n\n\n\n\n\n------------------------------------------------\n\n\n\n\n\n\n"
+evaluate_random_forests(features_df=features_df, labels_df=labels_df, n_folds=10)
