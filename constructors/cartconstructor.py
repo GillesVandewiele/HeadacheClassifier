@@ -6,15 +6,15 @@
 """
 
 import subprocess
+from pandas import Series
 
 import numpy as np
-from pandas import Series
 from sklearn.cross_validation import KFold
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
-from util.colors import bcolors
 from constructors.treeconstructor import TreeConstructor
 from objects.decisiontree import DecisionTree
+from util import bcolors
 
 
 class CARTConstructor(TreeConstructor):

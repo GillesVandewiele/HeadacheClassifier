@@ -1,8 +1,10 @@
-from pandas import DataFrame
-from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
-from util.boruta_py import boruta_py
+from pandas import DataFrame
+
 import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+
+from util import boruta_py
 
 
 def RF_feature_selection(features, labels, features_column_names, plot=False, verbose=False):

@@ -8,8 +8,7 @@ from lasagne.updates import nesterov_momentum
 from nolearn.lasagne import NeuralNet, PrintLayerInfo
 from sklearn.cross_validation import StratifiedKFold
 
-from benchmarks.randomforest import plot_confusion_matrix
-
+from util import metrics
 
 def build_nn(nr_features):
     net1 = NeuralNet(
@@ -99,7 +98,7 @@ def local_test(feature_vectors_df, labels_df, k=2):
         model = None
         del model
         # Save the confusion matrix for this fold and plot it
-        confusion_matrix = sklearn.metrics.confusion_matrix(y_train, preds)
+        confusion_matrix = sklearn.metrics.confusion_matrix(y_test, preds)
         confusion_matrices_folds.append(confusion_matrix)
 
         # print preds.tolist()
@@ -113,9 +112,10 @@ def local_test(feature_vectors_df, labels_df, k=2):
     for i in range(1, len(confusion_matrices_folds)):
         sum += confusion_matrices_folds[i]
     sum /= len(confusion_matrices_folds)
-    plot_confusion_matrix(sum)
+    metrics.plot_confusion_matrix(sum)
 
-print "Test"
+
+
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']

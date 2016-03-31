@@ -1,5 +1,4 @@
 # Read csv into pandas frame
-import matplotlib.pyplot as plt
 from pandas import read_csv, DataFrame
 
 import numpy as np
@@ -7,20 +6,9 @@ import sklearn
 from sklearn.ensemble import RandomForestClassifier
 
 from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
-from util.boruta_py import boruta_py
 
 
-def plot_confusion_matrix(cm, title='Confusion matrix'):
-    fig = plt.figure()
-    cm = np.divide(cm, len(cm))
-    cm = np.divide(cm, np.matrix.sum(np.asmatrix(cm))).round(3)
 
-    ax = fig.add_subplot(1, 1, 1)
-    cax = ax.matshow(cm, cmap=plt.get_cmap('RdYlGn'))
-    for (j, i), label in np.ndenumerate(cm):
-        ax.text(i, j, label, ha='center', va='center')
-    fig.colorbar(cax)
-    plt.show()
 
 
 def evaluate_random_forests(features_df, labels_df, n_folds=2):
