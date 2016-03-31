@@ -6,9 +6,7 @@ import sklearn
 from sklearn.ensemble import RandomForestClassifier
 
 from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
-
-
-
+from util.metrics import plot_confusion_matrix
 
 
 def evaluate_random_forests(features_df, labels_df, n_folds=2):
@@ -83,7 +81,7 @@ features_df = features_df.drop('disease', axis=1)
 # features_df = (features_df - features_df.mean()) / (features_df.max() - features_df.min())
 features_column_names = features_df.columns
 
-print RF_feature_selection(features_df.values, labels_df['cat'], features_column_names=features_column_names)
+print RF_feature_selection(features_df.values, labels_df['cat'], features_column_names=features_column_names,verbose=True)
 print "\n\n\n\n\n\n\n------------------------------------------------\n\n\n\n\n\n\n"
 print boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(), column_names=column_names)
 print "\n\n\n\n\n\n\n------------------------------------------------\n\n\n\n\n\n\n"
