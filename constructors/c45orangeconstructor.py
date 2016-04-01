@@ -9,7 +9,7 @@ import Orange
 
 from constructors.treeconstructor import TreeConstructor
 from objects.decisiontree import DecisionTree
-from util.pandas_to_orange import df2table
+from util import df2table
 
 
 class C45Constructor(TreeConstructor):
