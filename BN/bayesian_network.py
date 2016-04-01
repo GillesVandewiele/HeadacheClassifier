@@ -11,8 +11,8 @@ from lxml.etree import HTML
 import lxml
 from tabulate import tabulate
 
-
-def learnDiscreteBN():
+dataframes = {}
+def learnDiscreteBN(draw_network=False):
     columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
                'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
                'number of vessels', 'thal', 'disease']
@@ -93,7 +93,7 @@ def learnDiscreteBN():
 
     learner = PGMLearner()
 
-    test = learner.discrete_estimatebn(data=data, pvalparam=0.9, indegree=1)
+    test = learner.discrete_estimatebn(data=data, pvalparam=0.05, indegree=1)
 
     edges = test.E
     vertices = test.V
@@ -106,7 +106,7 @@ def learnDiscreteBN():
     dot_string = 'digraph BN{\n'
     dot_string += 'node[fontname="Arial"];\n'
 
-    dataframes = {}
+    # dataframes = {}
 
     for vertice in vertices:
         dataframe = DataFrame()
@@ -128,7 +128,7 @@ def learnDiscreteBN():
             # print "%-7s|%-11s" % ("Outcome", "Probability")
             # print "-------------------"
             for k, v in od.iteritems():
-                print "%-7s|%-11s" % (str(k), str(round(v, 3)))
+                # print "%-7s|%-11s" % (str(k), str(round(v, 3)))
                 dataframe.loc[len(dataframe)] = [k, v]
             dataframes[vertice] = dataframe
         else:
@@ -157,30 +157,37 @@ def learnDiscreteBN():
             # print "Outcome" + "\t\t" + '\t\t'.join(probas[vertice]['parents']) + "\t\tProbability"
             # print "------------" * len(probas[vertice]['parents']) *3
             # pp.pprint(od.values())
-            array_frame = []
+
             counter = 0
             len_outcome = len(od.keys())
+            number_of_cols = len(dataframe.columns)
+            # print number_of_cols
             for outcome, cprobs in od.iteritems():
                 for key in cprobs.keys():
+                    array_frame = []
                     array_frame.append((outcome))
                     print_string = str(int(float(outcome))) + "\t\t"
                     for parent_value, parent in enumerate([i for i in ast.literal_eval(key)]):
-                        array_frame.append(parent)
+                        # print "parent-value:"+str(parent_value)
+                        # print "parten:"+str(parent)
+                        array_frame.append(int(float(parent)))
+                        # print "lengte array_frame: "+str(len(array_frame))
                         print_string += parent + "\t\t"
                     array_frame.append(cprobs[key][counter])
-
+                    # print "lengte array_frame (2): "+str(len(array_frame))
+                    # print  cprobs[key][counter]
                     print_string += str(cprobs[key][counter]) +"\t"
                     # for stront in [str(round(float(i), 3)) for i in ast.literal_eval(key)]:
                     #     print_string += stront + "\t\t"
-                    # print print_string
+                    # print "print string: " + print_string
+                    # print "array_frame:" + str(array_frame)
                     dataframe.loc[len(dataframe)] = array_frame
-
                 counter+=1
 
         dataframes[vertice] = dataframe
         # print tabulate([list(row) for row in dataframe.values], headers=list(dataframe.columns))
-        print  "\n\n\n\n\n"
-        print dataframe.head(n=100)
+        # print  "\n\n\n\n\n"
+        # print dataframe.head(n=100)
         # print (dataframe.to_html()).display()
         # open_in_browser(HTML(dataframe.to_html()))
 
@@ -196,7 +203,26 @@ def learnDiscreteBN():
 
     dot_string += '}'
     src = Source(dot_string)
-    src.render('../data/BN', view=False)
+    src.render('../data/BN', view=draw_network)
+
+def eval_sample(feature_dict, verbose=False):
+    to_predict = 'cat'
+    print "Evaluating the %s for sample with observed features: %s" % (to_predict, str(feature_dict.keys()))
+    df = dataframes[to_predict].copy()
+    for feature in feature_dict.keys():
+        if verbose: print "Set value for feature %s to %s"% (feature, str(feature_dict[feature]))
+        df = df[ df[feature] - int(feature_dict[feature]) == 0 ]
+        df = df.drop(feature, axis=1)
+    if verbose: print df
+    return df['Probability'].tolist()
 
 
-learnDiscreteBN()
+
+learnDiscreteBN(True)
+# print dataframes['cat']
+dict_features  = {}
+dict_features['number of vessels'] = 1
+dict_features['chest pain type'] = 1
+dict_features['thal'] = 3
+
+print eval_sample(dict_features, True)
