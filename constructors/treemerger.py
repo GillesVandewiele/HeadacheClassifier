@@ -2,6 +2,7 @@ import copy
 import random
 from pandas import DataFrame
 
+import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
@@ -9,6 +10,7 @@ import numpy as np
 import operator
 
 from objects.decisiontree import DecisionTree
+from objects.featuredescriptors import CONTINUOUS
 
 
 class LineSegment(object):
@@ -107,6 +109,66 @@ class DecisionTreeMerger(object):
                     width,          # width
                     height,          # height
                     facecolor=purple_tint
+                )
+            )
+
+        fig1.savefig(output_path)
+
+    def plot_regions_with_points(self, output_path, regions, classes, x_feature, y_feature, points, x_max=1.0, y_max=1.0, x_min=0.0, y_min=0.0):
+        """
+        Given an array of 2dimensional regions (classifying 2 classes), having the following format:
+            {x_feature: [lb, ub], y_feature: [lb, ub], 'class': {class_1: prob1, class_2: prob2}}
+        We return a rectangle divided in these regions, with a purple color according to the class probabilities
+        :param output_path: where does the figure need to be saved
+        :param regions: the array of regions, according the format described above
+        :param classes: the string representations of the 2 possible classes, this is how they are stored in the
+                        "class" dictionary of a region
+        :param x_feature: what's the string representation of the x_feature in a region?
+        :param y_feature: what's the string representation of the y_feature
+        :param x_max: maximum value of x_features
+        :param y_max: maximum value of y_features
+        :param x_min: minimum value of x_features
+        :param y_min: minimum value of y_features
+        :return: nothing, but saves a figure to output_path
+        """
+        fig1 = plt.figure()
+        ax1 = fig1.add_subplot(111, aspect='equal')
+        plt.axis([x_min, x_max, y_min, y_max])
+        plt.xlabel(x_feature)
+        plt.ylabel(y_feature)
+        for region in regions:
+            x = region[x_feature][0]
+            width = region[x_feature][1] - x
+            y = region[y_feature][0]
+            height = region[y_feature][1] - y
+
+            if classes[0] in region['class'] and classes[1] in region['class']:
+                purple_tint = (region['class'][classes[0]], 0.0, region['class'][classes[1]])
+            elif classes[0] in region['class']:
+                purple_tint = (1.0, 0.0, 0.0)
+            elif classes[1] in region['class']:
+                purple_tint = (0.0, 0.0, 1.0)
+            else:
+                print "this shouldn't have happened, go look at treemerger.py"
+
+            ax1.add_patch(
+                patches.Rectangle(
+                    (x, y),   # (x,y)
+                    width,          # width
+                    height,          # height
+                    facecolor=purple_tint
+                )
+            )
+
+
+        for i in range(len(points.index)):
+            x = points.iloc[i][x_feature]
+            y = points.iloc[i][y_feature]
+            ax1.add_patch(
+                patches.Circle(
+                    (x, y),   # (x,y)
+                    0.001,          # width
+                    facecolor='black'
                 )
             )
 
@@ -226,42 +288,6 @@ class DecisionTreeMerger(object):
 
             return intersections
 
-    def generate_samples(self, regions, features):
-        # TODO: make a distinction between continuous and discrete features! & clean this code
-        _samples = DataFrame()
-        for region in regions:
-            region_samples = []
-            max_side1 = 0
-            max_side2 = 0
-            max_side3 = 0
-            for _feature in features:
-                side = (region[_feature][1] - region[_feature][0])
-                if side > max_side1:
-                    max_side3 = max_side2
-                    max_side2 = max_side1
-                    max_side1 = side
-                elif side > max_side2:
-                    max_side3 = max_side2
-                    max_side2 = side
-                elif side > max_side3:
-                    max_side3 = side
-
-            number_of_samples_per_region = int(np.log2((max_side1+1)*(max_side2+1)*(max_side3+1))*pow(np.max(region['class'].values(), 2)))
-            print number_of_samples_per_region
-
-            for k in range(number_of_samples_per_region):
-                region_samples.append({})
-
-            for _feature in features:
-                for index in range(number_of_samples_per_region):
-                    region_samples[index][_feature] = region[_feature][0] + random.random() * \
-                                                                            ((region[_feature][1] - region[_feature][0])+1)
-
-            for sample in region_samples:
-                sample['cat'] = max(region['class'].iteritems(), key=operator.itemgetter(1))[0]
-                _samples = _samples.append(sample, ignore_index=True)
-        return _samples
-
     def calculate_entropy(self, values_list):
         if sum(values_list) == 0:
             return 0
@@ -324,6 +350,59 @@ class DecisionTreeMerger(object):
                 self.dec(subitem, output_)
         else:
             output_.append(input_)
+
+    def generate_samples(self, regions, features, feature_descriptors):
+        columns = list(features)
+        columns.append('cat')
+        samples = DataFrame(columns=columns)
+        print "Generating samples for ", len(regions), " regions"
+        counter = 0
+        for region in regions:
+            counter += 1
+            region_copy = region.copy()
+            del region_copy['class']
+            sides = region_copy.items()
+
+            sides = sorted(sides, key=lambda x: x[1][1] - x[1][0])
+
+            amount_of_samples = 1
+            for side in sides[:int(math.ceil(np.sqrt(len(features))))]:
+                if side[1][1] - side[1][0] > 0:
+                    amount_of_samples += (side[1][1] - side[1][0]) * 50
+
+            amount_of_samples *= max(region['class'].iteritems(), key=operator.itemgetter(1))[1]
+
+            print "----> Region ", counter, ": ", int(amount_of_samples), " samples"
+
+            point = {}
+            for feature_index in range(len(features)):
+                if feature_descriptors[feature_index][0] == CONTINUOUS:
+                    point[features[feature_index]] = region[features[feature_index]][0] + \
+                                                      ((region[features[feature_index]][1] - region[features[feature_index]][0]) / 2)
+
+            for k in range(int(amount_of_samples)):
+                for feature_index in range(len(features)):
+                    if feature_descriptors[feature_index][0] == CONTINUOUS:
+                        if region[features[feature_index]][1] - region[features[feature_index]][0] > 1.0:
+                            point[features[feature_index]] += (random.random() - 0.5) * \
+                                                              np.sqrt((region[features[feature_index]][1] - region[features[feature_index]][0]))
+                        else:
+                            point[features[feature_index]] += (random.random() - 0.5) * \
+                                pow((region[features[feature_index]][1] - region[features[feature_index]][0]), 2)
+                    else:
+                        choice_list = np.arange(region[features[feature_index]][0], region[features[feature_index]][1],
+                                                1.0/float(feature_descriptors[feature_index][1])).tolist()
+                        if len(choice_list) > 0:
+                            choice_list.extend([region[features[feature_index]][0] + (region[features[feature_index]][1] -
+                                                                                      region[features[feature_index]][0])/2]*len(choice_list)*2)
+                            point[features[feature_index]] = random.choice(choice_list)
+                        else:
+                            point[features[feature_index]] = region[features[feature_index]][0]
+
+                point['cat'] = max(region['class'].iteritems(), key=operator.itemgetter(1))[0]
+                samples = samples.append(point, ignore_index=True)
+
+        return samples
 
     def regions_to_tree(self, features_df, labels_df, regions, features, feature_mins, feature_maxs, max_samples=3):
         # TODO: this method is really ugly and inefficient! Needs improvement!!

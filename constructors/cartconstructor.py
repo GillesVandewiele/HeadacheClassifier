@@ -23,7 +23,7 @@ class CARTConstructor(TreeConstructor):
     for this called sklearn.
     """
 
-    def __init__(self, min_samples_leaf=3):
+    def __init__(self, min_samples_leaf=1):
         self.min_samples_leaf = min_samples_leaf
 
     def get_name(self):

@@ -1,40 +1,40 @@
 digraph DT{
 node[fontname="Arial"];
-Node1 [label="number of vessels <= 1.1109541484"];
-Node2 [label="thal <= 5.64901230633"];
-Node3 [label="max heartrate <= 122.78788965"];
-Node4 [label="1
-{'1': 0.56, '2': 0.44}" shape="box"];
-Node3 -> Node4 [label="true"];
-Node5 [label="max heartrate <= 157.273809524"];
-Node6 [label="oldpeak <= 2.15733625088"];
-Node7 [label="1
-{'1': 0.84, '2': 0.16}" shape="box"];
-Node6 -> Node7 [label="true"];
-Node8 [label="2
-{'1': 0.25, '2': 0.75}" shape="box"];
-Node6->Node8 [label="false"];
-Node5 -> Node6 [label="true"];
-Node9 [label="number of vessels <= 0.996778193101"];
-Node10 [label="1
-{'1': 0.98, '2': 0.02}" shape="box"];
-Node9 -> Node10 [label="true"];
-Node11 [label="1
-{'1': 0.73, '2': 0.27}" shape="box"];
-Node9->Node11 [label="false"];
-Node5->Node9 [label="false"];
-Node3->Node5 [label="false"];
+Node1 [label="oldpeak <= 1.54639179686"];
+Node2 [label="max heartrate <= 131.287360922"];
+Node3 [label="2
+{'1': 0.44, '2': 0.56}" shape="box"];
 Node2 -> Node3 [label="true"];
-Node17 [label="oldpeak <= 0.842899339632"];
-Node18 [label="1
-{'1': 0.5, '2': 0.5}" shape="box"];
-Node17 -> Node18 [label="true"];
-Node19 [label="2
-{'1': 0.19, '2': 0.81}" shape="box"];
-Node17->Node19 [label="false"];
-Node2->Node17 [label="false"];
+Node4 [label="max heartrate <= 160.392179413"];
+Node5 [label="serum cholestoral <= 237.263605089"];
+Node6 [label="1
+{'1': 0.76, '2': 0.24}" shape="box"];
+Node5 -> Node6 [label="true"];
+Node7 [label="1
+{'1': 0.54, '2': 0.46}" shape="box"];
+Node5->Node7 [label="false"];
+Node4 -> Node5 [label="true"];
+Node8 [label="1
+{'1': 0.8, '2': 0.2}" shape="box"];
+Node4->Node8 [label="false"];
+Node2->Node4 [label="false"];
 Node1 -> Node2 [label="true"];
-Node25 [label="2
-{'1': 0.2, '2': 0.8}" shape="box"];
-Node1->Node25 [label="false"];
+Node12 [label="max heartrate <= 161.647965086"];
+Node13 [label="max heartrate <= 139.033653846"];
+Node14 [label="2
+{'1': 0.04, '2': 0.96}" shape="box"];
+Node13 -> Node14 [label="true"];
+Node15 [label="resting blood pressure <= 124.488697398"];
+Node16 [label="1
+{'1': 0.67, '2': 0.33}" shape="box"];
+Node15 -> Node16 [label="true"];
+Node17 [label="2
+{'1': 0.18, '2': 0.82}" shape="box"];
+Node15->Node17 [label="false"];
+Node13->Node15 [label="false"];
+Node12 -> Node13 [label="true"];
+Node19 [label="1
+{'1': 0.58, '2': 0.42}" shape="box"];
+Node12->Node19 [label="false"];
+Node1->Node12 [label="false"];
 }

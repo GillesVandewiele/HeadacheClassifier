@@ -14,6 +14,7 @@ from sklearn.feature_selection import chi2, f_classif
 from constructors.treeconstructor import TreeConstructor
 import numpy as np
 from objects.decisiontree import DecisionTree
+from objects.featuredescriptors import CONTINUOUS, DISCRETE
 
 
 class QuestConstructor(TreeConstructor):
@@ -21,9 +22,6 @@ class QuestConstructor(TreeConstructor):
     Contains our own implementation of the QUEST algorithm. The algorithm can be found on:
     ftp://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/13.0/TREE-QUEST.pdf
     """
-
-    CONTINUOUS = "continuous"
-    DISCRETE = "discrete"
 
     def __init__(self, default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.1):
         self.default = default
@@ -148,9 +146,9 @@ class QuestConstructor(TreeConstructor):
         # If the p-value is smaller than a weighted threshold alpha, we found a feature
         if best_feature_p_value < self.alpha/len(cols.values):
             if best_feature in continuous_features:
-                return best_feature, QuestConstructor.CONTINUOUS
+                return best_feature, CONTINUOUS
             else:
-                return best_feature, QuestConstructor.DISCRETE
+                return best_feature, DISCRETE
         else:
             # Else, we apply levene f test (which is the same as anova, but with a conversion of
             # the values as pre-process step)
@@ -162,9 +160,9 @@ class QuestConstructor(TreeConstructor):
             best_feature = continuous_features[np.argmin(levene_values)]
             if best_feature_p_value < self.alpha/(len(cols.values)+len(continuous_features)):
                 if best_feature in continuous_features:
-                    return best_feature, QuestConstructor.CONTINUOUS
+                    return best_feature, CONTINUOUS
                 else:
-                    return best_feature, QuestConstructor.DISCRETE
+                    return best_feature, DISCRETE
             else:
                 return None, None
 
@@ -185,7 +183,7 @@ class QuestConstructor(TreeConstructor):
         min_value = np.min(min_value)
 
         # First we transform the discrete variable to a continuous variable and then apply same QDA
-        if type == QuestConstructor.DISCRETE:
+        if type == DISCRETE:
             data_feature_all_cats = pd.get_dummies(data[feature])
             dummies = data_feature_all_cats.columns
             data_feature_all_cats['cat'] = data['cat']
