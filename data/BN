@@ -1,0 +1,37 @@
+digraph BN{
+node[fontname="Arial"];
+oldpeak [label="oldpeak
+" ]; 
+slope_peak [label="slope peak
+" ]; 
+number_of_vessels [label="number of vessels
+" ]; 
+exercise_induced_angina [label="exercise induced angina
+" ]; 
+chest_pain_type [label="chest pain type
+" ]; 
+serum_cholestoral [label="serum cholestoral
+" ]; 
+age [label="age
+" ]; 
+sex [label="sex
+" ]; 
+thal [label="thal
+" ]; 
+cat [label="cat
+" ]; 
+resting_electrocardio [label="resting electrocardio
+" ]; 
+max_heartrate [label="max heartrate
+" ]; 
+resting_blood_pressure [label="resting blood pressure
+" ]; 
+fasting_blood_sugar [label="fasting blood sugar
+" ]; 
+oldpeak -> slope_peak;
+exercise_induced_angina -> chest_pain_type;
+sex -> thal;
+number_of_vessels -> cat;
+chest_pain_type -> cat;
+thal -> cat;
+}

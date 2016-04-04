@@ -14,7 +14,7 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
 from constructors.treeconstructor import TreeConstructor
 from objects.decisiontree import DecisionTree
-from util import bcolors
+from util.colors import bcolors
 
 
 class CARTConstructor(TreeConstructor):
@@ -47,7 +47,7 @@ class CARTConstructor(TreeConstructor):
         self.y = labels['cat']
         self.X = training_feature_vectors[self.features]
 
-        self.dt = DecisionTreeClassifier(min_samples_leaf=self.min_samples_leaf)
+        self.dt = DecisionTreeClassifier(min_samples_leaf=self.min_samples_leaf, min_samples_split=15)
         self.dt.fit(self.X, self.y)
 
         return self.convertToTree()
