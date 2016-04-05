@@ -65,7 +65,7 @@ class TreeEvaluator(object):
 
 
 
-"""
+
 np.random.seed(26101993)    # 84846513
 
 
@@ -223,8 +223,9 @@ for tree in trees:
     counter += 1
 
 pl.show()
-"""
 
+
+"""
 # Read csv into pandas frame
 columns = ['PassengerId','Survived','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
 df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
@@ -333,3 +334,4 @@ submission_quest.to_csv('submission_quest', index=False)
 # submission_merge.to_csv('submission_merge', index=False)
 
 
+"""
