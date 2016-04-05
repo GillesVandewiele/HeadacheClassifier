@@ -79,7 +79,7 @@ class QuestConstructor(TreeConstructor):
         data['cat'] = labels
 
         # Only pre-pruning enabled at this moment (QUEST already has very nice trees)
-        if feature is None or len(training_feature_vectors.index) <= self.max_nr_nodes \
+        if feature is None or len(data) == 0 or len(training_feature_vectors.index) <= self.max_nr_nodes \
                 or len(np.unique(data['cat'])) == 1 or self.all_feature_vectors_equal(training_feature_vectors):
             # Create leaf with label most occurring class
             label = np.argmax(np.bincount(data['cat'].values.astype(int)))
@@ -176,8 +176,8 @@ class QuestConstructor(TreeConstructor):
             data_feature_cat = data[(data.cat == category)][feature]
             feature_mean_var_freq_per_class.append([float(np.mean(data_feature_cat)), float(np.var(data_feature_cat)),
                                                      len(data_feature_cat), category])
-            max_value.append(np.max(data_feature_cat))
-            min_value.append(np.min(data_feature_cat))
+            max_value.append(np.max(data_feature_cat.astype(int)))
+            min_value.append(np.min(data_feature_cat.astype(int)))
 
         max_value = np.max(max_value)
         min_value = np.min(min_value)
@@ -228,7 +228,7 @@ class QuestConstructor(TreeConstructor):
             # We can now transform all discrete attributes to continous ones!
             discrete_values = data[feature].values
             continous_values = []
-            discrete_dummies = data_feature_all_cats[dummies].values.astype(float)
+            discrete_dummies = data_feature_all_cats.loc[:,dummies].values.astype(float)
             for i in range(len(discrete_values)):
                 new_value = np.dot(np.dot(np.dot(np.reshape(largest_eigenvector, (1, -1)), D_sqrt_inv), Q_t), discrete_dummies[i])
                 continous_values.append(new_value[0])

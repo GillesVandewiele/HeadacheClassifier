@@ -14,7 +14,7 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 
 from constructors.treeconstructor import TreeConstructor
 from objects.decisiontree import DecisionTree
-from util import bcolors
+from util.colors import bcolors
 
 
 class CARTConstructor(TreeConstructor):
