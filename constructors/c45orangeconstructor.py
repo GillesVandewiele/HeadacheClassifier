@@ -37,7 +37,7 @@ class C45Constructor(TreeConstructor):
         orange_table = Orange.data.Table([orange_feature_table, orange_labels_table])
 
         return self.orange_dt_to_my_dt(Orange.classification.tree.C45Learner(orange_table, gain_ratio=self.gain_ratio,
-                                                                             cf=self.cf).tree)
+                                                                             cf=self.cf, min_objs=2, subset=True).tree)
 
     def orange_dt_to_my_dt(self, orange_dt_root):
         # Check if leaf

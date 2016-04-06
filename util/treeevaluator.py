@@ -63,8 +63,6 @@ class TreeEvaluator(object):
 
         pl.show()
 
-
-
 SEED = 500
 
 np.random.seed(13)    # 84846513
@@ -340,9 +338,9 @@ for tree in trees:
     counter += 1
 
 pl.show()
+
+
 """
-
-
 """
 # Read csv into pandas frame
 columns = ['PassengerId','Survived','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
@@ -353,21 +351,27 @@ useful_df = df[['Survived', 'Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'E
 useful_df = useful_df.dropna()
 
 train_features_df = useful_df[['Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked']].copy()
+
 train_labels_df = useful_df[['Survived']].copy()
 train_labels_df.columns = ['cat']
 train_labels_df = train_labels_df.reset_index(drop=True)
 
+
+age_avg = train_features_df['Age'].mean()
+train_features_df = train_features_df.fillna(age_avg)
+
 mapping_sex = {'male': 1, 'female': 2}
 mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
 train_features_df['Sex'] = train_features_df['Sex'].map(mapping_sex)
-train_features_df['Embarked'] = train_features_df['Embarked'].map(mapping_embarked)
+# train_features_df['Embarked'] = train_features_df['Embarked'].map(mapping_embarked)
 
 #train_features_df = train_features_df/train_features_df.max()
+
 train_features_df = train_features_df.reset_index(drop=True)
 
-c45 = C45Constructor()
-cart = CARTConstructor(min_samples_leaf=3)
-quest = QuestConstructor()
+c45 = C45Constructor(cf=0.15, gain_ratio=True)
+cart = CARTConstructor(min_samples_leaf=12)
+quest = QuestConstructor(default=0, max_nr_nodes=10, discrete_thresh=20, alpha=0.25)
 tree_constructors = [c45, cart, quest]
 merger = DecisionTreeMerger()
 regions_list = []
@@ -375,7 +379,7 @@ constructed_trees = []
 for tree_constructor in tree_constructors:
     tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
     tree.populate_samples(train_features_df, train_labels_df['cat'])
-    #tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()+"_titanic"))
+    tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()+"_titanic"))
     regions = merger.decision_tree_to_decision_table(tree, train_features_df)
     regions_list.append(regions)
     constructed_trees.append(tree)
@@ -386,6 +390,7 @@ feature_descriptors = [(DISCRETE, len(np.unique(train_features_df['Pclass']))),
                        (DISCRETE, len(np.unique(train_features_df['Age']))),
                        (DISCRETE, len(np.unique(train_features_df['SibSp']))),
                        (CONTINUOUS, ), (DISCRETE, len(np.unique(train_features_df['Embarked'])))]
+
 feature_mins = {}
 feature_maxs = {}
 
@@ -400,7 +405,8 @@ merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], 
 
 new_tree = merger.regions_to_tree(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
 
-constructed_trees.append(new_tree)
+
+# constructed_trees.append(new_tree)
 
 columns = ['PassengerId','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
 df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_test.csv'), sep=',')
@@ -417,20 +423,20 @@ columns = ['PassengerId', 'Survived']
 submission_c45 = DataFrame(columns=columns)
 submission_cart = DataFrame(columns=columns)
 submission_quest = DataFrame(columns=columns)
-submission_merge = DataFrame(columns=columns)
+# submission_merge = DataFrame(columns=columns)
 
 for i in range(len(test_features_df.index)):
     sample = test_features_df.loc[i]
     submission_c45.loc[len(submission_c45)] = [int(sample['PassengerId']), constructed_trees[0].evaluate(sample)]
     submission_cart.loc[len(submission_cart)] = [int(sample['PassengerId']), constructed_trees[1].evaluate(sample)]
     submission_quest.loc[len(submission_quest)] = [int(sample['PassengerId']), constructed_trees[2].evaluate(sample)]
-    submission_merge.loc[len(submission_merge)] = [int(sample['PassengerId']), constructed_trees[3].evaluate(sample)]
+    # submission_merge.loc[len(submission_merge)] = [int(sample['PassengerId']), constructed_trees[3].evaluate(sample)]
+submission_c45["PassengerId"] =submission_c45["PassengerId"].astype(int)
+submission_cart["PassengerId"] =submission_cart["PassengerId"].astype(int)
+submission_quest["PassengerId"] =submission_quest["PassengerId"].astype(int)
 
 submission_c45.to_csv('submission_c45', index=False)
 submission_cart.to_csv('submission_cart', index=False)
 submission_quest.to_csv('submission_quest', index=False)
 submission_merge.to_csv('submission_merge', index=False)
 """
-
-
-
