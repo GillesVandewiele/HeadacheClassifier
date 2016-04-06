@@ -63,36 +63,150 @@ class TreeEvaluator(object):
 
         pl.show()
 
+SEED = 500
 
-
-
-np.random.seed(26101993)    # 84846513
+np.random.seed(13)    # 84846513
 
 
 
 # Read csv into pandas frame
 # columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
-columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-           'number of vessels', 'thal', 'disease']
-df = read_csv(os.path.join(os.path.join('..', 'data'), 'heart.dat'), sep=' ')
+# columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+#            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+#            'number of vessels', 'thal', 'disease']
+# df = read_csv(os.path.join(os.path.join('..', 'data'), 'heart.dat'), sep=' ')
 # df = read_csv(os.path.join(os.path.join('..', 'data'), 'car.data'), sep=',')
-df.columns = columns
+columns = ['PassengerId','Survived', 'Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
+df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
 
-print len(np.unique(df['age']))
-descriptors = [(DISCRETE, len(np.unique(df['age']))), (DISCRETE, len(np.unique(df['sex']))),
-               (DISCRETE, len(np.unique(df['chest pain type']))), (CONTINUOUS), (CONTINUOUS),
-               (DISCRETE, len(np.unique(df['fasting blood sugar']))),
-               (DISCRETE, len(np.unique(df['resting electrocardio']))), (CONTINUOUS),
-               (DISCRETE, len(np.unique(df['exercise induced angina']))), (CONTINUOUS),
-               (DISCRETE, len(np.unique(df['slope peak']))), (DISCRETE, len(np.unique(df['number of vessels']))),
-               (DISCRETE, len(np.unique(df['thal']))), (DISCRETE, len(np.unique(df['disease'])))]
+
+df.columns = columns
+df = df[['Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked', 'Survived']].copy()
+df = df.dropna()
+
+mapping_sex = {'male': 1, 'female': 2}
+mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
+df['Sex'] = df['Sex'].map(mapping_sex)
+df['Embarked'] = df['Embarked'].map(mapping_embarked)
+
+
 # mapping_buy_maint = {'low': 0, 'med': 1, 'high': 2, 'vhigh': 3}
 # mapping_doors = {'2': 0, '3': 1, '4': 2, '5more': 3}
 # mapping_persons = {'2': 0, '4': 1, 'more': 2}
 # mapping_lug = {'small': 0, 'med': 1, 'big': 2}
 # mapping_safety = {'low': 0, 'med': 1, 'high': 2}
 # mapping_class = {'unacc': 1, 'acc': 2, 'good': 3, 'vgood': 4}
+#
+# df['maint'] = df['maint'].map(mapping_buy_maint)
+# df['buying'] = df['buying'].map(mapping_buy_maint)
+# df['doors'] = df['doors'].map(mapping_doors)
+# df['persons'] = df['persons'].map(mapping_persons)
+# df['lug_boot'] = df['lug_boot'].map(mapping_lug)
+# df['safety'] = df['safety'].map(mapping_safety)
+# df['class'] = df['class'].map(mapping_class).astype(int)
+
+labels_df = DataFrame()
+labels_df['cat'] = df['Survived'].copy()
+features_df = df.copy()
+features_df = features_df.drop('Survived', axis=1)
+permutation = np.random.permutation(features_df.index)
+features_df = features_df.reindex(permutation)
+features_df = features_df.reset_index(drop=True)
+labels_df = labels_df.reindex(permutation)
+labels_df = labels_df.reset_index(drop=True)
+
+# train_features_df = features_df.head(int(0.8*len(features_df.index)))
+# test_features_df = features_df.tail(int(0.2*len(features_df.index)))
+# train_labels_df = labels_df.head(int(0.8*len(labels_df.index)))
+# test_labels_df = labels_df.tail(int(0.2*len(labels_df.index)))
+#
+df = features_df.copy() # train_features_df
+df['cat'] = labels_df['cat'].copy() # train_labels_df when cutting into test and train set
+
+c45 = C45Constructor(cf=0.15)
+cart = CARTConstructor(min_samples_leaf=3)
+quest = QuestConstructor(default=1, max_nr_nodes=3, discrete_thresh=5, alpha=0.1)
+tree_constructors = [c45, cart, quest]
+trees = []
+for tree_constructor in tree_constructors:
+    tree = tree_constructor.construct_tree(features_df, labels_df)
+    trees.append(tree)
+
+merger = DecisionTreeMerger()
+best_tree = merger.genetic_algorithm(df, 'cat', tree_constructors, seed=SEED, num_iterations=10)
+best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
+trees.append(best_tree)
+
+columns = ['PassengerId','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
+df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_test.csv'), sep=',')
+df.columns = columns
+
+test_features_df = df[['PassengerId', 'Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked']]
+test_features_df['Sex'] = test_features_df['Sex'].map(mapping_sex)
+test_features_df['Embarked'] = test_features_df['Embarked'].map(mapping_embarked)
+
+columns = ['PassengerId', 'Survived']
+submission_merge = DataFrame(columns=columns)
+submission_c45 = DataFrame(columns=columns)
+
+for i in range(len(test_features_df.index)):
+    sample = test_features_df.loc[i]
+    submission_merge.loc[len(submission_merge)] = [int(sample['PassengerId']), best_tree.evaluate(sample)]
+    submission_c45.loc[len(submission_merge)] = [int(sample['PassengerId']), trees[0].evaluate(sample)]
+
+
+submission_merge.to_csv('submission_genetic', index=False)
+submission_c45.to_csv('submission_c45', index=False)
+
+
+
+
+# tree_confusion_matrices = {}
+# for tree in trees:
+#     predicted_labels = tree.evaluate_multiple(test_features_df)
+#     if tree not in tree_confusion_matrices:
+#         tree_confusion_matrices[tree] = [tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))]
+#     else:
+#         tree_confusion_matrices[tree].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
+#
+# fig = plt.figure()
+# tree_confusion_matrices_mean = {}
+# counter = 1
+# for tree in trees:
+#     diagonal_sum = sum([tree_confusion_matrices[tree][0][i][i] for i in range(len(tree_confusion_matrices[tree][0]))])
+#     total_count = np.sum(tree_confusion_matrices[tree])
+#     print tree_confusion_matrices[tree], float(diagonal_sum)/float(total_count)
+#
+#     tree_confusion_matrices_mean[tree] = np.zeros(tree_confusion_matrices[tree][0].shape)
+#     for i in range(len(tree_confusion_matrices[tree])):
+#         tree_confusion_matrices_mean[tree] = np.add(tree_confusion_matrices_mean[tree], tree_confusion_matrices[tree][i])
+#     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], len(tree_confusion_matrices[tree]))
+#     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], np.matrix.sum(np.asmatrix(tree_confusion_matrices_mean[tree]))).round(3)
+#
+#     ax = fig.add_subplot(len(trees), 1, counter)
+#     cax = ax.matshow(tree_confusion_matrices[tree], cmap=plt.get_cmap('RdYlGn'))
+#     for (j,i),label in np.ndenumerate(tree_confusion_matrices[tree]):
+#         ax.text(i,j,label,ha='center',va='center')
+#     fig.colorbar(cax)
+#     counter += 1
+#
+# pl.show()
+
+"""
+# print len(np.unique(df['age']))
+# descriptors = [(DISCRETE, len(np.unique(df['age']))), (DISCRETE, len(np.unique(df['sex']))),
+#                (DISCRETE, len(np.unique(df['chest pain type']))), (CONTINUOUS), (CONTINUOUS),
+#                (DISCRETE, len(np.unique(df['fasting blood sugar']))),
+#                (DISCRETE, len(np.unique(df['resting electrocardio']))), (CONTINUOUS),
+#                (DISCRETE, len(np.unique(df['exercise induced angina']))), (CONTINUOUS),
+#                (DISCRETE, len(np.unique(df['slope peak']))), (DISCRETE, len(np.unique(df['number of vessels']))),
+#                (DISCRETE, len(np.unique(df['thal']))), (DISCRETE, len(np.unique(df['disease'])))]
+mapping_buy_maint = {'low': 0, 'med': 1, 'high': 2, 'vhigh': 3}
+mapping_doors = {'2': 0, '3': 1, '4': 2, '5more': 3}
+mapping_persons = {'2': 0, '4': 1, 'more': 2}
+mapping_lug = {'small': 0, 'med': 1, 'big': 2}
+mapping_safety = {'low': 0, 'med': 1, 'high': 2}
+mapping_class = {'unacc': 1, 'acc': 2, 'good': 3, 'vgood': 4}
 # df['maint'] = df['maint'].map(mapping_buy_maint)
 # df['buying'] = df['buying'].map(mapping_buy_maint)
 # df['doors'] = df['doors'].map(mapping_doors)
@@ -105,22 +219,19 @@ descriptors = [(DISCRETE, len(np.unique(df['age']))), (DISCRETE, len(np.unique(d
 # df = df.reset_index(drop=True)
 # df = df.head(300)
 
-#features_column_names = ['resting blood pressure', 'serum cholestoral', 'max heartrate', 'oldpeak']
-#feature_descriptors = [CONTINUOUS, CONTINUOUS, CONTINUOUS, CONTINUOUS]
-#column_names = ['resting blood pressure', 'serum cholestoral', 'max heartrate', 'oldpeak', 'disease']
-features_column_names = ['number of vessels', 'max heartrate', 'thal', 'chest pain type', 'serum cholestoral', 'age']
-feature_descriptors = [(DISCRETE, len(np.unique(df['number of vessels']))), (CONTINUOUS,),
-                       (DISCRETE, len(np.unique(df['thal']))), (DISCRETE, len(np.unique(df['chest pain type']))),
-                       (CONTINUOUS, ), (DISCRETE, len(np.unique(df['age'])))]
-column_names = ['number of vessels', 'max heartrate', 'thal', 'chest pain type', 'serum cholestoral', 'age', 'disease']
+# features_column_names = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety']
+features_column_names = ['number of vessels', 'max heartrate', 'thal', 'chest pain type']
+# feature_descriptors = [(DISCRETE, len(np.unique(df['number of vessels']))), (CONTINUOUS,),
+#                        (DISCRETE, len(np.unique(df['thal']))), (DISCRETE, len(np.unique(df['chest pain type']))),
+#                        (CONTINUOUS, ), (DISCRETE, len(np.unique(df['age'])))]
+column_names = ['number of vessels', 'max heartrate', 'thal', 'chest pain type', 'disease']
 df = df[column_names]
+
 labels_df = DataFrame()
 labels_df['cat'] = df['disease'].copy()
 features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
-features_df = features_df/features_df.max()
-
-print features_df
+# features_df = features_df/features_df.max()
 
 permutation = np.random.permutation(features_df.index)
 features_df = features_df.reindex(permutation)
@@ -147,7 +258,7 @@ constructed_trees = []
 for tree_constructor in tree_constructors:
     tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
     tree.populate_samples(train_features_df, train_labels_df['cat'])
-    #tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
+    tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
     regions = merger.decision_tree_to_decision_table(tree, train_features_df)
     regions_list.append(regions)
     constructed_trees.append(tree)
@@ -168,7 +279,7 @@ merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2],
                                                feature_mins)
 merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
                                                feature_mins)
-samples_df = merger.generate_samples(merged_regions, features_column_names, feature_descriptors)
+# samples_df = merger.generate_samples(merged_regions, features_column_names, feature_descriptors)
 
 # merger.plot_regions_with_points("rect_with_points.png", merged_regions, ['1', '2'], features_column_names[0],
 #                                 features_column_names[1], samples_df,
@@ -176,26 +287,26 @@ samples_df = merger.generate_samples(merged_regions, features_column_names, feat
 #                                 y_max=np.max(features_df[features_column_names[1]].values),
 #                                 x_min=np.min(features_df[features_column_names[0]].values),
 #                                 y_min=np.min(features_df[features_column_names[1]].values))
+#
+# new_labels_df = DataFrame()
+# new_labels_df['cat'] = samples_df['cat'].copy()
+# new_features_df = samples_df.copy()
+# new_features_df = new_features_df.drop('cat', axis=1)
+# new_features_df = new_features_df.astype(float)
 
-new_labels_df = DataFrame()
-new_labels_df['cat'] = samples_df['cat'].copy()
-new_features_df = samples_df.copy()
-new_features_df = new_features_df.drop('cat', axis=1)
-new_features_df = new_features_df.astype(float)
+# print new_features_df
 
-print new_features_df
+# cart_new = CARTConstructor(min_samples_leaf=1)
+# c45_new = C45Constructor(cf=1.0)
+# new_tree = c45_new.construct_tree(new_features_df, new_labels_df)
+# new_tree.visualise(os.path.join(os.path.join('..', 'data'), "new_tree"))
 
-cart_new = CARTConstructor(min_samples_leaf=1)
-c45_new = C45Constructor(cf=1.0)
-new_tree = c45_new.construct_tree(new_features_df, new_labels_df)
-new_tree.visualise(os.path.join(os.path.join('..', 'data'), "new_tree"))
-"""
-"""
-new_tree = merger.regions_to_tree(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
-new_tree.visualise(os.path.join(os.path.join('..', 'data'), 'new_tree'))
-"""
-"""
-trees = [constructed_trees[0], constructed_trees[1], constructed_trees[2], new_tree]
+
+new_tree2 = merger.regions_to_tree_improved(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
+new_tree2.visualise(os.path.join(os.path.join('..', 'data'), 'new_tree2'))
+
+
+trees = [constructed_trees[0], constructed_trees[1], constructed_trees[2], new_tree2]#, new_tree]
 
 tree_confusion_matrices = {}
 for tree in trees:
@@ -209,6 +320,10 @@ fig = plt.figure()
 tree_confusion_matrices_mean = {}
 counter = 1
 for tree in trees:
+    diagonal_sum = sum([tree_confusion_matrices[tree][0][i][i] for i in range(len(tree_confusion_matrices[tree][0]))])
+    total_count = np.sum(tree_confusion_matrices[tree])
+    print tree_confusion_matrices[tree], float(diagonal_sum)/float(total_count)
+
     tree_confusion_matrices_mean[tree] = np.zeros(tree_confusion_matrices[tree][0].shape)
     for i in range(len(tree_confusion_matrices[tree])):
         tree_confusion_matrices_mean[tree] = np.add(tree_confusion_matrices_mean[tree], tree_confusion_matrices[tree][i])
@@ -226,15 +341,17 @@ pl.show()
 
 
 """
+"""
 # Read csv into pandas frame
 columns = ['PassengerId','Survived','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
 df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
 df.columns = columns
 
-useful_df = df[['Survived', 'Pclass', 'Sex', 'Age','Parch', 'Fare']]
+useful_df = df[['Survived', 'Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked']]
 useful_df = useful_df.dropna()
 
-train_features_df = useful_df[['Pclass', 'Sex', 'Age','Parch', 'Fare']].copy()
+train_features_df = useful_df[['Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked']].copy()
+
 train_labels_df = useful_df[['Survived']].copy()
 train_labels_df.columns = ['cat']
 train_labels_df = train_labels_df.reset_index(drop=True)
@@ -248,7 +365,8 @@ mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
 train_features_df['Sex'] = train_features_df['Sex'].map(mapping_sex)
 # train_features_df['Embarked'] = train_features_df['Embarked'].map(mapping_embarked)
 
-# train_features_df = train_features_df/train_features_df.max()
+#train_features_df = train_features_df/train_features_df.max()
+
 train_features_df = train_features_df.reset_index(drop=True)
 
 c45 = C45Constructor(cf=0.15, gain_ratio=True)
@@ -266,12 +384,13 @@ for tree_constructor in tree_constructors:
     regions_list.append(regions)
     constructed_trees.append(tree)
 
-features_column_names = ['Pclass', 'Sex', 'Age','Parch', 'Fare']
-# feature_descriptors = [(DISCRETE, len(np.unique(train_features_df['Pclass']))),
-#                        (DISCRETE, len(np.unique(train_features_df['Sex']))),
-#                        (DISCRETE, len(np.unique(train_features_df['Age']))),
-#                        (DISCRETE, len(np.unique(train_features_df['SibSp']))),
-#                        (CONTINUOUS, ), (DISCRETE, len(np.unique(train_features_df['Embarked'])))]
+features_column_names = ['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']
+feature_descriptors = [(DISCRETE, len(np.unique(train_features_df['Pclass']))),
+                       (DISCRETE, len(np.unique(train_features_df['Sex']))),
+                       (DISCRETE, len(np.unique(train_features_df['Age']))),
+                       (DISCRETE, len(np.unique(train_features_df['SibSp']))),
+                       (CONTINUOUS, ), (DISCRETE, len(np.unique(train_features_df['Embarked'])))]
+
 feature_mins = {}
 feature_maxs = {}
 
@@ -279,21 +398,13 @@ for feature in features_column_names:
     feature_mins[feature] = np.min(train_features_df[feature])
     feature_maxs[feature] = np.max(train_features_df[feature])
 
-# merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2], features_column_names, feature_maxs,
-#                                                feature_mins)
-# merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
-#                                                feature_mins)
-"""
-samples_df = merger.generate_samples(merged_regions, features_column_names, feature_descriptors)
+merged_regions = merger.calculate_intersection(regions_list[0], regions_list[2], features_column_names, feature_maxs,
+                                               feature_mins)
+merged_regions = merger.calculate_intersection(merged_regions, regions_list[1], features_column_names, feature_maxs,
+                                               feature_mins)
 
-print samples_df
-new_labels_df = DataFrame()
-new_labels_df['cat'] = samples_df['cat'].copy()
-new_features_df = samples_df.copy()
-new_features_df = new_features_df.drop('cat', axis=1)
-new_features_df = new_features_df.astype(float)
-"""
-# new_tree = merger.regions_to_tree(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
+new_tree = merger.regions_to_tree(train_features_df, train_labels_df, merged_regions, features_column_names, feature_mins, feature_maxs)
+
 
 # constructed_trees.append(new_tree)
 
@@ -301,16 +412,12 @@ columns = ['PassengerId','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','F
 df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_test.csv'), sep=',')
 df.columns = columns
 
-test_features_df = df[['PassengerId', 'Pclass', 'Sex', 'Age','Parch', 'Fare']]
+test_features_df = df[['PassengerId', 'Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked']]
 test_features_df['Sex'] = test_features_df['Sex'].map(mapping_sex)
-# test_features_df['Embarked'] = test_features_df['Embarked'].map(mapping_embarked)
-
-
-
-test_features_df = test_features_df.fillna(age_avg)
-print test_features_df
+test_features_df['Embarked'] = test_features_df['Embarked'].map(mapping_embarked)
+# print test_features_df
 # test_features_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']] = test_features_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']]/test_features_df[['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']].max()
-print test_features_df
+# print test_features_df
 
 columns = ['PassengerId', 'Survived']
 submission_c45 = DataFrame(columns=columns)
@@ -331,7 +438,5 @@ submission_quest["PassengerId"] =submission_quest["PassengerId"].astype(int)
 submission_c45.to_csv('submission_c45', index=False)
 submission_cart.to_csv('submission_cart', index=False)
 submission_quest.to_csv('submission_quest', index=False)
-# submission_merge.to_csv('submission_merge', index=False)
-
-
+submission_merge.to_csv('submission_merge', index=False)
 """

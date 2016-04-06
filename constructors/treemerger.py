@@ -1,6 +1,6 @@
 import copy
 import random
-from pandas import DataFrame
+from pandas import DataFrame, concat
 
 import math
 import matplotlib.pyplot as plt
@@ -8,6 +8,10 @@ import matplotlib.patches as patches
 import numpy as np
 
 import operator
+
+import time
+
+from sklearn.utils import resample
 
 from objects.decisiontree import DecisionTree
 from objects.featuredescriptors import CONTINUOUS
@@ -533,118 +537,247 @@ class DecisionTreeMerger(object):
 
     # TODO: write algorithm that returns all possible lines in regions
 
+    def find_lines(self, regions, features, feature_mins, feature_maxs):
+        if len(regions) <= 0: return {}
 
-    # def regions_to_tree_improved(features_df, labels_df, regions, features, feature_mins, feature_maxs, max_samples=1):
-    # # First we create a pandas dataframe with all left-upper points and their widths for each dimension of each region
-    # points_columns = []
-    # for _feature in features:
-    #     points_columns.append(_feature)
-    #     points_columns.append(_feature+'_width')
-    # points = DataFrame(columns=points_columns)
-    # for region in regions:
-    #     entry = {}
-    #     for _feature in features:
-    #         entry[_feature] = region[_feature][0]
-    #         entry[_feature+'_width'] = region[_feature][1] - region[_feature][0]
-    #     points = points.append(entry, ignore_index=True)
-    #
-    # print points
-    #
-    # lines_columns = []
-    # for _feature in features:
-    #     lines_columns.append(_feature+'_1')
-    #     lines_columns.append(_feature+'_2')
-    # lines = DataFrame(columns=lines_columns)
-    #
-    # # For each point and each feature, if point+feature_widths is in the points set as well, there is a line
-    # # running there, we try to draw the line as far as possible and add it to a new dataframe
-    # for point_index in range(len(points.index)):
-    #     for _feature in features:  # try drawing a line across this dimension
-    #         current_point = point_index
-    #         other_features = list(set(features) - set([_feature]))
-    #         searching = True
-    #         while searching:
-    #             boolean_series = (points[_feature] == (points.iloc[current_point][_feature] +
-    #                                                    points.iloc[current_point][_feature+'_width'])).values
-    #             boolean_series &= (points[_feature + '_width'] != 0).values
-    #
-    #             for other_feature in other_features:
-    #                 if sum(boolean_series) == 0:
-    #                     searching = False
-    #                     break
-    #                 boolean_series &= (points[other_feature] == points.iloc[current_point][other_feature]).values
-    #                 boolean_series &= (points[other_feature+'_width'] != 0).values
-    #
-    #             entry = {}
-    #             for ___feature in features:
-    #                 entry[___feature+'_1'] = points.iloc[point_index][___feature]
-    #                 entry[___feature+'_2'] = points.iloc[current_point][___feature] + \
-    #                                          points.iloc[current_point][___feature+'_width']
-    #             lines = lines.append(entry, ignore_index=True)
-    #
-    #             found_line = np.where(boolean_series == True)
-    #
-    #             if len(found_line[0]) > 0:
-    #                 current_point = found_line[0][0]
-    #             else:
-    #                 searching = False
-    #
-    # print lines
-    #
-    # split_lines = {}
-    # for _feature in features:  # try drawing a line across this dimension
-    #     split_lines[_feature] = []
-    #     other_features = list(set(features) - set([_feature]))
-    #     boolean_series = (lines[other_features[0]+'_1'] == feature_mins[other_features[0]])
-    #     boolean_series &= (lines[other_features[0]+'_2'] == feature_maxs[other_features[0]])
-    #     print np.where(boolean_series==True)
-    #     for k in range(1, len(other_features)):
-    #         boolean_series &= (lines[other_features[k]+'_1'] == feature_mins[other_features[k]])
-    #         boolean_series &= (lines[other_features[k]+'_2'] == feature_maxs[other_features[k]])
-    #         print np.where(boolean_series==True)
-    #     if sum(boolean_series) > 0:
-    #         for index in np.where(boolean_series==True)[0]:
-    #             split_lines[_feature].append(lines.iloc[index][_feature+'_1'])
-    # for key in split_lines:
-    #     split_lines[key] = np.unique(split_lines[key])
-    #
-    # print split_lines
-    #
-    # # When we looped over each possible feature and found each possible split line, we split the data
-    # # Using the feature and value of the line and pick the best one
-    # data = DataFrame(features_df)
-    # data['cat'] = labels_df
-    # info_gains = {}
-    # for key in split_lines:
-    #     for value in split_lines[key]:
-    #         node = divide_data(data, key, value)
-    #         split_crit = split_criterion(node)
-    #         if split_crit > 0:
-    #             info_gains[node] = split_criterion(node)
-    #
-    # if len(info_gains) > 0:
-    #     best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
-    #     node = DecisionTree(label=best_split_node.label, value=best_split_node.value, data=best_split_node.data)
-    # else:
-    #     node = DecisionTree(label=str(np.argmax(np.bincount(labels_df['cat'].values.astype(int)))), data=data, value=None)
-    #     return node
-    #
-    # ##########################################################################
-    #
-    # # We call recursively with the splitted data and set the bounds of feature f
-    # # for left child: set upper bounds to the value of the chosen line
-    # # for right child: set lower bounds to value of chosen line
-    # feature_mins_right = feature_mins.copy()
-    # feature_mins_right[node.label] = node.value
-    # feature_maxs_left = feature_maxs.copy()
-    # feature_maxs_left[node.label] = node.value
-    # if len(best_split_node.left.data) >= max_samples and len(best_split_node.right.data) >= max_samples:
-    #     node.left = regions_to_tree_improved(best_split_node.left.data.drop('cat', axis=1), best_split_node.left.data[['cat']],
-    #                                 regions, features, feature_mins, feature_maxs_left)
-    #     node.right = regions_to_tree_improved(best_split_node.right.data.drop('cat', axis=1), best_split_node.right.data[['cat']],
-    #                                 regions, features, feature_mins_right, feature_maxs)
-    # else:
-    #     node.label = str(np.argmax(np.bincount(labels_df['cat'].values.astype(int))))
-    #     node.value = None
-    #
-    # return node
+        lines = {}
+        # First convert the region information into dataframes
+        columns = []
+        for feature in features:
+            columns.append(feature+'_lb')
+            columns.append(feature+'_ub')
+        columns.append('class')
+        regions_df = DataFrame(columns=columns)
+        for region in regions:
+            entry = []
+            for feature in features:
+                entry.append(region[feature][0])
+                entry.append(region[feature][1])
+            entry.append(region['class'])
+            regions_df.loc[len(regions_df)] = entry
+
+        for feature in features:
+            other_features = list(set(features) - set([feature]))
+            lb_bool_serie = [True]*len(regions_df)
+            ub_bool_serie = [True]*len(regions_df)
+            for other_feature in other_features:
+                lb_bool_serie &= (regions_df[other_feature+'_lb'] == feature_mins[other_feature]).values
+                ub_bool_serie &= (regions_df[other_feature+'_ub'] == feature_maxs[other_feature]).values
+
+            lower_upper_regions = concat([regions_df[lb_bool_serie], regions_df[ub_bool_serie]])
+            lines[feature] = np.unique(lower_upper_regions[lower_upper_regions.duplicated(feature+'_lb', False)][feature+'_lb'])
+
+        return lines
+
+    def calculate_info_gains(self, lines, features_df, labels_df):
+        data = DataFrame(features_df)
+        data['cat'] = labels_df
+        info_gains = {}
+        for key in lines:
+            for value in lines[key]:
+                node = self.divide_data(data, key, value)
+                split_crit = self.split_criterion(node)
+                if split_crit > 0:
+                    info_gains[node] = self.split_criterion(node)
+        return info_gains
+
+
+    def regions_to_tree_improved(self, features_df, labels_df, regions, features, feature_mins, feature_maxs, max_samples=1):
+        start = time.clock()
+        lines = self.find_lines(regions, features, feature_mins, feature_maxs)
+        end = time.clock()
+        # print "Found lines for ", len(regions), " regions and ", len(features), " features in ", (end-start), " seconds"
+        # print lines
+
+        if lines is None or len(lines) <= 0:
+            return DecisionTree(label=str(np.argmax(np.bincount(labels_df['cat'].values.astype(int)))), value=None, data=features_df)
+
+        start = time.clock()
+        info_gains = self.calculate_info_gains(lines, features_df, labels_df)
+        end = time.clock()
+        # print "Calculated info gains ", len(lines), " features and ", len(features_df), " samples in ", (end-start), " seconds"
+        # print info_gains
+
+        if len(info_gains) > 0:
+            best_split_node = max(info_gains.items(), key=operator.itemgetter(1))[0]
+            node = DecisionTree(label=best_split_node.label, value=best_split_node.value, data=best_split_node.data)
+        else:
+            node = DecisionTree(label=str(np.argmax(np.bincount(labels_df['cat'].values.astype(int)))), data=features_df, value=None)
+            return node
+        # print node.label, node.value
+
+        ##########################################################################
+
+        # We call recursively with the splitted data and set the bounds of feature f
+        # for left child: set upper bounds to the value of the chosen line
+        # for right child: set lower bounds to value of chosen line
+        feature_mins_right = feature_mins.copy()
+        feature_mins_right[node.label] = node.value
+        feature_maxs_left = feature_maxs.copy()
+        feature_maxs_left[node.label] = node.value
+        regions_left = []
+        regions_right = []
+        for region in regions:
+            if region[best_split_node.label][0] < best_split_node.value:
+                regions_left.append(region)
+            else:
+                regions_right.append(region)
+        if len(regions_left) >= max_samples or len(regions_right) >= max_samples:
+            node.left = self.regions_to_tree_improved(best_split_node.left.data.drop('cat', axis=1),
+                                                      best_split_node.left.data[['cat']], regions_left, features,
+                                                      feature_mins, feature_maxs_left)
+            node.right = self.regions_to_tree_improved(best_split_node.right.data.drop('cat', axis=1),
+                                                       best_split_node.right.data[['cat']], regions_right, features,
+                                                       feature_mins_right, feature_maxs)
+        else:
+            node.label = str(np.argmax(np.bincount(labels_df['cat'].values.astype(int))))
+            node.value = None
+
+        return node
+
+    def genetic_algorithm(self, data, cat_name, tree_constructors, tournament=5, number_of_resamples=10,
+                          test_fraction=0.4, num_iterations=3, seed=1337):
+
+        print "Initializing"
+        #################################
+        #       Initialisation          #
+        #################################
+        np.random.seed(seed)
+
+        feature_mins = {}
+        feature_maxs = {}
+        feature_column_names = list(set(data.columns) - set([cat_name]))
+
+        for feature in feature_column_names:
+                feature_mins[feature] = np.min(data[feature])
+                feature_maxs[feature] = np.max(data[feature])
+
+        train_features_resampled_dfs = []
+        train_labels_resampled_dfs = []
+
+        ###############################################
+        #      Bootstrapping to create population     #
+        ###############################################
+
+        for k in range(number_of_resamples):
+            resampled_data = resample(data, replace=True, n_samples=len(data), random_state=seed)
+            resampled_data = resampled_data.reset_index(drop=True)
+            labels_df = DataFrame()
+            labels_df['cat'] = resampled_data[cat_name].copy()
+            features_df = resampled_data.copy()
+            features_df = features_df.drop(cat_name, axis=1)
+
+            permutation = np.random.permutation(features_df.index)
+            features_df = features_df.reindex(permutation)
+            features_df = features_df.reset_index(drop=True)
+            labels_df = labels_df.reindex(permutation)
+            labels_df = labels_df.reset_index(drop=True)
+
+            train_features_resampled_dfs.append(features_df.head(int((1-test_fraction)*len(features_df.index))))
+            train_labels_resampled_dfs.append(labels_df.head(int((1-test_fraction)*len(labels_df.index))))
+
+        regions_list = {}
+        constructed_trees = []
+        for tree_constructor in tree_constructors:
+            for _train_features_df, train_labels_df in zip(train_features_resampled_dfs, train_labels_resampled_dfs):
+                tree = tree_constructor.construct_tree(_train_features_df, train_labels_df)
+                tree.populate_samples(_train_features_df, train_labels_df['cat'])
+                #tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
+                regions = self.decision_tree_to_decision_table(tree, _train_features_df)
+                regions_list[tree] = regions
+                constructed_trees.append(tree)
+
+        ###############################################
+        #           The genetic algorithm             #
+        ###############################################
+
+        start = time.clock()
+        for iteration in range(num_iterations):
+
+            print "-----> iteration ", iteration
+
+            # Reset the training and testing set
+            print "Resetting training and testing set..."
+            permutation = np.random.permutation(features_df.index)
+            data = data.reindex(permutation)
+            data = data.reset_index(drop=True)
+
+            labels_df = DataFrame()
+            labels_df['cat'] = resampled_data[cat_name].copy()
+            features_df = resampled_data.copy()
+            features_df = features_df.drop(cat_name, axis=1)
+
+            train_features_df = features_df.head(int((1-test_fraction)*len(features_df.index)))
+            test_features_df = features_df.tail(int(test_fraction*len(features_df.index)))
+            train_labels_df = labels_df.head(int((1-test_fraction)*len(labels_df.index)))
+            test_labels_df = labels_df.tail(int(test_fraction*len(labels_df.index)))
+
+            # For each class, and each possible tree, calculate their respective class accuracy
+            print "Calculating accuracy per class and sorting them accordingly"
+            tree_accuracy_per_class = {}
+            unique_sorted_labels = sorted(np.unique(test_labels_df['cat']))
+            for label in unique_sorted_labels:
+                tree_accuracy_per_class[label] = {}
+            for tree in constructed_trees:
+                predicted_labels = tree.evaluate_multiple(test_features_df)
+                confusion_matrix = tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))
+                for label_index in range(len(unique_sorted_labels)):
+                    row_sum = float(sum(confusion_matrix[label_index]))
+                    nr_correct = float(confusion_matrix[label_index][label_index])
+                    tree_accuracy_per_class[unique_sorted_labels[label_index]][tree] = nr_correct/row_sum
+
+            # Pick the |tournament| best trees for each class, shuffle them randomly for breeding
+            population_per_class = {}
+            for label in unique_sorted_labels:
+                population_per_class[label] = dict(sorted(tree_accuracy_per_class[label].iteritems(), key=operator.itemgetter(1), reverse=True)[:tournament]).keys()
+                random.shuffle(population_per_class[label])
+
+            # Breeding phase: we pick one tree from each of the top class predictor sets and merge them all together
+            # We create the new constructed_trees array and regions list dict for the next iteration
+            constructed_trees = []
+            regions_list_copy = {}
+            for k in range(tournament):
+                print "Breeding phase: ", k
+                merged_regions = self.calculate_intersection(regions_list[population_per_class[unique_sorted_labels[0]][k]],
+                                                             regions_list[population_per_class[unique_sorted_labels[1]][k]],
+                                                             feature_column_names, feature_maxs, feature_mins)
+                constructed_trees.append(population_per_class[unique_sorted_labels[0]][k])
+                constructed_trees.append(population_per_class[unique_sorted_labels[1]][k])
+                regions_list_copy[population_per_class[unique_sorted_labels[0]][k]] = regions_list[population_per_class[unique_sorted_labels[0]][k]]
+                regions_list_copy[population_per_class[unique_sorted_labels[1]][k]] = regions_list[population_per_class[unique_sorted_labels[1]][k]]
+
+                for label_index in range(2, len(unique_sorted_labels)):
+                    merged_regions = self.calculate_intersection(merged_regions,
+                                                                 regions_list[population_per_class[unique_sorted_labels[label_index]][k]],
+                                                                 feature_column_names, feature_maxs, feature_mins)
+                    constructed_trees.append(population_per_class[unique_sorted_labels[label_index]][k])
+                    regions_list_copy[population_per_class[unique_sorted_labels[label_index]][k]] = regions_list[population_per_class[unique_sorted_labels[label_index]][k]]
+
+                new_tree = self.regions_to_tree_improved(train_features_df, train_labels_df, merged_regions,
+                                                         feature_column_names, feature_mins, feature_maxs)
+                constructed_trees.append(new_tree)
+                regions_list_copy[new_tree] = merged_regions
+
+            regions_list = regions_list_copy
+            end = time.clock()
+            print "Took ", (end - start), " seconds"
+            start = end
+
+        # Now take the best trees to return
+        print "Taking best tree.."
+        best_tree = None
+        for tree in constructed_trees:
+            predicted_labels = tree.evaluate_multiple(test_features_df)
+            confusion_matrix = tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))
+            max = 0
+            for label_index in range(len(unique_sorted_labels)):
+                diagonal_sum = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
+                total_count = np.sum(confusion_matrix)
+                accuracy = confusion_matrix, float(diagonal_sum)/float(total_count)
+                if accuracy > max:
+                    max = accuracy
+                    best_tree = tree
+
+        return best_tree
+
+

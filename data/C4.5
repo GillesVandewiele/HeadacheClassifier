@@ -1,35 +1,35 @@
 digraph DT{
 node[fontname="Arial"];
-Node1 [label="oldpeak <= 1.89999997616"];
-Node2 [label="max heartrate <= 150.0"];
-Node3 [label="serum cholestoral <= 248.0"];
-Node4 [label="max heartrate <= 114.0"];
-Node5 [label="2
-{'1': 0.2, '2': 0.8}" shape="box"];
-Node4 -> Node5 [label="true"];
-Node6 [label="1
-{'1': 0.83, '2': 0.17}" shape="box"];
-Node4->Node6 [label="false"];
-Node3 -> Node4 [label="true"];
-Node7 [label="2
-{'1': 0.25, '2': 0.75}" shape="box"];
-Node3->Node7 [label="false"];
+Node1 [label="chest pain type <= 3.0"];
+Node2 [label="number of vessels <= 0.0"];
+Node3 [label="1
+{'1': 0.91, '2': 0.09}" shape="box"];
 Node2 -> Node3 [label="true"];
-Node9 [label="1
-{'1': 0.76, '2': 0.24}" shape="box"];
-Node2->Node9 [label="false"];
-Node1 -> Node2 [label="true"];
-Node12 [label="max heartrate <= 147.0"];
-Node13 [label="2
-{'1': 0.03, '2': 0.97}" shape="box"];
-Node12 -> Node13 [label="true"];
-Node14 [label="oldpeak <= 2.40000009537"];
-Node15 [label="1
+Node4 [label="thal <= 3.0"];
+Node5 [label="1
 {'1': 0.83, '2': 0.17}" shape="box"];
-Node14 -> Node15 [label="true"];
-Node16 [label="2
-{'1': 0.2, '2': 0.8}" shape="box"];
-Node14->Node16 [label="false"];
-Node12->Node14 [label="false"];
-Node1->Node12 [label="false"];
+Node4 -> Node5 [label="true"];
+Node6 [label="2
+{'1': 0.25, '2': 0.75}" shape="box"];
+Node4->Node6 [label="false"];
+Node2->Node4 [label="false"];
+Node1 -> Node2 [label="true"];
+Node8 [label="thal <= 6.0"];
+Node9 [label="number of vessels <= 0.0"];
+Node10 [label="max heartrate <= 118.0"];
+Node11 [label="2
+{'1': 0.0, '2': 1.0}" shape="box"];
+Node10 -> Node11 [label="true"];
+Node12 [label="1
+{'1': 0.84, '2': 0.16}" shape="box"];
+Node10->Node12 [label="false"];
+Node9 -> Node10 [label="true"];
+Node13 [label="2
+{'1': 0.17, '2': 0.83}" shape="box"];
+Node9->Node13 [label="false"];
+Node8 -> Node9 [label="true"];
+Node15 [label="2
+{'1': 0.08, '2': 0.92}" shape="box"];
+Node8->Node15 [label="false"];
+Node1->Node8 [label="false"];
 }
