@@ -1,37 +1,20 @@
 digraph BN{
 node[fontname="Arial"];
-oldpeak [label="oldpeak
+Fare [label="Fare
 " ]; 
-slope_peak [label="slope peak
+Embarked [label="Embarked
 " ]; 
-number_of_vessels [label="number of vessels
+Pclass [label="Pclass
 " ]; 
-exercise_induced_angina [label="exercise induced angina
+SibSp [label="SibSp
 " ]; 
-chest_pain_type [label="chest pain type
+Age [label="Age
 " ]; 
-serum_cholestoral [label="serum cholestoral
+Sex [label="Sex
 " ]; 
-age [label="age
+Survived [label="Survived
 " ]; 
-sex [label="sex
-" ]; 
-thal [label="thal
-" ]; 
-cat [label="cat
-" ]; 
-resting_electrocardio [label="resting electrocardio
-" ]; 
-max_heartrate [label="max heartrate
-" ]; 
-resting_blood_pressure [label="resting blood pressure
-" ]; 
-fasting_blood_sugar [label="fasting blood sugar
-" ]; 
-oldpeak -> slope_peak;
-exercise_induced_angina -> chest_pain_type;
-sex -> thal;
-number_of_vessels -> cat;
-chest_pain_type -> cat;
-thal -> cat;
+Fare -> Embarked;
+Fare -> Pclass;
+Fare -> SibSp;
 }

@@ -9,65 +9,67 @@ from graphviz import Source
 from libpgm.pgmlearner import PGMLearner
 
 dataframes = {}
-# label_column = "Survived"
-label_column = "cat"
+label_column = "Survived"
+
+
+# label_column = "cat"
 
 def learnDiscreteBN(draw_network=False):
-    columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-               'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-               'number of vessels', 'thal', 'disease']
-
-    continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
-                         'max heartrate']
-
-    df = read_csv('../data/heart.dat', sep=' ')
-    # df = df.iloc[np.random.permutation(len(df))]
-    # df = df.reset_index(drop=True)
-    df.columns = columns
-
-    features_column_names = columns[0:len(columns) - 1]
-
-    # labels_column_names = 'disease'
-    column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
-                    'fasting blood sugar', \
-                    'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-                    'number of vessels', 'thal', 'disease']
-    df = df[column_names]
-    # df = df.drop(columns[:3], axis=1)
-    # df = df.drop(columns[4:7], axis=1)
-    # df = df.drop(columns[8:-1], axis=1)
-    labels_df = DataFrame()
-    labels_df['cat'] = df['disease'].copy()
-    features_df = df.copy()
-    features_df = features_df.drop('disease', axis=1)
-
-    # # Read csv into pandas frame
-    # columns = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin',
-    #            'Embarked']
-    # continous_columns = ['Age']
+    # columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+    #            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+    #            'number of vessels', 'thal', 'disease']
     #
-    # df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
-    # # df = df.head(n=20)
+    # continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
+    #                      'max heartrate']
+    #
+    # df = read_csv('../data/heart.dat', sep=' ')
+    # # df = df.iloc[np.random.permutation(len(df))]
+    # # df = df.reset_index(drop=True)
     # df.columns = columns
-    # features_column_names = ['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']
-    # # features_column_names.remove("Survived")
-    # column_names = columns
+    #
+    # features_column_names = columns[0:len(columns) - 1]
+    #
+    # # labels_column_names = 'disease'
+    # column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
+    #                 'fasting blood sugar', \
+    #                 'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+    #                 'number of vessels', 'thal', 'disease']
     # df = df[column_names]
+    # # df = df.drop(columns[:3], axis=1)
+    # # df = df.drop(columns[4:7], axis=1)
+    # # df = df.drop(columns[8:-1], axis=1)
     # labels_df = DataFrame()
-    # labels_df['Survived'] = df['Survived'].copy()
+    # labels_df['cat'] = df['disease'].copy()
     # features_df = df.copy()
-    # features_df = features_df.drop('Survived', axis=1)
-    #
-    # age_avg = features_df['Age'].mean()
-    # features_df = features_df.fillna(age_avg)
-    #
-    # mapping_sex = {'male': 1, 'female': 2}
-    # mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
-    # features_df['Sex'] = features_df['Sex'].map(mapping_sex)
-    # features_df['Embarked'] = features_df['Embarked'].map(mapping_embarked)
-    #
-    # # train_features_df = train_features_df/train_features_df.max()
-    # features_df = features_df.reset_index(drop=True)
+    # features_df = features_df.drop('disease', axis=1)
+
+    # Read csv into pandas frame
+    columns = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin',
+               'Embarked']
+    continous_columns = ['Age']
+
+    df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
+    # df = df.head(n=20)
+    df.columns = columns
+    features_column_names = ['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']
+    # features_column_names.remove("Survived")
+    column_names = columns
+    df = df[column_names]
+    labels_df = DataFrame()
+    labels_df['Survived'] = df['Survived'].copy()
+    features_df = df.copy()
+    features_df = features_df.drop('Survived', axis=1)
+
+    age_avg = features_df['Age'].mean()
+    features_df = features_df.fillna(age_avg)
+
+    mapping_sex = {'male': 1, 'female': 2}
+    mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
+    features_df['Sex'] = features_df['Sex'].map(mapping_sex)
+    features_df['Embarked'] = features_df['Embarked'].map(mapping_embarked)
+
+    # train_features_df = train_features_df/train_features_df.max()
+    features_df = features_df.reset_index(drop=True)
 
     # Read csv into pandas frame
     # columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -245,6 +247,6 @@ learnDiscreteBN(True)
 dict_features = {}
 # dict_features['number of vessels'] = 1
 # dict_features['chest pain type'] = 1
-dict_features['thal'] = 3
+# dict_features['thal'] = 3
 
 print eval_sample(dict_features, True)
