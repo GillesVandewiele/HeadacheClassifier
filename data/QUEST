@@ -1,45 +1,88 @@
 digraph DT{
 node[fontname="Arial"];
-Node1 [label="number of vessels <= 1.0165075197"];
-Node2 [label="thal <= 5.55296023175"];
-Node3 [label="max heartrate <= 121.789353895"];
-Node4 [label="1
-{'1': 0.5, '2': 0.5}" shape="box"];
-Node3 -> Node4 [label="true"];
-Node5 [label="number of vessels <= 0.892940622347"];
-Node6 [label="max heartrate <= 156.871428571"];
-Node7 [label="1
-{'1': 0.75, '2': 0.25}" shape="box"];
-Node6 -> Node7 [label="true"];
-Node8 [label="1
-{'1': 0.98, '2': 0.02}" shape="box"];
-Node6->Node8 [label="false"];
+Node1 [label="Fare <= 72.4153773614"];
+Node2 [label="Fare <= 35.4752782038"];
+Node3 [label="Title <= 8.97312695069"];
+Node4 [label="SibSp <= 1.99471877949"];
+Node5 [label="Age <= 34.2244847145"];
+Node6 [label="1" shape="box"];
 Node5 -> Node6 [label="true"];
-Node9 [label="1
-{'1': 0.61, '2': 0.39}" shape="box"];
-Node5->Node9 [label="false"];
-Node3->Node5 [label="false"];
-Node2 -> Node3 [label="true"];
-Node13 [label="max heartrate <= 164.496769749"];
-Node14 [label="max heartrate <= 138.35"];
-Node15 [label="2
-{'1': 0.18, '2': 0.82}" shape="box"];
+Node7 [label="0" shape="box"];
+Node5->Node7 [label="false"];
+Node4 -> Node5 [label="true"];
+Node8 [label="0" shape="box"];
+Node4->Node8 [label="false"];
+Node3 -> Node4 [label="true"];
+Node10 [label="Sex <= 1.68892377306"];
+Node11 [label="Fare <= 33.6232370676"];
+Node12 [label="Fare <= 31.3606531875"];
+Node13 [label="Fare <= 29.5561879794"];
+Node14 [label="Fare <= 12.4625036232"];
+Node15 [label="TicketPrefixId <= 13.2757917853"];
+Node16 [label="0" shape="box"];
+Node15 -> Node16 [label="true"];
+Node17 [label="TicketNumberStart <= 3.60286041672"];
+Node18 [label="0" shape="box"];
+Node17 -> Node18 [label="true"];
+Node19 [label="1" shape="box"];
+Node17->Node19 [label="false"];
+Node15->Node17 [label="false"];
 Node14 -> Node15 [label="true"];
-Node16 [label="2
-{'1': 0.34, '2': 0.66}" shape="box"];
-Node14->Node16 [label="false"];
+Node21 [label="0" shape="box"];
+Node14->Node21 [label="false"];
 Node13 -> Node14 [label="true"];
-Node17 [label="1
-{'1': 0.57, '2': 0.43}" shape="box"];
-Node13->Node17 [label="false"];
-Node2->Node13 [label="false"];
+Node24 [label="0" shape="box"];
+Node13->Node24 [label="false"];
+Node12 -> Node13 [label="true"];
+Node28 [label="0" shape="box"];
+Node12->Node28 [label="false"];
+Node11 -> Node12 [label="true"];
+Node33 [label="0" shape="box"];
+Node11->Node33 [label="false"];
+Node10 -> Node11 [label="true"];
+Node39 [label="SibSp <= 1.77706837002"];
+Node40 [label="1" shape="box"];
+Node39 -> Node40 [label="true"];
+Node41 [label="Fare <= 22.9941945956"];
+Node42 [label="1" shape="box"];
+Node41 -> Node42 [label="true"];
+Node43 [label="0" shape="box"];
+Node41->Node43 [label="false"];
+Node39->Node41 [label="false"];
+Node10->Node39 [label="false"];
+Node3->Node10 [label="false"];
+Node2 -> Node3 [label="true"];
+Node64 [label="SibSp <= 1.65610121899"];
+Node65 [label="Age <= 44.8537329077"];
+Node66 [label="TicketPrefixId <= 6.62118399608"];
+Node67 [label="1" shape="box"];
+Node66 -> Node67 [label="true"];
+Node68 [label="0" shape="box"];
+Node66->Node68 [label="false"];
+Node65 -> Node66 [label="true"];
+Node69 [label="Age <= 53.6046021555"];
+Node70 [label="0" shape="box"];
+Node69 -> Node70 [label="true"];
+Node71 [label="0" shape="box"];
+Node69->Node71 [label="false"];
+Node65->Node69 [label="false"];
+Node64 -> Node65 [label="true"];
+Node74 [label="Age <= 22.3340574457"];
+Node75 [label="Age <= 3.47782419799"];
+Node76 [label="0" shape="box"];
+Node75 -> Node76 [label="true"];
+Node77 [label="0" shape="box"];
+Node75->Node77 [label="false"];
+Node74 -> Node75 [label="true"];
+Node78 [label="1" shape="box"];
+Node74->Node78 [label="false"];
+Node64->Node74 [label="false"];
+Node2->Node64 [label="false"];
 Node1 -> Node2 [label="true"];
-Node24 [label="thal <= 3.42075623162"];
-Node25 [label="1
-{'1': 0.5, '2': 0.5}" shape="box"];
-Node24 -> Node25 [label="true"];
-Node26 [label="2
-{'1': 0.07, '2': 0.93}" shape="box"];
-Node24->Node26 [label="false"];
-Node1->Node24 [label="false"];
+Node103 [label="TicketPrefixId <= 4.20509946225"];
+Node104 [label="1" shape="box"];
+Node103 -> Node104 [label="true"];
+Node105 [label="0" shape="box"];
+Node103->Node105 [label="false"];
+Node1->Node103 [label="false"];
 }

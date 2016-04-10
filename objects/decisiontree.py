@@ -133,7 +133,8 @@ class DecisionTree(object):
             results.append(self.evaluate(feature_vector))
         return np.asarray(results)
 
-    def plot_confusion_matrix(self, actual_labels, predicted_labels, normalized=False, plot=False):
+    @staticmethod
+    def plot_confusion_matrix(actual_labels, predicted_labels, normalized=False, plot=False):
         confusion_matrix = sklearn.metrics.confusion_matrix(actual_labels, predicted_labels)
         if plot:
             confusion_matrix.plot(normalized=normalized)
