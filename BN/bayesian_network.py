@@ -1,45 +1,75 @@
 import ast
 import collections
+import os
 import pprint
-from lxml.html import open_in_browser
 from pandas import read_csv, DataFrame, pandas
 
 import numpy as np
 from graphviz import Source
 from libpgm.pgmlearner import PGMLearner
-from lxml.etree import HTML
-import lxml
-from tabulate import tabulate
 
 dataframes = {}
+label_column = "Survived"
+
+
+# label_column = "cat"
+
 def learnDiscreteBN(draw_network=False):
-    columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-               'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-               'number of vessels', 'thal', 'disease']
+    # columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+    #            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+    #            'number of vessels', 'thal', 'disease']
+    #
+    # continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
+    #                      'max heartrate']
+    #
+    # df = read_csv('../data/heart.dat', sep=' ')
+    # # df = df.iloc[np.random.permutation(len(df))]
+    # # df = df.reset_index(drop=True)
+    # df.columns = columns
+    #
+    # features_column_names = columns[0:len(columns) - 1]
+    #
+    # # labels_column_names = 'disease'
+    # column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
+    #                 'fasting blood sugar', \
+    #                 'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+    #                 'number of vessels', 'thal', 'disease']
+    # df = df[column_names]
+    # # df = df.drop(columns[:3], axis=1)
+    # # df = df.drop(columns[4:7], axis=1)
+    # # df = df.drop(columns[8:-1], axis=1)
+    # labels_df = DataFrame()
+    # labels_df['cat'] = df['disease'].copy()
+    # features_df = df.copy()
+    # features_df = features_df.drop('disease', axis=1)
 
-    continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
-                         'max heartrate']
+    # Read csv into pandas frame
+    columns = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin',
+               'Embarked']
+    continous_columns = ['Age']
 
-    df = read_csv('../data/heart.dat', sep=' ')
-    # df = df.iloc[np.random.permutation(len(df))]
-    # df = df.reset_index(drop=True)
+    df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
+    # df = df.head(n=20)
     df.columns = columns
-
-    features_column_names = columns[0:len(columns) - 1]
-
-    # labels_column_names = 'disease'
-    column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
-                    'fasting blood sugar', \
-                    'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-                    'number of vessels', 'thal', 'disease']
+    features_column_names = ['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']
+    # features_column_names.remove("Survived")
+    column_names = columns
     df = df[column_names]
-    # df = df.drop(columns[:3], axis=1)
-    # df = df.drop(columns[4:7], axis=1)
-    # df = df.drop(columns[8:-1], axis=1)
     labels_df = DataFrame()
-    labels_df['cat'] = df['disease'].copy()
+    labels_df['Survived'] = df['Survived'].copy()
     features_df = df.copy()
-    features_df = features_df.drop('disease', axis=1)
+    features_df = features_df.drop('Survived', axis=1)
+
+    age_avg = features_df['Age'].mean()
+    features_df = features_df.fillna(age_avg)
+
+    mapping_sex = {'male': 1, 'female': 2}
+    mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
+    features_df['Sex'] = features_df['Sex'].map(mapping_sex)
+    features_df['Embarked'] = features_df['Embarked'].map(mapping_embarked)
+
+    # train_features_df = train_features_df/train_features_df.max()
+    features_df = features_df.reset_index(drop=True)
 
     # Read csv into pandas frame
     # columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -74,11 +104,6 @@ def learnDiscreteBN(draw_network=False):
     # features_column_names = features_df.columns
 
     for i in continous_columns:
-        # features_df[i] = pandas.qcut(features_df[i], 5, labels=False)
-        # print i
-        # print "min: " + str(min(features_df[i]))
-        # print "max: " + str(max(features_df[i]))
-        # print "step: " + str((max(features_df[i])-min(features_df[i]))/5.0)
         bins = np.arange((min(features_df[i])), (max(features_df[i])),
                          ((max(features_df[i]) - min(features_df[i])) / 5.0))
         features_df[i] = pandas.np.digitize(features_df[i], bins=bins)
@@ -88,26 +113,26 @@ def learnDiscreteBN(draw_network=False):
         dict = {}
         for i in features_column_names:
             dict[i] = row[i]
-        dict['cat'] = labels_df['cat'][index]
+        dict[label_column] = labels_df[label_column][index]
         data.append(dict)
 
+    print "Init done"
     learner = PGMLearner()
 
     test = learner.discrete_estimatebn(data=data, pvalparam=0.05, indegree=1)
-
+    print "done learning"
     edges = test.E
     vertices = test.V
     probas = test.Vdata
 
     # print probas
 
-
-
     dot_string = 'digraph BN{\n'
     dot_string += 'node[fontname="Arial"];\n'
 
     # dataframes = {}
 
+    print "save data"
     for vertice in vertices:
         dataframe = DataFrame()
 
@@ -122,7 +147,6 @@ def learnDiscreteBN(draw_network=False):
             for index_outcome, outcome in enumerate(probas[vertice]['vals']):
                 vertex_dict[str(outcome)] = probas[vertice]["cprob"][index_outcome]
 
-
             od = collections.OrderedDict(sorted(vertex_dict.items()))
             # print "Vertice: " + str(vertice)
             # print "%-7s|%-11s" % ("Outcome", "Probability")
@@ -134,7 +158,6 @@ def learnDiscreteBN(draw_network=False):
         else:
             # pp.pprint(probas[vertice])
             dataframe['Outcome'] = None
-
 
             vertexen = {}
             for index_outcome, outcome in enumerate(probas[vertice]['vals']):
@@ -166,7 +189,7 @@ def learnDiscreteBN(draw_network=False):
                 for key in cprobs.keys():
                     array_frame = []
                     array_frame.append((outcome))
-                    print_string = str(int(float(outcome))) + "\t\t"
+                    print_string = str(outcome) + "\t\t"
                     for parent_value, parent in enumerate([i for i in ast.literal_eval(key)]):
                         # print "parent-value:"+str(parent_value)
                         # print "parten:"+str(parent)
@@ -176,13 +199,13 @@ def learnDiscreteBN(draw_network=False):
                     array_frame.append(cprobs[key][counter])
                     # print "lengte array_frame (2): "+str(len(array_frame))
                     # print  cprobs[key][counter]
-                    print_string += str(cprobs[key][counter]) +"\t"
+                    print_string += str(cprobs[key][counter]) + "\t"
                     # for stront in [str(round(float(i), 3)) for i in ast.literal_eval(key)]:
                     #     print_string += stront + "\t\t"
                     # print "print string: " + print_string
                     # print "array_frame:" + str(array_frame)
                     dataframe.loc[len(dataframe)] = array_frame
-                counter+=1
+                counter += 1
 
         dataframes[vertice] = dataframe
         # print tabulate([list(row) for row in dataframe.values], headers=list(dataframe.columns))
@@ -204,25 +227,26 @@ def learnDiscreteBN(draw_network=False):
     dot_string += '}'
     src = Source(dot_string)
     src.render('../data/BN', view=draw_network)
+    print "vizualisation done"
+
 
 def eval_sample(feature_dict, verbose=False):
-    to_predict = 'cat'
+    to_predict = label_column
     print "Evaluating the %s for sample with observed features: %s" % (to_predict, str(feature_dict.keys()))
     df = dataframes[to_predict].copy()
     for feature in feature_dict.keys():
-        if verbose: print "Set value for feature %s to %s"% (feature, str(feature_dict[feature]))
-        df = df[ df[feature] - int(feature_dict[feature]) == 0 ]
+        if verbose: print "Set value for feature %s to %s" % (feature, str(feature_dict[feature]))
+        df = df[df[feature] - int(feature_dict[feature]) == 0]
         df = df.drop(feature, axis=1)
     if verbose: print df
     return df['Probability'].tolist()
 
 
-
 learnDiscreteBN(True)
 # print dataframes['cat']
-dict_features  = {}
-dict_features['number of vessels'] = 1
-dict_features['chest pain type'] = 1
-dict_features['thal'] = 3
+dict_features = {}
+# dict_features['number of vessels'] = 1
+# dict_features['chest pain type'] = 1
+# dict_features['thal'] = 3
 
 print eval_sample(dict_features, True)
