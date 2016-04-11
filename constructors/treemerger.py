@@ -747,8 +747,8 @@ class DecisionTreeMerger(object):
                 confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
 
                 accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
-                print confusion_matrix, accuracy
-                tree_accuracy.append((tree, accuracy))#, region))
+                print tree, confusion_matrix, accuracy
+                tree_accuracy.append((tree, accuracy, 1.0/float(len(regions))))#, region))
                 counter += 1
 
         # for region in start_regions:
@@ -759,13 +759,14 @@ class DecisionTreeMerger(object):
             confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
 
             accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
-            print confusion_matrix, accuracy
-            tree_accuracy.append((tree, accuracy))
+            print tree, confusion_matrix, accuracy
+            regions = self.decision_tree_to_decision_table(tree, features_df)
+            tree_accuracy.append((tree, accuracy, 1.0/float(len(regions))))
 
         print [x for x in sorted(tree_accuracy, key=operator.itemgetter(1), reverse=True)[:min(len(regions_list), population_size)]]
         #print [x for x in sorted(tree_accuracy.iteritems(), key=operator.itemgetter(1), reverse=True)[:min(len(regions), population_size)]]
 
-        best_tree = sorted(tree_accuracy, key=operator.itemgetter(1), reverse=True)[0][0]
+        best_tree = sorted(tree_accuracy, key=operator.itemgetter(1, 2), reverse=True)[0][0]
         # best_region = sorted(tree_accuracy, key=operator.itemgetter(1), reverse=True)[0][2]
         print best_tree
         # best_tree = self.regions_to_tree_improved(features_df, labels_df, best_tree_regions, feature_column_names,

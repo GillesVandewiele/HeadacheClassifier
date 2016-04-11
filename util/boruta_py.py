@@ -12,7 +12,7 @@ import numpy as np
 import scipy as sp
 from statsmodels.sandbox.stats.multicomp import multipletests as multicor
 
-from bottleneck import nanrankdata
+from bottleneck.slow import nanrankdata
 from sklearn.utils import check_X_y
 
 class BorutaPy(object):

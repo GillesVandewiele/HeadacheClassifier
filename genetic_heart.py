@@ -14,6 +14,7 @@ from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
+from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 1337
@@ -25,7 +26,7 @@ columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cho
            'number of vessels', 'thal', 'disease']
 df = read_csv(os.path.join('data', 'heart.dat'), sep=' ')
 df.columns=columns
-#df = df[['number of vessels', 'oldpeak', 'chest pain type', 'thal', 'max heartrate', 'disease']]
+#df = df[['number of vessels', 'oldpeak', 'chest pain type', 'thal', 'max heartrate', 'age', 'serum cholestoral', 'disease']]
 feature_mins = {}
 feature_maxs = {}
 feature_column_names = list(set(df.columns) - set(['disease']))
@@ -40,9 +41,15 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
+num_features = 8
+best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+new_features = DataFrame()
+for k in range(num_features):
+    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+features_df = new_features
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=5)
+cart = CARTConstructor(min_samples_leaf=8)
 quest = QuestConstructor(default=1, max_nr_nodes=5, discrete_thresh=10, alpha=0.25)
 tree_constructors = [c45, cart, quest]
 
@@ -76,7 +83,7 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
-    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
+    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=3,
                                                         num_mutations=2, population_size=7, max_samples=5)
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)

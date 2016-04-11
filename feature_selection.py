@@ -14,65 +14,52 @@ from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
+from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 1337
 N_FOLDS = 3
 
 np.random.seed(SEED)    # 84846513
-columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
-df = read_csv(os.path.join('data', 'car.data'), sep=',')
+columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+           'number of vessels', 'thal', 'disease']
+df = read_csv(os.path.join('data', 'heart.dat'), sep=' ')
 df.columns=columns
-mapping_buy_maint = {'low': 0, 'med': 1, 'high': 2, 'vhigh': 3}
-mapping_doors = {'2': 0, '3': 1, '4': 2, '5more': 3}
-mapping_persons = {'2': 0, '4': 1, 'more': 2}
-mapping_lug = {'small': 0, 'med': 1, 'big': 2}
-mapping_safety = {'low': 0, 'med': 1, 'high': 2}
-mapping_class = {'unacc': 1, 'acc': 2, 'good': 3, 'vgood': 4}
-
-df['maint'] = df['maint'].map(mapping_buy_maint)
-df['buying'] = df['buying'].map(mapping_buy_maint)
-df['doors'] = df['doors'].map(mapping_doors)
-df['persons'] = df['persons'].map(mapping_persons)
-df['lug_boot'] = df['lug_boot'].map(mapping_lug)
-df['safety'] = df['safety'].map(mapping_safety)
-df['class'] = df['class'].map(mapping_class).astype(int)
-
-# perm = np.random.permutation(df.index)
-# df = df.reindex(perm)
-# df = df.tail(0.5*len(df))
-# df = df.reset_index(drop=True)
-
+#df = df[['number of vessels', 'oldpeak', 'chest pain type', 'thal', 'max heartrate', 'age', 'serum cholestoral', 'disease']]
 feature_mins = {}
 feature_maxs = {}
-feature_column_names = list(set(df.columns) - set(['class']))
+feature_column_names = list(set(df.columns) - set(['disease']))
 
 for feature in feature_column_names:
         feature_mins[feature] = np.min(df[feature])
         feature_maxs[feature] = np.max(df[feature])
 df=df.reset_index(drop=True)
 labels_df = DataFrame()
-labels_df['cat'] = df['class'].copy()
+labels_df['cat'] = df['disease'].copy()
 features_df = df.copy()
-features_df = features_df.drop('class', axis=1)
+features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
+num_features = 10
+best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+selected_features_df = DataFrame()
+for k in range(num_features):
+    selected_features_df[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=25)
-quest = QuestConstructor(default=1, max_nr_nodes=15, discrete_thresh=10, alpha=0.15)
-tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
-for tree_constructor in tree_constructors:
-    tree_confusion_matrices[tree_constructor.get_name()] = []
-tree_confusion_matrices["Genetic"] = []
+tree_confusion_matrices["No FS"] = []
+tree_confusion_matrices["RF FS"] = []
+# tree_confusion_matrices["Boruta FS"] = []
 
 skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
 
 for train_index, test_index in skf:
     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()
     train_labels_df, test_labels_df = labels_df.iloc[train_index,:].copy(), labels_df.iloc[test_index,:].copy()
+    train_selected_features, test_selected_features = selected_features_df.iloc[train_index,:].copy(), selected_features_df.iloc[test_index,:].copy()
     train_features_df = train_features_df.reset_index(drop=True)
     test_features_df = test_features_df.reset_index(drop=True)
     train_labels_df = train_labels_df.reset_index(drop=True)
@@ -80,26 +67,15 @@ for train_index, test_index in skf:
     train_df = train_features_df.copy()
     train_df['cat'] = train_labels_df['cat'].copy()
 
-    trees = []
-
-    for tree_constructor in tree_constructors:
-        tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
-        #tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
-        trees.append(tree)
-        predicted_labels = tree.evaluate_multiple(test_features_df)
-        tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat']
-                                                                                               .values.astype(str),
-                                                                    predicted_labels.astype(str)))
-
-
-    merger = DecisionTreeMerger()
-    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
-                                                        num_mutations=2, population_size=7, max_samples=20)
-    #best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
-    predicted_labels = best_tree.evaluate_multiple(test_features_df)
-    tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
-                                              predicted_labels.astype(str)))
-    #raw_input("Press Enter to continue...")
+    no_fs_tree = c45.construct_tree(train_features_df, train_labels_df)
+    rf_fs_tree = c45.construct_tree(train_selected_features, train_labels_df)
+    # tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
+    predicted_labels = no_fs_tree.evaluate_multiple(test_features_df)
+    tree_confusion_matrices["No FS"].append(no_fs_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
+                                            predicted_labels.astype(str)))
+    predicted_labels = rf_fs_tree.evaluate_multiple(test_features_df)
+    tree_confusion_matrices["RF FS"].append(rf_fs_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
+                                            predicted_labels.astype(str)))
 
 tree_confusion_matrices_mean = {}
 for key in tree_confusion_matrices:
@@ -108,7 +84,7 @@ for key in tree_confusion_matrices:
         print matrix
 
 fig = plt.figure()
-fig.suptitle('Accuracy on cars dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
+fig.suptitle('Impact of feature selection on heart disease dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
 counter = 0
 for key in tree_confusion_matrices:
     tree_confusion_matrices_mean[key] = np.zeros(tree_confusion_matrices[key][0].shape)
