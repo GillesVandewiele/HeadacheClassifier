@@ -8,6 +8,7 @@
 from pandas import DataFrame
 import pandas as pd
 
+import math
 from sklearn.cluster import k_means
 from sklearn.feature_selection import chi2, f_classif
 
@@ -23,11 +24,12 @@ class QuestConstructor(TreeConstructor):
     ftp://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/13.0/TREE-QUEST.pdf
     """
 
-    def __init__(self, default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.1):
+    def __init__(self, default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.1, max_depth=20):
         self.default = default
         self.max_nr_nodes = max_nr_nodes
         self.discrete_thresh = discrete_thresh
         self.alpha = alpha
+        self.max_depth=max_depth
 
     def get_name(self):
         return "QUEST"
@@ -61,13 +63,14 @@ class QuestConstructor(TreeConstructor):
         :param value: what threshold do we use to split
         :return: node: initialised decision tree object
         """
+        # print data[feature], feature, value
         return DecisionTree(left=DecisionTree(data=data[data[feature] <= value]),
                             right=DecisionTree(data=data[data[feature] > value]),
                             label=feature,
                             data=data,
                             value=value)
 
-    def construct_tree(self, training_feature_vectors, labels):
+    def construct_tree(self, training_feature_vectors, labels, current_depth=0):
         # First find the best split feature
         feature, type = self.find_split_feature(training_feature_vectors.copy(), labels.copy())
 
@@ -80,7 +83,8 @@ class QuestConstructor(TreeConstructor):
 
         # Only pre-pruning enabled at this moment (QUEST already has very nice trees)
         if feature is None or len(data) == 0 or len(training_feature_vectors.index) <= self.max_nr_nodes \
-                or len(np.unique(data['cat'])) == 1 or self.all_feature_vectors_equal(training_feature_vectors):
+                or len(np.unique(data['cat'])) == 1 or self.all_feature_vectors_equal(training_feature_vectors)\
+                or current_depth >= self.max_depth:
             # Create leaf with label most occurring class
             label = np.argmax(np.bincount(data['cat'].values.astype(int)))
             return DecisionTree(label=label.astype(str), value=None, data=data)
@@ -88,13 +92,18 @@ class QuestConstructor(TreeConstructor):
         # If we don't need to pre-prune, we calculate the best possible splitting point for the best split feature
         split_point = self.find_best_split_point(data.copy(), feature, type)
 
+        if split_point is None or math.isnan(split_point):
+            label = np.argmax(np.bincount(data['cat'].values.astype(int)))
+            return DecisionTree(label=label.astype(str), value=None, data=data)
+
+
         # Divide the data using this best split feature and value and call recursively
-        split_node = self.divide_data(data, feature, split_point)
+        split_node = self.divide_data(data.copy(), feature, split_point)
         node = DecisionTree(label=split_node.label, value=split_node.value, data=split_node.data)
         node.left = self.construct_tree(split_node.left.data.drop('cat', axis=1),
-                                        split_node.left.data[['cat']])
+                                        split_node.left.data[['cat']], current_depth+1)
         node.right = self.construct_tree(split_node.right.data.drop('cat', axis=1),
-                                         split_node.right.data[['cat']])
+                                         split_node.right.data[['cat']], current_depth+1)
 
         return node
 
@@ -230,6 +239,8 @@ class QuestConstructor(TreeConstructor):
 
             # Get most important eigenvector of using D
             matrix = np.dot(np.dot(np.dot(np.dot(D_sqrt_inv, Q_t), B), Q), D_sqrt_inv)
+            if np.isnan(matrix).any():
+                return None
             eigenvalues, eigenvectors = np.linalg.eig(matrix)
             largest_eigenvector = eigenvectors[np.argmax(eigenvalues)]
 

@@ -2,6 +2,8 @@ from pandas import read_csv, DataFrame
 
 import operator
 import os
+
+import re
 import sklearn
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,9 +65,9 @@ class TreeEvaluator(object):
 
         pl.show()
 
-SEED = 500
+SEED = 543537
 
-np.random.seed(13)    # 84846513
+np.random.seed(SEED)    # 84846513
 
 
 
@@ -78,10 +80,8 @@ np.random.seed(13)    # 84846513
 # df = read_csv(os.path.join(os.path.join('..', 'data'), 'car.data'), sep=',')
 columns = ['PassengerId','Survived', 'Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
 df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
-
-
 df.columns = columns
-df = df[['Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked', 'Survived']].copy()
+df = df[['Pclass', 'Name', 'Sex', 'Ticket', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked', 'Survived']].copy()
 df = df.dropna()
 
 mapping_sex = {'male': 1, 'female': 2}
@@ -89,6 +89,59 @@ mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
 df['Sex'] = df['Sex'].map(mapping_sex)
 df['Embarked'] = df['Embarked'].map(mapping_embarked)
 
+def get_title(name):
+    if '.' in name:
+        return name.split(',')[1].split('.')[0].strip()
+    else:
+        return 'Unknown'
+
+df['Title'] = df['Name'].map(lambda x: get_title(x))
+df = df.drop('Name', axis=1)
+mapping_title = {}
+counter = 1
+for value in np.unique(df['Title']):
+    mapping_title[value] = counter
+    counter += 1
+df['Title'] = df['Title'].map(mapping_title)
+
+
+def getTicketPrefix(ticket):
+    match = re.compile("([a-zA-Z\.\/]+)").search(ticket)
+    if match:
+        return match.group()
+    else:
+        return 'U'
+
+def getTicketNumber(ticket):
+    match = re.compile("([\d]+$)").search(ticket)
+    if match:
+        return match.group()
+    else:
+        return '0'
+
+# extract and massage the ticket prefix
+df['TicketPrefix'] = df['Ticket'].map( lambda x : getTicketPrefix(x.upper()))
+df['TicketPrefix'] = df['TicketPrefix'].map( lambda x: re.sub('[\.?\/?]', '', x) )
+df['TicketPrefix'] = df['TicketPrefix'].map( lambda x: re.sub('STON', 'SOTON', x) )
+
+# create binary features for each prefix
+#prefixes = pd.get_dummies(df['TicketPrefix']).rename(columns=lambda x: 'TicketPrefix_' + str(x))
+#df = pd.concat([df, prefixes], axis=1)
+
+# factorize the prefix to create a numerical categorical variable
+df['TicketPrefixId'] = pd.factorize(df['TicketPrefix'])[0]
+
+# extract the ticket number
+df['TicketNumber'] = df['Ticket'].map( lambda x: getTicketNumber(x) )
+
+# create a feature for the number of digits in the ticket number
+df['TicketNumberDigits'] = df['TicketNumber'].map( lambda x: len(x) ).astype(np.int)
+
+# create a feature for the starting number of the ticket number
+df['TicketNumberStart'] = df['TicketNumber'].map( lambda x: x[0:1] ).astype(np.int)
+
+# The prefix and (probably) number themselves aren't useful
+df.drop(['TicketPrefix', 'TicketNumber', 'Ticket'], axis=1, inplace=True)
 
 # mapping_buy_maint = {'low': 0, 'med': 1, 'high': 2, 'vhigh': 3}
 # mapping_doors = {'2': 0, '3': 1, '4': 2, '5more': 3}
@@ -96,7 +149,7 @@ df['Embarked'] = df['Embarked'].map(mapping_embarked)
 # mapping_lug = {'small': 0, 'med': 1, 'big': 2}
 # mapping_safety = {'low': 0, 'med': 1, 'high': 2}
 # mapping_class = {'unacc': 1, 'acc': 2, 'good': 3, 'vgood': 4}
-#
+
 # df['maint'] = df['maint'].map(mapping_buy_maint)
 # df['buying'] = df['buying'].map(mapping_buy_maint)
 # df['doors'] = df['doors'].map(mapping_doors)
@@ -104,47 +157,90 @@ df['Embarked'] = df['Embarked'].map(mapping_embarked)
 # df['lug_boot'] = df['lug_boot'].map(mapping_lug)
 # df['safety'] = df['safety'].map(mapping_safety)
 # df['class'] = df['class'].map(mapping_class).astype(int)
-
+df=df.reset_index(drop=True)
 labels_df = DataFrame()
 labels_df['cat'] = df['Survived'].copy()
 features_df = df.copy()
 features_df = features_df.drop('Survived', axis=1)
-permutation = np.random.permutation(features_df.index)
-features_df = features_df.reindex(permutation)
-features_df = features_df.reset_index(drop=True)
-labels_df = labels_df.reindex(permutation)
-labels_df = labels_df.reset_index(drop=True)
+train_labels_df = labels_df
+train_features_df = features_df
+# permutation = np.random.permutation(features_df.index)
+# features_df = features_df.reindex(permutation)
+# features_df = features_df.reset_index(drop=True)
+# labels_df = labels_df.reindex(permutation)
+# labels_df = labels_df.reset_index(drop=True)
+
+# skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=3, shuffle=True, random_state=SEED)
+# 
+# for train_index, test_index in skf:
+#     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()
+#     train_labels_df, test_labels_df = labels_df.iloc[train_index,:].copy(), labels_df.iloc[test_index,:].copy()
+#     train_features_df = train_features_df.reset_index(drop=True)
+#     test_features_df = test_features_df.reset_index(drop=True)
+#     train_labels_df = train_labels_df.reset_index(drop=True)
+#     test_labels_df = test_labels_df.reset_index(drop=True)
 
 # train_features_df = features_df.head(int(0.8*len(features_df.index)))
 # test_features_df = features_df.tail(int(0.2*len(features_df.index)))
 # train_labels_df = labels_df.head(int(0.8*len(labels_df.index)))
 # test_labels_df = labels_df.tail(int(0.2*len(labels_df.index)))
-#
-df = features_df.copy() # train_features_df
-df['cat'] = labels_df['cat'].copy() # train_labels_df when cutting into test and train set
+
+train_df = train_features_df.copy()
+train_df['cat'] = train_labels_df['cat'].copy()
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=3)
-quest = QuestConstructor(default=1, max_nr_nodes=3, discrete_thresh=5, alpha=0.1)
+cart = CARTConstructor(min_samples_leaf=10)
+#c45_2 = C45Constructor(cf=0.15)
+#c45_3 = C45Constructor(cf=0.75)
+quest = QuestConstructor(default=1, max_nr_nodes=5, discrete_thresh=10, alpha=0.1)
 tree_constructors = [c45, cart, quest]
 trees = []
 for tree_constructor in tree_constructors:
-    tree = tree_constructor.construct_tree(features_df, labels_df)
+    tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
+    tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
     trees.append(tree)
 
 merger = DecisionTreeMerger()
-best_tree = merger.genetic_algorithm(df, 'cat', tree_constructors, seed=SEED, num_iterations=10)
+best_tree, constructed_trees = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=2)
 best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
 trees.append(best_tree)
+# trees.extend(constructed_trees)
 
 columns = ['PassengerId','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
 df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_test.csv'), sep=',')
 df.columns = columns
 
-test_features_df = df[['PassengerId', 'Pclass', 'Sex', 'Parch', 'Age', 'SibSp', 'Fare', 'Embarked']]
+test_features_df = df[['PassengerId', 'Pclass', 'Sex', 'Parch', 'Age', 'Name', 'Ticket', 'SibSp', 'Fare', 'Embarked']].copy()
 test_features_df['Sex'] = test_features_df['Sex'].map(mapping_sex)
 test_features_df['Embarked'] = test_features_df['Embarked'].map(mapping_embarked)
+test_features_df['Title'] = test_features_df['Name'].map(lambda x: get_title(x))
+test_features_df = test_features_df.drop('Name', axis=1)
+test_features_df['Title'] = test_features_df['Title'].map(mapping_title)
 
+# extract and massage the ticket prefix
+test_features_df['TicketPrefix'] = test_features_df['Ticket'].map( lambda x : getTicketPrefix(x.upper()))
+test_features_df['TicketPrefix'] = test_features_df['TicketPrefix'].map( lambda x: re.sub('[\.?\/?]', '', x) )
+test_features_df['TicketPrefix'] = test_features_df['TicketPrefix'].map( lambda x: re.sub('STON', 'SOTON', x) )
+
+# create binary features for each prefix
+# prefixes = pd.get_dummies(test_features_df['TicketPrefix']).rename(columns=lambda x: 'TicketPrefix_' + str(x))
+# test_features_df = pd.concat([test_features_df, prefixes], axis=1)
+
+# factorize the prefix to create a numerical categorical variable
+test_features_df['TicketPrefixId'] = pd.factorize(test_features_df['TicketPrefix'])[0]
+
+# extract the ticket number
+test_features_df['TicketNumber'] = test_features_df['Ticket'].map( lambda x: getTicketNumber(x) )
+
+# create a feature for the number of digits in the ticket number
+test_features_df['TicketNumberDigits'] = test_features_df['TicketNumber'].map( lambda x: len(x) ).astype(np.int)
+
+# create a feature for the starting number of the ticket number
+test_features_df['TicketNumberStart'] = test_features_df['TicketNumber'].map( lambda x: x[0:1] ).astype(np.int)
+
+# The prefix and (probably) number themselves aren't useful
+test_features_df.drop(['TicketPrefix', 'TicketNumber', 'Ticket'], axis=1, inplace=True)
+test_features_df = test_features_df.reset_index(drop=True)
 columns = ['PassengerId', 'Survived']
 submission_merge = DataFrame(columns=columns)
 submission_c45 = DataFrame(columns=columns)
@@ -152,7 +248,7 @@ submission_c45 = DataFrame(columns=columns)
 for i in range(len(test_features_df.index)):
     sample = test_features_df.loc[i]
     submission_merge.loc[len(submission_merge)] = [int(sample['PassengerId']), best_tree.evaluate(sample)]
-    submission_c45.loc[len(submission_merge)] = [int(sample['PassengerId']), trees[0].evaluate(sample)]
+    submission_c45.loc[len(submission_c45)] = [int(sample['PassengerId']), trees[0].evaluate(sample)]
 
 
 submission_merge.to_csv('submission_genetic', index=False)
@@ -161,36 +257,35 @@ submission_c45.to_csv('submission_c45', index=False)
 
 
 
-# tree_confusion_matrices = {}
-# for tree in trees:
-#     predicted_labels = tree.evaluate_multiple(test_features_df)
-#     if tree not in tree_confusion_matrices:
-#         tree_confusion_matrices[tree] = [tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))]
-#     else:
-#         tree_confusion_matrices[tree].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
-#
-# fig = plt.figure()
-# tree_confusion_matrices_mean = {}
-# counter = 1
-# for tree in trees:
-#     diagonal_sum = sum([tree_confusion_matrices[tree][0][i][i] for i in range(len(tree_confusion_matrices[tree][0]))])
-#     total_count = np.sum(tree_confusion_matrices[tree])
-#     print tree_confusion_matrices[tree], float(diagonal_sum)/float(total_count)
-#
-#     tree_confusion_matrices_mean[tree] = np.zeros(tree_confusion_matrices[tree][0].shape)
-#     for i in range(len(tree_confusion_matrices[tree])):
-#         tree_confusion_matrices_mean[tree] = np.add(tree_confusion_matrices_mean[tree], tree_confusion_matrices[tree][i])
-#     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], len(tree_confusion_matrices[tree]))
-#     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], np.matrix.sum(np.asmatrix(tree_confusion_matrices_mean[tree]))).round(3)
-#
-#     ax = fig.add_subplot(len(trees), 1, counter)
-#     cax = ax.matshow(tree_confusion_matrices[tree], cmap=plt.get_cmap('RdYlGn'))
-#     for (j,i),label in np.ndenumerate(tree_confusion_matrices[tree]):
-#         ax.text(i,j,label,ha='center',va='center')
-#     fig.colorbar(cax)
-#     counter += 1
-#
-# pl.show()
+    # tree_confusion_matrices = {}
+    # for tree in trees:
+    #     predicted_labels = tree.evaluate_multiple(test_features_df)
+    #     tree_confusion_matrices[tree] = [tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))]
+    # 
+    # print tree_confusion_matrices
+    # 
+    # fig = plt.figure()
+    # tree_confusion_matrices_mean = {}
+    # counter = 1
+    # for tree in trees:
+    #     diagonal_sum = sum([tree_confusion_matrices[tree][0][i][i] for i in range(len(tree_confusion_matrices[tree][0]))])
+    #     total_count = np.sum(tree_confusion_matrices[tree])
+    #     print tree_confusion_matrices[tree], float(diagonal_sum)/float(total_count)
+    # 
+    #     tree_confusion_matrices_mean[tree] = np.zeros(tree_confusion_matrices[tree][0].shape)
+    #     for i in range(len(tree_confusion_matrices[tree])):
+    #         tree_confusion_matrices_mean[tree] = np.add(tree_confusion_matrices_mean[tree], tree_confusion_matrices[tree][i])
+    #     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], len(tree_confusion_matrices[tree]))
+    #     tree_confusion_matrices[tree] = np.divide(tree_confusion_matrices_mean[tree], np.matrix.sum(np.asmatrix(tree_confusion_matrices_mean[tree]))).round(3)
+    # 
+    #     ax = fig.add_subplot(len(trees), 1, counter)
+    #     cax = ax.matshow(tree_confusion_matrices[tree], cmap=plt.get_cmap('RdYlGn'))
+    #     for (j,i),label in np.ndenumerate(tree_confusion_matrices[tree]):
+    #         ax.text(i,j,label,ha='center',va='center')
+    #     fig.colorbar(cax)
+    #     counter += 1
+    # 
+    # pl.show()
 
 """
 # print len(np.unique(df['age']))

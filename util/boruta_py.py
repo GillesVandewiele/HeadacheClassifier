@@ -11,8 +11,9 @@ License: BSD 3 clause
 import numpy as np
 import scipy as sp
 from statsmodels.sandbox.stats.multicomp import multipletests as multicor
-from sklearn.utils import check_X_y
+
 from bottleneck import nanrankdata
+from sklearn.utils import check_X_y
 
 class BorutaPy(object):
     """

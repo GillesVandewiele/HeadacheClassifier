@@ -335,7 +335,7 @@ PassengerId,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
 1225,3,"Nakid, Mrs. Said (Waika Mary"" Mowad)""",female,19,1,1,2653,15.7417,,C
 1226,3,"Cor, Mr. Ivan",male,27,0,0,349229,7.8958,,S
 1227,1,"Maguire, Mr. John Edward",male,30,0,0,110469,26,C106,S
-1228,2,"de Brito, Mr. Jose Joaquim",male,32,0,0,244360,13,,S
+1228,2,"de Brito, Mr. Jose Joaquim",m1ale,32,0,0,244360,13,,S
 1229,3,"Elias, Mr. Joseph",male,39,0,2,2675,7.2292,,C
 1230,2,"Denbury, Mr. Herbert",male,25,0,0,C.A. 31029,31.5,,S
 1231,3,"Betros, Master. Seman",male,,0,0,2622,7.2292,,C
