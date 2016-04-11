@@ -20,7 +20,7 @@ from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 1321
+SEED = 1337
 
 np.random.seed(SEED)    # 84846513
 iris = datasets.load_iris()

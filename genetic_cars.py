@@ -59,8 +59,8 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=25)
-quest = QuestConstructor(default=1, max_nr_nodes=15, discrete_thresh=10, alpha=0.15)
+cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
+quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.25)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
@@ -94,7 +94,7 @@ for train_index, test_index in skf:
 
     merger = DecisionTreeMerger()
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
-                                                        num_mutations=2, population_size=7, max_samples=20)
+                                                        num_mutations=2, population_size=7, max_samples=5)
     #best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),

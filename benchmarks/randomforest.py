@@ -6,7 +6,7 @@ import numpy as np
 import sklearn
 from sklearn.ensemble import RandomForestClassifier
 
-from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
+from extractors.featureselector import RF_feature_selection
 from util.metrics import plot_confusion_matrix
 
 

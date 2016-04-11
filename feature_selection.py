@@ -14,7 +14,7 @@ from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
-from extractors.featureselector import RF_feature_selection
+from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 1337
@@ -42,10 +42,13 @@ features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 num_features = 10
-best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+best_features_rf = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names,
+                                        verbose=True)
+best_features_boruta = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(),
+                                                   column_names=feature_column_names)
 selected_features_df = DataFrame()
 for k in range(num_features):
-    selected_features_df[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+    selected_features_df[feature_column_names[best_features_rf[k]]] = features_df[feature_column_names[best_features_rf[k]]]
 
 c45 = C45Constructor(cf=0.15)
 
