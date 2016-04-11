@@ -14,94 +14,13 @@ label_column = "cat"
 
 # label_column = "cat"
 
-def learnDiscreteBN(draw_network=False):
-    columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-               'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-               'number of vessels', 'thal', 'disease']
+def learnDiscreteBN(df,continous_columns, features_column_names,label_column='cat', draw_network=False):
 
-    continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
-                         'max heartrate']
-
-    df = read_csv('../data/heart.dat', sep=' ')
-    # df = df.iloc[np.random.permutation(len(df))]
-    # df = df.reset_index(drop=True)
-    df.columns = columns
-
-    features_column_names = columns[0:len(columns) - 1]
-
-    labels_column_names = 'disease'
-    column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
-                    'fasting blood sugar', \
-                    'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-                    'number of vessels', 'thal', 'disease']
-    df = df[column_names]
-    # df = df.drop(columns[:3], axis=1)
-    # df = df.drop(columns[4:7], axis=1)
-    # df = df.drop(columns[8:-1], axis=1)
-    labels_df = DataFrame()
-    labels_df['cat'] = df['disease'].copy()
     features_df = df.copy()
-    features_df = features_df.drop('disease', axis=1)
+    features_df = features_df.drop(label_column, axis=1)
 
-    # Read csv into pandas frame
-    # columns = ['PassengerId', 'Survived', 'Pclass', 'Name', 'Sex', 'Age', 'SibSp', 'Parch', 'Ticket', 'Fare', 'Cabin',
-    #            'Embarked']
-    # continous_columns = ['Age']
-    #
-    # df = read_csv(os.path.join(os.path.join('..', 'data'), 'titanic_train.csv'), sep=',')
-    # df = df.head(n=20)
-    # df.columns = columns
-    # features_column_names = ['Pclass', 'Sex', 'Age', 'SibSp', 'Fare', 'Embarked']
-    # features_column_names.remove("Survived")
-    # column_names = columns
-    # df = df[column_names]
-    # labels_df = DataFrame()
-    # labels_df['Survived'] = df['Survived'].copy()
-    # features_df = df.copy()
-    # features_df = features_df.drop('Survived', axis=1)
-    #
-    # age_avg = features_df['Age'].mean()
-    # features_df = features_df.fillna(age_avg)
-    #
-    # mapping_sex = {'male': 1, 'female': 2}
-    # mapping_embarked = {'C': 1, 'Q': 2, 'S': 3}
-    # features_df['Sex'] = features_df['Sex'].map(mapping_sex)
-    # features_df['Embarked'] = features_df['Embarked'].map(mapping_embarked)
-
-    # train_features_df = train_features_df/train_features_df.max()
-    # features_df = features_df.reset_index(drop=True)
-
-    # Read csv into pandas frame
-    # columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
-    # # columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-    # #            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-    # #            'number of vessels', 'thal', 'disease']
-    # # df = read_csv(os.path.join(os.path.join('..', 'data'), 'heart.dat'), sep=' ')
-    # df = read_csv(os.path.join(os.path.join('..', 'data'), 'car.data'), sep=',')
-    # df.columns = columns
-    # mapping_buy_maint = {'low': 0, 'med': 1, 'high': 2, 'vhigh': 3}
-    # mapping_doors = {'2': 0, '3': 1, '4': 2, '5more': 3}
-    # mapping_persons = {'2': 0, '4': 1, 'more': 2}
-    # mapping_lug = {'small': 0, 'med': 1, 'big': 2}
-    # mapping_safety = {'low': 0, 'med': 1, 'high': 2}
-    # mapping_class = {'unacc': 1, 'acc': 2, 'good': 3, 'vgood': 4}
-    # df['maint'] = df['maint'].map(mapping_buy_maint)
-    # df['buying'] = df['buying'].map(mapping_buy_maint)
-    # df['doors'] = df['doors'].map(mapping_doors)
-    # df['persons'] = df['persons'].map(mapping_persons)
-    # df['lug_boot'] = df['lug_boot'].map(mapping_lug)
-    # df['safety'] = df['safety'].map(mapping_safety)
-    # df['class'] = df['class'].map(mapping_class)
-    # # permutation = np.random.permutation(df.index)
-    # # df = df.reindex(permutation)
-    # # df = df.reset_index(drop=True)
-    # # df = df.head(300)
-    #
-    # labels_df = DataFrame()
-    # labels_df['cat'] = df['class'].copy()
-    # features_df = df.copy()
-    # features_df = features_df.drop('class', axis=1)
-    # features_column_names = features_df.columns
+    labels_df = DataFrame()
+    labels_df['cat'] = df[label_column].copy()
 
     for i in continous_columns:
         bins = np.arange((min(features_df[i])), (max(features_df[i])),
@@ -119,7 +38,7 @@ def learnDiscreteBN(draw_network=False):
     print "Init done"
     learner = PGMLearner()
 
-    test = learner.discrete_estimatebn(data=data, pvalparam=0.05, indegree=1)
+    test = learner.discrete_estimatebn(data=data, pvalparam=0.95, indegree=1)
     print "done learning"
     edges = test.E
     vertices = test.V
@@ -182,8 +101,6 @@ def learnDiscreteBN(draw_network=False):
             # pp.pprint(od.values())
 
             counter = 0
-            len_outcome = len(od.keys())
-            number_of_cols = len(dataframe.columns)
             # print number_of_cols
             for outcome, cprobs in od.iteritems():
                 for key in cprobs.keys():
@@ -208,46 +125,82 @@ def learnDiscreteBN(draw_network=False):
                 counter += 1
 
         dataframes[vertice] = dataframe
-        # print tabulate([list(row) for row in dataframe.values], headers=list(dataframe.columns))
-        # print  "\n\n\n\n\n"
-        # print dataframe.head(n=100)
-        # print (dataframe.to_html()).display()
-        # open_in_browser(HTML(dataframe.to_html()))
 
     for edge in edges:
         dot_string += edge[0].replace(" ", "_") + ' -> ' + edge[1].replace(" ", "_") + ';\n'
 
-    #
-    # s = 'Node' + str(count) + ' [label="' + str(self.label) + ' <= ' + str(self.value) + ratio_string + '"];\n'
-    # s += self.left.convert_node_to_dot(count=count + 1, _with_pruning_ratio=_with_pruning_ratio)
-    # s += 'Node' + str(count) + ' -> ' + 'Node' + str(count + 1) + ' [label="true"];\n'
-    # number_of_subnodes = self.left.get_number_of_subnodes()
-    # s += self.right.convert_node_to_dot(count=count + number_of_subnodes + 2,
-
     dot_string += '}'
     src = Source(dot_string)
-    src.render('../data/BN', view=draw_network)
+    # src.render('../data/BN', view=draw_network)
+    src.render('../data/BN', view=False)
     print "vizualisation done"
+    return dataframes
 
-
-def eval_sample(feature_dict, verbose=False):
+def eval_sample(feature_dict,dataframes, label_column='cat', verbose=False):
     to_predict = label_column
-    print "Evaluating the %s for sample with observed features: %s" % (to_predict, str(feature_dict.keys()))
+    if verbose:
+        print "Evaluating the %s for sample with observed features: %s" % (to_predict, str(feature_dict.keys()))
     df = dataframes[to_predict].copy()
     for feature in feature_dict.keys():
         if verbose: print "Set value for feature %s to %s" % (feature, str(feature_dict[feature]))
-        df = df[df[feature] - int(feature_dict[feature]) == 0]
-        df = df.drop(feature, axis=1)
+        if feature in df.columns:
+            df = df[df[feature] - int(feature_dict[feature]) == 0]
+            df = df.drop(feature, axis=1)
     if verbose: print df
-    return df['Probability'].tolist(), df
+    # return df['Probability'].tolist(), df
+    if len(df) == len(df['Outcome']):
+        return np.unique(df['Outcome'])[np.argmax(df['Probability'].tolist())]
 
+def evaluate_multiple(feature_dicts,dataframes, label_column='cat' ):
+    """
+    Wrapper method to evaluate multiple vectors at once (just a for loop where evaluate is called)
+    :param feature_vectors: the feature_vectors you want to evaluate
+    :return: list of class labels
+    """
+    results = []
 
-learnDiscreteBN(True)
-# print dataframes['cat']
-dict_features = {}
+    for i in range(len(feature_dicts)):
+        feature_dict = feature_dicts.iloc[i,:].to_dict()
+        results.append(eval_sample(feature_dict,dataframes, label_column))
+    return np.asarray(results)
+#########################################################
+#                         INIT                          #
+#########################################################
+
+# columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+#            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+#            'number of vessels', 'thal', 'disease']
+#
+# continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
+#                      'max heartrate']
+#
+# df = read_csv('../data/heart.dat', sep=' ')
+# # df = df.iloc[np.random.permutation(len(df))]
+# # df = df.reset_index(drop=True)
+# df.columns = columns
+#
+# features_column_names = columns[0:len(columns) - 1]
+#
+# labels_column_names = 'disease'
+# column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
+#                 'fasting blood sugar', \
+#                 'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+#                 'number of vessels', 'thal', 'disease']
+# df = df[column_names]
+# # df = df.drop(columns[:3], axis=1)
+# # df = df.drop(columns[4:7], axis=1)
+# # df = df.drop(columns[8:-1], axis=1)
+# labels_df = DataFrame()
+# labels_df['cat'] = df['disease'].copy()
+#
+#
+#
+# learnDiscreteBN(df, draw_network=True,continous_columns=continous_columns, features_column_names=features_column_names)
+# # print dataframes['cat']
+# dict_features = {}
 # dict_features['number of vessels'] = 1
-dict_features['chest pain type'] = 1
-dict_features['thal'] = 3
-print eval_sample({}, True)
-
-print eval_sample(dict_features, True)
+# dict_features['chest pain type'] = 1
+# dict_features['thal'] = 3
+# print eval_sample({}, True)
+#
+# print eval_sample(dict_features, True)
