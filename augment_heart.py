@@ -80,7 +80,7 @@ train_features_df = features_df
 c45 = C45Constructor(cf=0.15)
 
 tree_confusion_matrices = {}
-titles = ["Unaugmented C4.5", "Augmented C4.5", "Unaugmented NN", "Augmented NN"]
+titles = ["Unaugmented C4.5", "Augmented C4.5"]#, "Unaugmented NN", "Augmented NN"]
 for title in titles:
     tree_confusion_matrices[title] = []
 
@@ -126,30 +126,30 @@ for train_index, test_index in skf:
     test_features_df = (test_features_df - test_features_df.mean()) / (test_features_df.max() - test_features_df.min())
     test_features_df = test_features_df.reset_index(drop=True)
 
-    model = build_nn(nr_features=len(train_features_df.columns))
-    model.initialize()
-    layer_info = PrintLayerInfo()
-    layer_info(model)
-    y_train = np.reshape(np.asarray(train_labels_df, dtype='int32'), (-1, 1)).ravel()
-    model.fit(train_features_df.values, np.add(y_train, -1))
-    predicted_labels = []
-    for index, vector in enumerate(test_features_df.values):
-        predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
-    tree_confusion_matrices["Unaugmented NN"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
-
-    augmented_features_df = (augmented_features_df - augmented_features_df.mean()) / (augmented_features_df.max() - augmented_features_df.min())
-    augmented_features_df = augmented_features_df.reset_index(drop=True)
-
-    model = build_nn(nr_features=len(augmented_features_df.columns))
-    model.initialize()
-    layer_info = PrintLayerInfo()
-    layer_info(model)
-    y_train = np.reshape(np.asarray(augmented_labels_df, dtype='int32'), (-1, 1)).ravel()
-    model.fit(augmented_features_df.values, np.add(y_train, -1))
-    predicted_labels = []
-    for index, vector in enumerate(test_features_df.values):
-        predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
-    tree_confusion_matrices["Augmented NN"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    # model = build_nn(nr_features=len(train_features_df.columns))
+    # model.initialize()
+    # layer_info = PrintLayerInfo()
+    # layer_info(model)
+    # y_train = np.reshape(np.asarray(train_labels_df, dtype='int32'), (-1, 1)).ravel()
+    # model.fit(train_features_df.values, np.add(y_train, -1))
+    # predicted_labels = []
+    # for index, vector in enumerate(test_features_df.values):
+    #     predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
+    # tree_confusion_matrices["Unaugmented NN"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    #
+    # augmented_features_df = (augmented_features_df - augmented_features_df.mean()) / (augmented_features_df.max() - augmented_features_df.min())
+    # augmented_features_df = augmented_features_df.reset_index(drop=True)
+    #
+    # model = build_nn(nr_features=len(augmented_features_df.columns))
+    # model.initialize()
+    # layer_info = PrintLayerInfo()
+    # layer_info(model)
+    # y_train = np.reshape(np.asarray(augmented_labels_df, dtype='int32'), (-1, 1)).ravel()
+    # model.fit(augmented_features_df.values, np.add(y_train, -1))
+    # predicted_labels = []
+    # for index, vector in enumerate(test_features_df.values):
+    #     predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
+    # tree_confusion_matrices["Augmented NN"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
 
 
 print tree_confusion_matrices
