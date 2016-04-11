@@ -23,8 +23,10 @@ class CARTConstructor(TreeConstructor):
     for this called sklearn.
     """
 
-    def __init__(self, min_samples_leaf=1):
+    def __init__(self, min_samples_leaf=1,min_samples_split=2, max_depth=10):
         self.min_samples_leaf = min_samples_leaf
+        self.min_samples_split = min_samples_split
+        self.max_depth = max_depth
 
     def get_name(self):
         return "CART"
@@ -47,7 +49,8 @@ class CARTConstructor(TreeConstructor):
         self.y = labels['cat']
         self.X = training_feature_vectors[self.features]
 
-        self.dt = DecisionTreeClassifier(min_samples_leaf=self.min_samples_leaf)
+
+        self.dt = DecisionTreeClassifier(min_samples_leaf=self.min_samples_leaf,min_samples_split=self.min_samples_leaf, max_depth=self.max_depth)
         self.dt.fit(self.X, self.y)
 
         return self.convertToTree()

@@ -72,8 +72,8 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=5)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.25)
+cart = CARTConstructor(min_samples_leaf=2, max_depth=6)
+quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=4, alpha=0.00001)
 tree_constructors = [c45, cart, quest]
 
 rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
