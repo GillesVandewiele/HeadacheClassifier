@@ -41,28 +41,33 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
-num_features = 10
+num_features = 6
 best_features_rf = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names,
                                         verbose=True)
 best_features_boruta = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(),
-                                                   column_names=feature_column_names)
-selected_features_df = DataFrame()
+                                                   column_names=feature_column_names, verbose=True)
+print "Boruta selection done"
+selected_features_rf = DataFrame()
+selected_features_boruta = DataFrame()
+
 for k in range(num_features):
-    selected_features_df[feature_column_names[best_features_rf[k]]] = features_df[feature_column_names[best_features_rf[k]]]
+    selected_features_rf[feature_column_names[best_features_rf[k]]] = features_df[feature_column_names[best_features_rf[k]]]
+    selected_features_boruta[feature_column_names[best_features_boruta[k]]] = features_df[feature_column_names[best_features_boruta[k]]]
 
 c45 = C45Constructor(cf=0.15)
 
 tree_confusion_matrices = {}
 tree_confusion_matrices["No FS"] = []
 tree_confusion_matrices["RF FS"] = []
-# tree_confusion_matrices["Boruta FS"] = []
+tree_confusion_matrices["Boruta FS"] = []
 
 skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
 
 for train_index, test_index in skf:
     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()
     train_labels_df, test_labels_df = labels_df.iloc[train_index,:].copy(), labels_df.iloc[test_index,:].copy()
-    train_selected_features, test_selected_features = selected_features_df.iloc[train_index,:].copy(), selected_features_df.iloc[test_index,:].copy()
+    train_selected_features_rf, test_selected_features = selected_features_rf.iloc[train_index, :].copy(), selected_features_rf.iloc[test_index, :].copy()
+    train_selected_features_boruta, test_selected_features = selected_features_boruta.iloc[train_index, :].copy(), selected_features_boruta.iloc[test_index, :].copy()
     train_features_df = train_features_df.reset_index(drop=True)
     test_features_df = test_features_df.reset_index(drop=True)
     train_labels_df = train_labels_df.reset_index(drop=True)
@@ -71,13 +76,17 @@ for train_index, test_index in skf:
     train_df['cat'] = train_labels_df['cat'].copy()
 
     no_fs_tree = c45.construct_tree(train_features_df, train_labels_df)
-    rf_fs_tree = c45.construct_tree(train_selected_features, train_labels_df)
+    rf_fs_tree = c45.construct_tree(train_selected_features_rf, train_labels_df)
+    boruta_fs_tree = c45.construct_tree(train_selected_features_boruta, train_labels_df)
     # tree.visualise(os.path.join(os.path.join('..', 'data'), tree_constructor.get_name()))
     predicted_labels = no_fs_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["No FS"].append(no_fs_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
                                             predicted_labels.astype(str)))
     predicted_labels = rf_fs_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["RF FS"].append(rf_fs_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
+                                            predicted_labels.astype(str)))
+    predicted_labels = boruta_fs_tree.evaluate_multiple(test_features_df)
+    tree_confusion_matrices["Boruta FS"].append(boruta_fs_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
                                             predicted_labels.astype(str)))
 
 tree_confusion_matrices_mean = {}

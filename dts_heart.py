@@ -22,6 +22,7 @@ from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
+from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 def build_nn(nr_features):
@@ -71,9 +72,16 @@ features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
+num_features = 5
+best_features = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+new_features = DataFrame()
+for k in range(num_features):
+    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+features_df = new_features
+
 c45 = C45Constructor(cf=0.15)
 cart = CARTConstructor(min_samples_leaf=2, max_depth=6)
-quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=4, alpha=0.00001)
+quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=3, alpha=0.11)
 tree_constructors = [c45, cart, quest]
 
 rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
@@ -81,8 +89,8 @@ rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:
     tree_confusion_matrices[tree_constructor.get_name()] = []
-tree_confusion_matrices["Random Forest"] = []
-tree_confusion_matrices["Neural Network"] = []
+# tree_confusion_matrices["Random Forest"] = []
+# tree_confusion_matrices["Neural Network"] = []
 
 skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
 
@@ -105,28 +113,28 @@ for train_index, test_index in skf:
         tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
     # Random Forest
-    rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
-    predicted_labels = []
-    for index, vector in enumerate(test_features_df.values):
-        predicted_labels.append(str(rf.predict(vector.reshape(1, -1))[0]))
-    tree_confusion_matrices["Random Forest"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
-
-    train_features_df = (train_features_df - train_features_df.mean()) / (train_features_df.max() - train_features_df.min())
-    train_features_df = train_features_df.reset_index(drop=True)
-    test_features_df = (test_features_df - test_features_df.mean()) / (test_features_df.max() - test_features_df.min())
-    test_features_df = test_features_df.reset_index(drop=True)
-
+    # rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
+    # predicted_labels = []
+    # for index, vector in enumerate(test_features_df.values):
+    #     predicted_labels.append(str(rf.predict(vector.reshape(1, -1))[0]))
+    # tree_confusion_matrices["Random Forest"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    #
+    # train_features_df = (train_features_df - train_features_df.mean()) / (train_features_df.max() - train_features_df.min())
+    # train_features_df = train_features_df.reset_index(drop=True)
+    # test_features_df = (test_features_df - test_features_df.mean()) / (test_features_df.max() - test_features_df.min())
+    # test_features_df = test_features_df.reset_index(drop=True)
+    #
     # Neural Network
-    model = build_nn(nr_features=len(train_features_df.columns))
-    model.initialize()
-    layer_info = PrintLayerInfo()
-    layer_info(model)
-    y_train = np.reshape(np.asarray(train_labels_df, dtype='int32'), (-1, 1)).ravel()
-    model.fit(train_features_df.values, np.add(y_train, -1))
-    predicted_labels = []
-    for index, vector in enumerate(test_features_df.values):
-        predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
-    tree_confusion_matrices["Neural Network"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    # model = build_nn(nr_features=len(train_features_df.columns))
+    # model.initialize()
+    # layer_info = PrintLayerInfo()
+    # layer_info(model)
+    # y_train = np.reshape(np.asarray(train_labels_df, dtype='int32'), (-1, 1)).ravel()
+    # model.fit(train_features_df.values, np.add(y_train, -1))
+    # predicted_labels = []
+    # for index, vector in enumerate(test_features_df.values):
+    #     predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
+    # tree_confusion_matrices["Neural Network"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
 
 
 print tree_confusion_matrices
