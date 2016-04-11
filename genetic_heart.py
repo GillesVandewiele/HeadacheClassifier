@@ -41,16 +41,16 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
-num_features = 8
-best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
-new_features = DataFrame()
-for k in range(num_features):
-    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
-features_df = new_features
+# num_features = 8
+# best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+# new_features = DataFrame()
+# for k in range(num_features):
+#     new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+# features_df = new_features
 
-c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=8)
-quest = QuestConstructor(default=1, max_nr_nodes=5, discrete_thresh=10, alpha=0.25)
+c45 = C45Constructor(cf=0.9)
+cart = CARTConstructor(min_samples_leaf=2, max_depth=6)
+quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=25, alpha=0.9)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}

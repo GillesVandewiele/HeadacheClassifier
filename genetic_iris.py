@@ -42,8 +42,8 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=1.0)
-cart = CARTConstructor(min_samples_leaf=2)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.5)
+cart = CARTConstructor(max_depth=5, min_samples_leaf=2)
+quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=1, alpha=0.0000001)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
