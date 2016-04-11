@@ -20,7 +20,7 @@ from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 1337
+SEED = 1321
 
 np.random.seed(SEED)    # 84846513
 iris = datasets.load_iris()
@@ -44,8 +44,8 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=1.0)
-cart = CARTConstructor(min_samples_leaf=2)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=5, alpha=0.5)
+cart = CARTConstructor(max_depth=5, min_samples_leaf=2)
+quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=1, alpha=0.0000001)
 tree_constructors = [c45, cart, quest]
 
 rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
@@ -53,7 +53,7 @@ rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:
     tree_confusion_matrices[tree_constructor.get_name()] = []
-tree_confusion_matrices["Random Forest"] = []
+# tree_confusion_matrices["Random Forest"] = []
 
 skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=5, shuffle=True, random_state=SEED)
 
@@ -73,18 +73,18 @@ for train_index, test_index in skf:
         predicted_labels = tree.evaluate_multiple(test_features_df)
         tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
-    rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
-    predicted_labels = []
-    for index, vector in enumerate(test_features_df.values):
-        predicted_labels.append(str(rf.predict(vector.reshape(1, -1))[0]))
-    tree_confusion_matrices["Random Forest"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    # rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
+    # predicted_labels = []
+    # for index, vector in enumerate(test_features_df.values):
+    #     predicted_labels.append(str(rf.predict(vector.reshape(1, -1))[0]))
+    # tree_confusion_matrices["Random Forest"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
 
 print tree_confusion_matrices
 
 tree_confusion_matrices_mean = {}
 
 fig = plt.figure()
-fig.suptitle('Accuracy of decision trees on heart disease dataset', fontsize=20)
+fig.suptitle('Accuracy of decision trees on iris dataset', fontsize=20)
 counter = 0
 for key in tree_confusion_matrices:
 

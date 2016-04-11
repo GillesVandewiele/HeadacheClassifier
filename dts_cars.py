@@ -57,7 +57,7 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=5)
+cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.25)
 tree_constructors = [c45, cart, quest]
 
@@ -66,7 +66,7 @@ rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:
     tree_confusion_matrices[tree_constructor.get_name()] = []
-tree_confusion_matrices["Random Forest"] = []
+# tree_confusion_matrices["Random Forest"] = []
 
 skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=5, shuffle=True, random_state=SEED)
 
@@ -86,11 +86,11 @@ for train_index, test_index in skf:
         predicted_labels = tree.evaluate_multiple(test_features_df)
         tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
-    rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
-    predicted_labels = []
-    for index, vector in enumerate(test_features_df.values):
-        predicted_labels.append(str(rf.predict(vector.reshape(1, -1))[0]))
-    tree_confusion_matrices["Random Forest"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    # rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
+    # predicted_labels = []
+    # for index, vector in enumerate(test_features_df.values):
+    #     predicted_labels.append(str(rf.predict(vector.reshape(1, -1))[0]))
+    # tree_confusion_matrices["Random Forest"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
 
 print tree_confusion_matrices
 
