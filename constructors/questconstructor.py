@@ -196,17 +196,25 @@ class QuestConstructor(TreeConstructor):
 
             split_point = 0
             # For each class we construct an I x I matrix (with I number of variables), some reshaping required
-            B_temp = ([np.dot(np.transpose(np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1))),
-                         np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1)))
+            # B_temp = ([np.dot(np.transpose(np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1))),
+            #              np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1)))
+            #       for i in range(len(mean_freq_per_class_dummies))])
+            B_temp = ([np.dot(np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1)),
+                         np.transpose(np.reshape(np.subtract(mean_freq_per_class_dummies[i][0], overall_mean), (1, -1))))
                   for i in range(len(mean_freq_per_class_dummies))])
             B = B_temp[0]
             for i in range(1, len(B_temp)):
                 B = np.add(B, B_temp[i])
 
-            T_temp = [np.dot(np.transpose(np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i,:],
-                                                                 overall_mean), (1, -1))),
-                             np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i, :],
-                                                    overall_mean), (1, -1)))
+            # T_temp = [np.dot(np.transpose(np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i,:],
+            #                                                      overall_mean), (1, -1))),
+            #                  np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i, :],
+            #                                         overall_mean), (1, -1)))
+            #           for i in range(len(data_feature_all_cats.index))]
+            T_temp = [np.dot(np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i,:],
+                                                                 overall_mean), (1, -1)),
+                             np.transpose(np.reshape(np.subtract(data_feature_all_cats.as_matrix(columns=dummies)[i, :],
+                                                    overall_mean), (1, -1))))
                       for i in range(len(data_feature_all_cats.index))]
             T = T_temp[0]
             for i in range(1, len(T_temp)):
