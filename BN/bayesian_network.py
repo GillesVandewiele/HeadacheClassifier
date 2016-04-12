@@ -317,39 +317,39 @@ def evaluate_multiple(feature_dicts, dataframes, label_column='cat'):
 #                         INIT                          #
 #########################################################
 
-columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-           'number of vessels', 'thal', 'disease']
-
-continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
-                     'max heartrate']
-
-df = read_csv('../data/heart.dat', sep=' ')
-# df = df.iloc[np.random.permutation(len(df))]
-# df = df.reset_index(drop=True)
-df.columns = columns
-
-features_column_names = columns[0:len(columns) - 1]
-
-labels_column_name = 'disease'
-column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
-                'fasting blood sugar', \
-                'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-                'number of vessels', 'thal', 'disease']
-df = df[column_names]
-# df = df.drop(columns[:3], axis=1)
-# df = df.drop(columns[4:7], axis=1)
-# df = df.drop(columns[8:-1], axis=1)
-labels_df = DataFrame()
-labels_df[labels_column_name] = df[labels_column_name].copy()
-
-dataframes = learnDiscreteBN(df, draw_network=True, continous_columns=continous_columns,
-                               features_column_names=features_column_names, label_column=labels_column_name)
-# print dataframes['cat']
-dict_features = {}
-dict_features['number of vessels'] = 1
-dict_features['chest pain type'] = 1
-dict_features['thal'] = 3
-# print eval_sample({}, dataframes, label_column='disease', verbose=True)
-
-print eval_sample(dict_features, dataframes, label_column='disease', verbose=True)
+# columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
+#            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+#            'number of vessels', 'thal', 'disease']
+#
+# continous_columns = ['age', 'resting blood pressure', 'oldpeak', 'max heartrate', 'serum cholestoral',
+#                      'max heartrate']
+#
+# df = read_csv('../data/heart.dat', sep=' ')
+# # df = df.iloc[np.random.permutation(len(df))]
+# # df = df.reset_index(drop=True)
+# df.columns = columns
+#
+# features_column_names = columns[0:len(columns) - 1]
+#
+# labels_column_name = 'disease'
+# column_names = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral',
+#                 'fasting blood sugar', \
+#                 'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
+#                 'number of vessels', 'thal', 'disease']
+# df = df[column_names]
+# # df = df.drop(columns[:3], axis=1)
+# # df = df.drop(columns[4:7], axis=1)
+# # df = df.drop(columns[8:-1], axis=1)
+# labels_df = DataFrame()
+# labels_df[labels_column_name] = df[labels_column_name].copy()
+#
+# dataframes = learnDiscreteBN(df, draw_network=True, continous_columns=continous_columns,
+#                                features_column_names=features_column_names, label_column=labels_column_name)
+# # print dataframes['cat']
+# dict_features = {}
+# dict_features['number of vessels'] = 1
+# dict_features['chest pain type'] = 1
+# dict_features['thal'] = 3
+# # print eval_sample({}, dataframes, label_column='disease', verbose=True)
+#
+# print eval_sample(dict_features, dataframes, label_column='disease', verbose=True)

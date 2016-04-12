@@ -17,13 +17,8 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-<<<<<<< HEAD
 SEED = 1337
-N_FOLDS = 3
-=======
-SEED = 13333337
 N_FOLDS = 5
->>>>>>> 9157ae870d97bc5d9367bac5236e4aa2c5eddfe6
 
 np.random.seed(SEED)    # 84846513
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \

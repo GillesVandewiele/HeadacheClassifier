@@ -1,30 +1,22 @@
+import matplotlib.pyplot as plt
+import os
+import pandas as pd
 from pandas import read_csv, DataFrame
 
-import operator
-import os
-
-import re
-import sklearn
-import numpy as np
-import matplotlib.pyplot as plt
-import pylab as pl
-import pandas as pd
 import lasagne
+import numpy as np
+import sklearn
 from lasagne import layers
 from lasagne.updates import nesterov_momentum
 from nolearn.lasagne import NeuralNet, PrintLayerInfo
-from sklearn.cross_validation import StratifiedKFold
-
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sklearn.ensemble import RandomForestClassifier
 
 from BN.bayesian_network import learnDiscreteBN, evaluate_multiple
+from constructors.c45orangeconstructor import C45Constructor
 from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
-from constructors.c45orangeconstructor import C45Constructor
-from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection#, boruta_py_feature_selection
-from objects.featuredescriptors import DISCRETE, CONTINUOUS
+
 
 def build_nn(nr_features):
     net1 = NeuralNet(
@@ -115,7 +107,7 @@ for train_index, test_index in skf:
         predicted_labels = tree.evaluate_multiple(test_features_df)
         tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
-    Random Forest
+    # Random Forest
     rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
     predicted_labels = []
     for index, vector in enumerate(test_features_df.values):
@@ -150,7 +142,7 @@ for train_index, test_index in skf:
     train_df = train_features_df.copy()
     train_df['cat'] = train_labels_df['cat'].copy()
 
-    dataframes = learnDiscreteBN(train_df, draw_network=True, continous_columns=feature_column_names,
+    dataframes = learnDiscreteBN(train_df, draw_network=False, continous_columns=feature_column_names,
                                  features_column_names=feature_column_names)
     for i in feature_column_names:
         bins = np.arange((min(test_features_df[i])), (max(test_features_df[i])),
