@@ -73,14 +73,14 @@ features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
-num_features = 5
-best_features = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
-new_features = DataFrame()
-for k in range(num_features):
-    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
-features_df = new_features
-
-feature_column_names = list(set(features_df.columns) - set(['disease']))
+# num_features = 5
+# best_features = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+# new_features = DataFrame()
+# for k in range(num_features):
+#     new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+# features_df = new_features
+#
+# feature_column_names = list(set(features_df.columns) - set(['disease']))
 
 c45 = C45Constructor(cf=0.15)
 cart = CARTConstructor(min_samples_leaf=2, max_depth=6)
