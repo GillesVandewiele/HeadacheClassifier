@@ -673,8 +673,10 @@ class DecisionTreeMerger(object):
             for region in regions_list:
                 predicted_labels = self.evaluate_regions(region, test_features_df)
                 confusion_matrix = DecisionTree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))
-                confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
+                # confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
+                confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
                 accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
+
                 #print accuracy
                 #tree_accuracy[set(region)] = accuracy
                 tree_accuracy.append((region, accuracy))
@@ -744,7 +746,8 @@ class DecisionTreeMerger(object):
                 predicted_labels = tree.evaluate_multiple(features_df)
                 # predicted_labels = self.evaluate_regions(region, features_df)
                 confusion_matrix = tree.plot_confusion_matrix(labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
-                confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
+                # confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
+                confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
 
                 accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
                 print tree, confusion_matrix, accuracy
@@ -756,8 +759,8 @@ class DecisionTreeMerger(object):
         for tree in start_trees:
             predicted_labels = tree.evaluate_multiple(features_df)
             confusion_matrix = tree.plot_confusion_matrix(labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
-            confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
-
+            # confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
+            confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
             accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
             print tree, confusion_matrix, accuracy
             regions = self.decision_tree_to_decision_table(tree, features_df)
