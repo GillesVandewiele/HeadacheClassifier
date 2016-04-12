@@ -17,8 +17,13 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
+<<<<<<< HEAD
 SEED = 1337
 N_FOLDS = 3
+=======
+SEED = 13333337
+N_FOLDS = 5
+>>>>>>> 9157ae870d97bc5d9367bac5236e4aa2c5eddfe6
 
 np.random.seed(SEED)    # 84846513
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
@@ -41,16 +46,18 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
-# num_features = 8
+
+# num_features = 6
 # best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
 # new_features = DataFrame()
 # for k in range(num_features):
 #     new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
 # features_df = new_features
+# feature_column_names = list(set(df.columns) - set(['disease']))
 
-c45 = C45Constructor(cf=0.9)
-cart = CARTConstructor(min_samples_leaf=2, max_depth=6)
-quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=25, alpha=0.9)
+c45 = C45Constructor(cf=0.15)
+cart = CARTConstructor(min_samples_leaf=5, max_depth=6)
+quest = QuestConstructor(default=1, max_nr_nodes=5, discrete_thresh=3, alpha=0.75)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
@@ -83,8 +90,10 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
+
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=3,
                                                         num_mutations=2, population_size=5, max_samples=3)
+
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),

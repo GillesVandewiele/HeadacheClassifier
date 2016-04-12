@@ -17,7 +17,7 @@ from constructors.treemerger import DecisionTreeMerger
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 1337
-N_FOLDS = 3
+N_FOLDS = 5
 
 np.random.seed(SEED)    # 84846513
 columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']

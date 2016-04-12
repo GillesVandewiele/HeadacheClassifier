@@ -23,7 +23,7 @@ from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
-from extractors.featureselector import RF_feature_selection, boruta_py_feature_selection
+from extractors.featureselector import RF_feature_selection#, boruta_py_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 def build_nn(nr_features):
@@ -73,18 +73,18 @@ features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
-# num_features = 5
-# best_features = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
-# new_features = DataFrame()
-# for k in range(num_features):
-#     new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
-# features_df = new_features
-#
-# feature_column_names = list(set(features_df.columns) - set(['disease']))
+num_features = 8
+best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+new_features = DataFrame()
+for k in range(num_features):
+    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+features_df = new_features
+
+feature_column_names = list(set(features_df.columns) - set(['disease']))
 
 c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=2, max_depth=6)
-quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=3, alpha=0.9)
+cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
+quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=3, alpha=0.75)
 tree_constructors = [c45, cart, quest]
 
 rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
@@ -115,7 +115,7 @@ for train_index, test_index in skf:
         predicted_labels = tree.evaluate_multiple(test_features_df)
         tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
-    # Random Forest
+    Random Forest
     rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
     predicted_labels = []
     for index, vector in enumerate(test_features_df.values):
