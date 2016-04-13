@@ -2,19 +2,17 @@ digraph BN{
 node[fontname="Arial"];
 oldpeak [label="oldpeak
 " ]; 
-slope_peak [label="slope peak
-" ]; 
-max_heartrate [label="max heartrate
-" ]; 
 number_of_vessels [label="number of vessels
 " ]; 
-exercise_induced_angina [label="exercise induced angina
+slope_peak [label="slope peak
 " ]; 
-chest_pain_type [label="chest pain type
+exercise_induced_angina [label="exercise induced angina
 " ]; 
 serum_cholestoral [label="serum cholestoral
 " ]; 
 age [label="age
+" ]; 
+chest_pain_type [label="chest pain type
 " ]; 
 sex [label="sex
 " ]; 
@@ -24,16 +22,18 @@ disease [label="disease
 " ]; 
 resting_electrocardio [label="resting electrocardio
 " ]; 
+max_heartrate [label="max heartrate
+" ]; 
 resting_blood_pressure [label="resting blood pressure
 " ]; 
 fasting_blood_sugar [label="fasting blood sugar
 " ]; 
-oldpeak -> slope_peak;
-slope_peak -> max_heartrate;
-exercise_induced_angina -> chest_pain_type;
-sex -> thal;
-chest_pain_type -> disease;
-exercise_induced_angina -> disease;
-number_of_vessels -> disease;
+oldpeak -> disease;
 thal -> disease;
+number_of_vessels -> disease;
+exercise_induced_angina -> disease;
+chest_pain_type -> disease;
+slope_peak -> disease;
+sex -> disease;
+sex -> thal;
 }

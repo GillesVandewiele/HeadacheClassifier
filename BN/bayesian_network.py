@@ -37,7 +37,7 @@ def learnDiscreteBN(df, continous_columns, features_column_names, label_column='
     print "Init done"
     learner = PGMLearner()
 
-    test = learner.discrete_estimatebn(data=data, pvalparam=0.15, indegree=1)
+    test = learner.discrete_estimatebn(data=data, pvalparam=0.85, indegree=1)
 
     # print test.__dict__
 
