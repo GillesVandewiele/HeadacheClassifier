@@ -37,7 +37,7 @@ def learnDiscreteBN(df, continous_columns, features_column_names, label_column='
     print "Init done"
     learner = PGMLearner()
 
-    test = learner.discrete_estimatebn(data=data, pvalparam=0.05, indegree=1)
+    test = learner.discrete_estimatebn(data=data, pvalparam=0.15, indegree=1)
 
     # print test.__dict__
 
@@ -194,7 +194,7 @@ def learnDiscreteBN_with_structure(df, continous_columns, features_column_names,
     dot_string = 'digraph BN{\n'
     dot_string += 'node[fontname="Arial"];\n'
 
-    # dataframes = {}
+    dataframes = {}
 
     print "save data"
     for vertice in vertices:

@@ -35,7 +35,7 @@ def build_nn(nr_features):
         update_learning_rate=0.0001,
         update_momentum=0.9,
 
-        max_epochs=10000,
+        max_epochs=40000,
         verbose=0,  # set this to 1, if you want to check the val and train scores for each epoch while training.
     )
     return net1
