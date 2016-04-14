@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 #from util import boruta_py
 #from util import boruta_py
+from util import boruta_py
 
 
 def RF_feature_selection(features, labels, features_column_names, plot=False, verbose=False):
@@ -43,34 +44,38 @@ def RF_feature_selection(features, labels, features_column_names, plot=False, ve
         plt.show()
     return feature_importance
 
-# def boruta_py_feature_selection(features, labels, column_names, verbose=False):
-#     """
-#
-#     :param features: dataframe of the features
-#     :param labels: vector containing the correct labels
-#     :param column_names: The column names of the dataframe of the features
-#     :param verbose:Whether to print info about the feature importance or not
-#     :return: vector containing the indices of the most important features (as column number)
-#     """
-#     rf = RandomForestClassifier(n_jobs=-1, class_weight='auto')
-#     feat_selector = boruta_py.BorutaPy(rf, n_estimators='auto', verbose=0)
-#     feat_selector.fit(features, labels)
-#     if verbose:
-#         print "\n\n\n\n"
-#         # check selected features
-#         # print feat_selector.support_
-#
-#         # check ranking of features
-#         print "Ranking features: "
-#         print feat_selector.ranking_
-#
-#         # call transform() on X to filter it down to selected features
-#         # X_filtered = feat_selector.transform(features)
-#         # print X_filtered
-#         print "Most important features (%2d):" % sum(feat_selector.support_)
-#     important_features = []
-#     for i in range(len(feat_selector.support_)):
-#         if feat_selector.support_[i]:
-#             if verbose: print "feature %2d: %-25s" % (i, column_names[i])
-#             important_features.append(i)
-#     return important_features
+def boruta_py_feature_selection(features, labels, column_names, verbose=False):
+    """
+    :param features: dataframe of the features
+    :param labels: vector containing the correct labels
+    :param column_names: The column names of the dataframe of the features
+    :param verbose:Whether to print info about the feature importance or not
+    :return: vector containing the indices of the most important features (as column number)
+    """
+    rf = RandomForestClassifier(n_jobs=-1, class_weight='auto')
+    feat_selector = boruta_py.BorutaPy(rf, n_estimators='auto', verbose=0)
+    feat_selector.fit(features, labels)
+    if verbose:
+        print "\n\n\n\n"
+        # check selected features
+        # print feat_selector.support_
+
+        # check ranking of features
+        print "Ranking features: "
+        print feat_selector.ranking_
+
+        # call transform() on X to filter it down to selected features
+        # X_filtered = feat_selector.transform(features)
+        # print X_filtered
+        print "Most important features (%2d):" % sum(feat_selector.support_)
+    important_features = []
+    for i in range(len(feat_selector.support_)):
+        if feat_selector.support_[i]:
+            if verbose: print "feature %2d: %-25s" % (i, column_names[i])
+            important_features.append(i)
+    return important_features
+
+#Dataset heart
+#C4.5 construction
+#confusion matrices
+
