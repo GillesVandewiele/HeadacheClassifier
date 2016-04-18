@@ -17,7 +17,7 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 133337  # 174332 or 1337 (for 5 folds: 133337)
+SEED = 1337
 N_FOLDS = 5
 
 np.random.seed(SEED)    # 84846513
@@ -88,8 +88,15 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
+<<<<<<< HEAD
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
                                          num_mutations=5, population_size=10, max_samples=8, val_fraction=0.2) #7 maxsam
+=======
+
+    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=3,
+                                                        num_mutations=2, population_size=5, max_samples=3)
+
+>>>>>>> 99ffc19628c5bf86706ea1dfbdbf59ae26168a74
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),

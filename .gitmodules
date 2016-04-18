@@ -1,0 +1,2 @@
+[submodule "benchmarks"]
+	ignore = dirty
