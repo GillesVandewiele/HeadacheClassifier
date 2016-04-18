@@ -1,0 +1,32 @@
+digraph DT{
+node[fontname="Arial"];
+Node1 [label="Sex <= 1.5"];
+Node2 [label="Age <= 6.5"];
+Node3 [label="SibSp <= 2.5"];
+Node4 [label="1" shape="box"];
+Node3 -> Node4 [label="true"];
+Node5 [label="0" shape="box"];
+Node3->Node5 [label="false"];
+Node2 -> Node3 [label="true"];
+Node6 [label="Pclass <= 1.5"];
+Node7 [label="0" shape="box"];
+Node6 -> Node7 [label="true"];
+Node8 [label="0" shape="box"];
+Node6->Node8 [label="false"];
+Node2->Node6 [label="false"];
+Node1 -> Node2 [label="true"];
+Node11 [label="Pclass <= 2.5"];
+Node12 [label="TicketPrefixId <= 21.0"];
+Node13 [label="1" shape="box"];
+Node12 -> Node13 [label="true"];
+Node14 [label="0" shape="box"];
+Node12->Node14 [label="false"];
+Node11 -> Node12 [label="true"];
+Node15 [label="Fare <= 20.7999992371"];
+Node16 [label="1" shape="box"];
+Node15 -> Node16 [label="true"];
+Node17 [label="0" shape="box"];
+Node15->Node17 [label="false"];
+Node11->Node15 [label="false"];
+Node1->Node11 [label="false"];
+}

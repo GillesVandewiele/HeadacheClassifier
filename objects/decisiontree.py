@@ -9,7 +9,7 @@ import sklearn
 from graphviz import Source
 import matplotlib.pyplot as plt
 import numpy as np
-
+import json
 
 class DecisionTree(object):
     """
@@ -120,6 +120,84 @@ class DecisionTree(object):
                 return self.left.evaluate(feature_vector)
             else:
                 return self.right.evaluate(feature_vector)
+
+    """
+        {
+        "name" : "0", "rule" : "null",
+        "children" : [{ "name" : "2", "rule" : "sunny",
+                        "children" : [{ "name" : "no(3/100%)", "rule" : "high" },
+                                      { "name" : "yes(2/100%)", "rule" : "normal" }]},
+                                      { "name" : "yes(4/100%)", "rule" : "overcast" },
+                                      { "name" : "3", "rule" : "rainy",
+                                        "children" : [{ "name" : "no(2/100%)", "rule" : "TRUE" },
+                                                      { "name" : "yes(3/100%)", "rule" : "FALSE" }
+                                                     ]
+                                      }
+                                     ]
+                        }
+                     ]
+        }
+    """
+    def to_json(self):
+        json = "{\n"
+        json += "\t\"name\": \"" + str(self.label) + " <= " + str(self.value) + "\",\n"
+        json += "\t\"rule\": \"null\",\n"
+        json += "\t\"children\": [\n"
+        json += DecisionTree.node_to_json(self.left, "True")+",\n"
+        json += DecisionTree.node_to_json(self.right, "False")+"\n"
+        json += "\t]\n"
+        json += "}\n"
+        return json
+
+    @staticmethod
+    def node_to_json(node, rule, count=2):
+        json = "\t"*count + "{\n"
+        if node.value is None:
+            if len(node.class_probabilities) > 0:
+                json += "\t"*count + "\"name\": \"" + node.label + "( " + str(node.class_probabilities) + ")\",\n"
+            else:
+                json += "\t"*count + "\"name\": \"" + node.label + " \",\n"
+            json += "\t"*count + "\"rule\": \"" + rule + "\"\n"
+        else:
+            json += "\t"*count + "\"name\": \"" + str(node.label) + " <= " + str(node.value) + "\",\n"
+            json += "\t"*count + "\"rule\": \"" + rule + "\",\n"
+            json += "\t"*count + "\"children\": [\n"
+            json += DecisionTree.node_to_json(node.left, "True", count=count+1)+",\n"
+            json += DecisionTree.node_to_json(node.right, "False", count=count+1)+"\n"
+            json += "\t"*count + "]\n"
+        json += "\t"*count + "}"
+
+        return json
+
+    @staticmethod
+    def from_json(json_file):
+        tree_json = json.loads(json_file)
+        tree = DecisionTree()
+        split_name = tree_json['name'].split(" <= ")
+        label, value = split_name[0], split_name[1]
+        tree.label = label
+        tree.value = value
+        tree.left = DecisionTree.json_to_node(tree_json['children'][0])
+        tree.right = DecisionTree.json_to_node(tree_json['children'][1])
+        return tree
+
+    @staticmethod
+    def json_to_node(_dict):
+        tree = DecisionTree()
+        split_name = _dict['name'].split(" <= ")
+        if len(split_name) > 1:
+            label, value = split_name[0], split_name[1]
+            tree.label = label
+            tree.value = value
+            if 'children' in _dict:
+                tree.left = DecisionTree.json_to_node(_dict['children'][0])
+                tree.right = DecisionTree.json_to_node(_dict['children'][1])
+        else:
+            tree.label = split_name[0]
+            tree.value = None
+            tree.left = None
+            tree.right = None
+        return tree
 
     def evaluate_multiple(self, feature_vectors):
         """

@@ -20,7 +20,8 @@ from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 13337
+SEED = 1337
+N_FOLDS = 5
 
 np.random.seed(SEED)    # 84846513
 columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -56,9 +57,9 @@ features_df = features_df.drop('class', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
-c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.25)
+c45 = C45Constructor(cf=0.95)
+cart = CARTConstructor(max_depth=12, min_samples_leaf=1)
+quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.99)
 tree_constructors = [c45, cart, quest]
 
 rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
@@ -68,7 +69,7 @@ for tree_constructor in tree_constructors:
     tree_confusion_matrices[tree_constructor.get_name()] = []
 # tree_confusion_matrices["Random Forest"] = []
 
-skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=5, shuffle=True, random_state=SEED)
+skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
 
 for train_index, test_index in skf:
     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()

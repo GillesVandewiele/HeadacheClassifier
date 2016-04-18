@@ -32,7 +32,7 @@ def build_nn(nr_features):
         output_num_units=3,
         regression=False,
         update=nesterov_momentum,
-        update_learning_rate=0.005,
+        update_learning_rate=0.003,
         update_momentum=0.9,
 
         max_epochs=10000,
@@ -69,7 +69,7 @@ cart = CARTConstructor(max_depth=5, min_samples_leaf=2)
 quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=1, alpha=0.0000001)
 tree_constructors = [c45, cart, quest]
 
-rf = RandomForestClassifier(n_estimators=50, n_jobs=-1)
+rf = RandomForestClassifier(n_estimators=30, max_depth=4, random_state=SEED, n_jobs=-1)
 
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:

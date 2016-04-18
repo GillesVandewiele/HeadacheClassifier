@@ -58,9 +58,12 @@ features_df = features_df.drop('class', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
-c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.25)
+c45 = C45Constructor(cf=0.95)
+cart = CARTConstructor(max_depth=12, min_samples_leaf=1)
+quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.99)
+# c45 = C45Constructor(cf=0.75)
+# cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
+# quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=10, alpha=0.9)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
@@ -90,15 +93,17 @@ for train_index, test_index in skf:
         tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat']
                                                                                                .values.astype(str),
                                                                     predicted_labels.astype(str)))
+        print tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))
 
 
     merger = DecisionTreeMerger()
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
-                                                        num_mutations=2, population_size=7, max_samples=5)
+                                         num_mutations=3, population_size=6, max_samples=2, val_fraction=0.2)
     #best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
                                               predicted_labels.astype(str)))
+    print best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str))
     #raw_input("Press Enter to continue...")
 
 tree_confusion_matrices_mean = {}

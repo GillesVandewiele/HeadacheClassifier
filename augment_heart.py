@@ -45,7 +45,7 @@ def build_nn(nr_features):
     return net1
 
 SEED = 1337
-N_FOLDS = 2
+N_FOLDS = 5
 
 np.random.seed(SEED)    # 84846513
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \

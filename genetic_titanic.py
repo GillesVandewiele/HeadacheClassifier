@@ -14,6 +14,7 @@ from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
+from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 13337
@@ -106,30 +107,46 @@ labels_df = DataFrame()
 labels_df['cat'] = df['Survived'].copy()
 features_df = df.copy()
 features_df = features_df.drop('Survived', axis=1)
+feature_column_names = list(set(df.columns) - set(['Survived']))
+
+num_features = 8
+best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
+new_features = DataFrame()
+for k in range(num_features):
+    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
+features_df = new_features
+feature_column_names = list(set(features_df.columns) - set(['Survived']))
 
 feature_mins = {}
 feature_maxs = {}
-feature_column_names = list(set(df.columns) - set(['Survived']))
 
 for feature in feature_column_names:
         feature_mins[feature] = np.min(df[feature])
         feature_maxs[feature] = np.max(df[feature])
 
-c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(min_samples_leaf=20)
-quest = QuestConstructor(default=1, max_nr_nodes=10, discrete_thresh=10, alpha=0.15)
+c45 = C45Constructor(cf=0.05)
+cart = CARTConstructor(max_depth=3, min_samples_split=3)
+quest = QuestConstructor(default=1, max_nr_nodes=3, discrete_thresh=10, alpha=0.125)
 tree_constructors = [c45, cart, quest]
 
 merger = DecisionTreeMerger()
 train_df = features_df.copy()
 train_df['cat'] = labels_df['cat'].copy()
-best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
-                                                    num_mutations=3, population_size=7)
+best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=50,
+                                     num_mutations=5, population_size=10, max_samples=1, val_fraction=0.75)
+# best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=1,
+#                                      num_mutations=1, population_size=1, max_samples=1, val_fraction=0.05)
 c45_tree = c45.construct_tree(features_df, labels_df)
+quest_tree = quest.construct_tree(features_df, labels_df)
 c45_tree.populate_samples(features_df, labels_df['cat'])
+quest_tree.populate_samples(features_df, labels_df['cat'])
+cart_tree = cart.construct_tree(features_df, labels_df)
 best_tree.visualise('best_tree')
 c45_tree.visualise('c45')
+cart_tree.visualise('cart')
 c45_regions = merger.decision_tree_to_decision_table(c45_tree, features_df)
+quest_regions = merger.decision_tree_to_decision_table(quest_tree, features_df)
+print feature_column_names
 
 columns = ['PassengerId','Pclass','Name','Sex','Age','SibSp','Parch','Ticket','Fare','Cabin','Embarked']
 df = read_csv(os.path.join('data', 'titanic_test.csv'), sep=',')
@@ -169,12 +186,15 @@ test_features_df = test_features_df.reset_index(drop=True)
 columns = ['PassengerId', 'Survived']
 submission_merge = DataFrame(columns=columns)
 submission_c45 = DataFrame(columns=columns)
+submission_cart = DataFrame(columns=columns)
 
 for i in range(len(test_features_df.index)):
     sample = test_features_df.loc[i]
     submission_merge.loc[len(submission_merge)] = [int(sample['PassengerId']), best_tree.evaluate(sample)]
     submission_c45.loc[len(submission_c45)] = [int(sample['PassengerId']), c45_tree.evaluate(sample)]
+    submission_cart.loc[len(submission_cart)] = [int(sample['PassengerId']), cart_tree.evaluate(sample)]
 
 
 submission_merge.to_csv('submission_genetic', index=False)
 submission_c45.to_csv('submission_c45', index=False)
+submission_cart.to_csv('submission_cart', index=False)
