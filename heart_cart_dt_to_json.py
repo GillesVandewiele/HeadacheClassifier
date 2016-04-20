@@ -69,11 +69,11 @@ for train_index, test_index in skf:
     # The decision trees
     for tree_constructor in tree_constructors:
         tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
-        tree.populate_samples(train_features_df, train_labels_df['cat'])
-        # tree.visualise(tree_constructor.get_name())
+        # tree.populate_samples(train_features_df, train_labels_df['cat'])
+        tree.visualise(tree_constructor.get_name())
         predicted_labels = tree.evaluate_multiple(test_features_df)
         s = tree.to_json()
         f = open('cart_tree_heart.json', 'w')
-        file.write(s)
-        file.close()
+        f.write(s)
+        f.close()
 
