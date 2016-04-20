@@ -15,8 +15,8 @@ from BN.bayesian_network import learnDiscreteBN, evaluate_multiple
 from constructors.c45orangeconstructor import C45Constructor
 from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
+from objects.decisiontree import DecisionTree
 
-<<<<<<< HEAD
 
 def build_nn(nr_features):
     net1 = NeuralNet(
@@ -40,13 +40,10 @@ def build_nn(nr_features):
     )
     return net1
 
-SEED = 1337
-N_FOLDS = 3
 
-=======
 SEED = 1337
 N_FOLDS = 5
->>>>>>> d5b19dd43d3e1bab4c9c8e87142ddf2e771bc0f1
+
 
 np.random.seed(SEED)    # 84846513
 columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -149,7 +146,7 @@ for train_index, test_index in skf:
     predicted_labels = []
     for index, vector in enumerate(test_features_df.values):
         predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
-    tree_confusion_matrices["Neural Network"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    tree_confusion_matrices["Neural Network"].append(DecisionTree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
 
 
     print "Begin bayesian network"
@@ -172,7 +169,7 @@ for train_index, test_index in skf:
 
     predicted_labels = evaluate_multiple(test_features_df, dataframes)
     tree_confusion_matrices["Bayesian Network"].append(
-        tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
+        DecisionTree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
 print tree_confusion_matrices
 
