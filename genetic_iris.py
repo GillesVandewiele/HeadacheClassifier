@@ -17,8 +17,8 @@ from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 1337
-N_FOLDS = 5
+SEED = 174332
+N_FOLDS = 6
 
 np.random.seed(SEED)    # 84846513
 iris = datasets.load_iris()
@@ -43,7 +43,7 @@ train_features_df = features_df
 
 c45 = C45Constructor(cf=1.0)
 cart = CARTConstructor(max_depth=5, min_samples_leaf=2)
-quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=1, alpha=0.0000001)
+quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=1, alpha=0.5)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
@@ -76,8 +76,8 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
-    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=3,
-                                                        num_mutations=2, population_size=7, max_samples=3)
+    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
+                                         num_mutations=3, population_size=6, max_samples=2, val_fraction=0.24)
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),

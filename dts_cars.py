@@ -16,6 +16,7 @@ from constructors.c45orangeconstructor import C45Constructor
 from constructors.cartconstructor import CARTConstructor
 from constructors.questconstructor import QuestConstructor
 
+<<<<<<< HEAD
 
 def build_nn(nr_features):
     net1 = NeuralNet(
@@ -42,6 +43,10 @@ def build_nn(nr_features):
 SEED = 1337
 N_FOLDS = 3
 
+=======
+SEED = 1337
+N_FOLDS = 5
+>>>>>>> d5b19dd43d3e1bab4c9c8e87142ddf2e771bc0f1
 
 np.random.seed(SEED)    # 84846513
 columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -77,9 +82,10 @@ features_df = features_df.drop('class', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
-c45 = C45Constructor(cf=0.15)
-cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
-quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=5, alpha=0.75)
+c45 = C45Constructor(cf=0.95)
+cart = CARTConstructor(max_depth=12, min_samples_leaf=1)
+quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.99)
+
 tree_constructors = [c45, cart, quest]
 
 rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
@@ -91,7 +97,7 @@ tree_confusion_matrices["Random Forest"] = []
 tree_confusion_matrices["Neural Network"] = []
 tree_confusion_matrices["Bayesian Network"] = []
 
-skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=5, shuffle=True, random_state=SEED)
+skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
 
 for train_index, test_index in skf:
     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()

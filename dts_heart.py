@@ -74,12 +74,12 @@ features_df = new_features
 
 feature_column_names = list(set(features_df.columns) - set(['disease']))
 
-c45 = C45Constructor(cf=0.15)
+c45 = C45Constructor(cf=0.01)
 cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
-quest = QuestConstructor(default=1, max_nr_nodes=2, discrete_thresh=3, alpha=0.75)
+quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
 tree_constructors = [c45, cart, quest]
 
-rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
+#rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
 
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:
