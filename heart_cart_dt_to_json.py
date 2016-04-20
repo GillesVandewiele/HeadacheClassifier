@@ -1,20 +1,10 @@
-import matplotlib.pyplot as plt
 import os
-import pandas as pd
 from pandas import read_csv, DataFrame
 
-import lasagne
 import numpy as np
 import sklearn
-from lasagne import layers
-from lasagne.updates import nesterov_momentum
-from nolearn.lasagne import NeuralNet, PrintLayerInfo
-from sklearn.ensemble import RandomForestClassifier
 
-from BN.bayesian_network import learnDiscreteBN, evaluate_multiple
-from constructors.c45orangeconstructor import C45Constructor
 from constructors.cartconstructor import CARTConstructor
-from constructors.questconstructor import QuestConstructor
 from extractors.featureselector import RF_feature_selection#, boruta_py_feature_selection
 
 SEED = 1337
