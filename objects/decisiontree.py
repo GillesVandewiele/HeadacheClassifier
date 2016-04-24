@@ -154,9 +154,9 @@ class DecisionTree(object):
         json = "\t"*count + "{\n"
         if node.value is None:
             if len(node.class_probabilities) > 0:
-                json += "\t"*count + "\"name\": \"" + node.label + "( " + str(node.class_probabilities) + ")\",\n"
+                json += "\t"*count + "\"name\": \"" + str(node.label) + "( " + str(node.class_probabilities) + ")\",\n"
             else:
-                json += "\t"*count + "\"name\": \"" + node.label + " \",\n"
+                json += "\t"*count + "\"name\": \"" + str(node.label) + " \",\n"
             json += "\t"*count + "\"rule\": \"" + rule + "\"\n"
         else:
             json += "\t"*count + "\"name\": \"" + str(node.label) + " <= " + str(node.value) + "\",\n"

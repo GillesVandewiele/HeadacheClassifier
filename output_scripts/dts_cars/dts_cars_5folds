@@ -1,0 +1,285 @@
+Fold 1
+Decision trees done for fold 1
+RF done for fold 1
+# Neural Network with 5954 learnable parameters
+
+## Layer information
+
+  #  name       size
+---  -------  ------
+  0  input         6
+  1  hidden      100
+  2  hidden2      50
+  3  output        4
+
+NN done for fold 1
+Init done
+done learning
+save data
+New vertice: maint
+Vertice maint done
+New vertice: persons
+Vertice persons done
+New vertice: lug_boot
+Vertice lug_boot done
+New vertice: safety
+Vertice safety done
+New vertice: doors
+Vertice doors done
+New vertice: buying
+Vertice buying done
+New vertice: cat
+Vertice cat done
+vizualisation done
+BN done for fold 1
+Fold 2
+Decision trees done for fold 2
+RF done for fold 2
+# Neural Network with 5954 learnable parameters
+
+## Layer information
+
+  #  name       size
+---  -------  ------
+  0  input         6
+  1  hidden      100
+  2  hidden2      50
+  3  output        4
+
+NN done for fold 2
+Init done
+done learning
+save data
+New vertice: maint
+Vertice maint done
+New vertice: persons
+Vertice persons done
+New vertice: lug_boot
+Vertice lug_boot done
+New vertice: safety
+Vertice safety done
+New vertice: doors
+Vertice doors done
+New vertice: buying
+Vertice buying done
+New vertice: cat
+Vertice cat done
+vizualisation done
+BN done for fold 2
+Fold 3
+Decision trees done for fold 3
+RF done for fold 3
+# Neural Network with 5954 learnable parameters
+
+## Layer information
+
+  #  name       size
+---  -------  ------
+  0  input         6
+  1  hidden      100
+  2  hidden2      50
+  3  output        4
+
+NN done for fold 3
+Init done
+done learning
+save data
+New vertice: maint
+Vertice maint done
+New vertice: persons
+Vertice persons done
+New vertice: lug_boot
+Vertice lug_boot done
+New vertice: safety
+Vertice safety done
+New vertice: doors
+Vertice doors done
+New vertice: buying
+Vertice buying done
+New vertice: cat
+Vertice cat done
+vizualisation done
+BN done for fold 3
+Fold 4
+Decision trees done for fold 4
+RF done for fold 4
+# Neural Network with 5954 learnable parameters
+
+## Layer information
+
+  #  name       size
+---  -------  ------
+  0  input         6
+  1  hidden      100
+  2  hidden2      50
+  3  output        4
+
+NN done for fold 4
+Init done
+done learning
+save data
+New vertice: maint
+Vertice maint done
+New vertice: persons
+Vertice persons done
+New vertice: lug_boot
+Vertice lug_boot done
+New vertice: safety
+Vertice safety done
+New vertice: doors
+Vertice doors done
+New vertice: buying
+Vertice buying done
+New vertice: cat
+Vertice cat done
+vizualisation done
+BN done for fold 4
+Fold 5
+Decision trees done for fold 5
+RF done for fold 5
+# Neural Network with 5954 learnable parameters
+
+## Layer information
+
+  #  name       size
+---  -------  ------
+  0  input         6
+  1  hidden      100
+  2  hidden2      50
+  3  output        4
+
+NN done for fold 5
+Init done
+done learning
+save data
+New vertice: maint
+Vertice maint done
+New vertice: persons
+Vertice persons done
+New vertice: lug_boot
+Vertice lug_boot done
+New vertice: safety
+Vertice safety done
+New vertice: doors
+Vertice doors done
+New vertice: buying
+Vertice buying done
+New vertice: cat
+Vertice cat done
+vizualisation done
+BN done for fold 5
+{'Bayesian Network': [array([[230,  11,   1,   0],
+       [ 16,  50,   3,   8],
+       [  0,   5,   6,   3],
+       [  0,   1,  11,   1]]), array([[224,  17,   1,   0],
+       [  4,  60,   8,   5],
+       [  0,   4,   6,   4],
+       [  0,   0,  11,   2]]), array([[232,   9,   1,   0],
+       [ 20,  53,   2,   2],
+       [  0,   7,   4,   3],
+       [  0,   2,   6,   5]]), array([[220,  20,   2,   0],
+       [  6,  68,   1,   2],
+       [  0,   8,   4,   2],
+       [  0,   4,   9,   0]]), array([[221,  18,   0,   2],
+       [ 13,  60,   1,   2],
+       [  0,   3,   8,   2],
+       [  0,   3,   8,   2]])], 'CART': [array([[238,   3,   1,   0],
+       [  5,  72,   0,   0],
+       [  1,   1,  12,   0],
+       [  0,   1,   1,  11]]), array([[240,   2,   0,   0],
+       [  3,  73,   1,   0],
+       [  2,   1,  11,   0],
+       [  0,   0,   0,  13]]), array([[240,   1,   1,   0],
+       [  8,  68,   1,   0],
+       [  0,   1,  13,   0],
+       [  0,   0,   0,  13]]), array([[238,   4,   0,   0],
+       [  2,  74,   1,   0],
+       [  1,   1,  12,   0],
+       [  0,   3,   0,  10]]), array([[238,   3,   0,   0],
+       [  0,  74,   0,   2],
+       [  0,   3,  10,   0],
+       [  0,   0,   0,  13]])], 'Neural Network': [array([[242,   0,   0,   0],
+       [  2,  75,   0,   0],
+       [  1,   0,  13,   0],
+       [  0,   2,   0,  11]]), array([[236,   4,   2,   0],
+       [  1,  74,   2,   0],
+       [  0,   1,  11,   2],
+       [  0,   1,   0,  12]]), array([[241,   1,   0,   0],
+       [  5,  71,   1,   0],
+       [  0,   1,  13,   0],
+       [  0,   0,   0,  13]]), array([[241,   0,   1,   0],
+       [  8,  69,   0,   0],
+       [  0,   3,  11,   0],
+       [  0,   3,   1,   9]]), array([[238,   3,   0,   0],
+       [  1,  75,   0,   0],
+       [  0,   0,  13,   0],
+       [  0,   0,   0,  13]])], 'QUEST': [array([[233,   8,   1,   0],
+       [  3,  74,   0,   0],
+       [  1,   1,  10,   2],
+       [  0,   2,   0,  11]]), array([[227,  15,   0,   0],
+       [  7,  66,   3,   1],
+       [  1,   4,   9,   0],
+       [  0,   0,   3,  10]]), array([[236,   5,   1,   0],
+       [  5,  66,   2,   4],
+       [  0,   4,   9,   1],
+       [  0,   2,   3,   8]]), array([[226,  15,   1,   0],
+       [  2,  73,   2,   0],
+       [  1,   4,   8,   1],
+       [  0,   3,   0,  10]]), array([[231,  10,   0,   0],
+       [  8,  65,   0,   3],
+       [  0,   0,   9,   4],
+       [  0,   0,   0,  13]])], 'C4.5': [array([[235,   6,   1,   0],
+       [  1,  76,   0,   0],
+       [  1,   1,  11,   1],
+       [  0,   1,   1,  11]]), array([[240,   2,   0,   0],
+       [  5,  70,   2,   0],
+       [  0,   1,  13,   0],
+       [  0,   0,   0,  13]]), array([[241,   0,   1,   0],
+       [  0,  75,   2,   0],
+       [  0,   2,  12,   0],
+       [  0,   0,   0,  13]]), array([[239,   2,   1,   0],
+       [  5,  71,   1,   0],
+       [  0,   1,  13,   0],
+       [  0,   3,   0,  10]]), array([[238,   3,   0,   0],
+       [  1,  72,   1,   2],
+       [  0,   2,  11,   0],
+       [  0,   0,   0,  13]])], 'Random Forest': [array([[240,   2,   0,   0],
+       [  0,  76,   1,   0],
+       [  0,   0,  14,   0],
+       [  0,   1,   1,  11]]), array([[238,   4,   0,   0],
+       [  0,  76,   0,   1],
+       [  0,   1,  13,   0],
+       [  0,   0,   0,  13]]), array([[242,   0,   0,   0],
+       [  0,  76,   0,   1],
+       [  0,   1,  13,   0],
+       [  0,   0,   0,  13]]), array([[240,   2,   0,   0],
+       [  1,  75,   1,   0],
+       [  0,   1,  13,   0],
+       [  0,   2,   0,  11]]), array([[237,   4,   0,   0],
+       [  0,  76,   0,   0],
+       [  0,   0,  13,   0],
+       [  0,   0,   0,  13]])]}
+[[ 1127.    75.     5.     2.]
+ [   59.   291.    15.    19.]
+ [    0.    27.    28.    14.]
+ [    0.    10.    45.    10.]] 0.843080486393
+[[  1.19400000e+03   1.30000000e+01   2.00000000e+00   0.00000000e+00]
+ [  1.80000000e+01   3.61000000e+02   3.00000000e+00   2.00000000e+00]
+ [  4.00000000e+00   7.00000000e+00   5.80000000e+01   0.00000000e+00]
+ [  0.00000000e+00   4.00000000e+00   1.00000000e+00   6.00000000e+01]] 0.968731905038
+[[  1.19800000e+03   8.00000000e+00   3.00000000e+00   0.00000000e+00]
+ [  1.70000000e+01   3.64000000e+02   3.00000000e+00   0.00000000e+00]
+ [  1.00000000e+00   5.00000000e+00   6.10000000e+01   2.00000000e+00]
+ [  0.00000000e+00   6.00000000e+00   1.00000000e+00   5.80000000e+01]] 0.973364215402
+[[ 1153.    53.     3.     0.]
+ [   25.   344.     7.     8.]
+ [    3.    13.    45.     8.]
+ [    0.     7.     6.    52.]] 0.922987840185
+[[  1.19300000e+03   1.30000000e+01   3.00000000e+00   0.00000000e+00]
+ [  1.20000000e+01   3.64000000e+02   6.00000000e+00   2.00000000e+00]
+ [  1.00000000e+00   7.00000000e+00   6.00000000e+01   1.00000000e+00]
+ [  0.00000000e+00   4.00000000e+00   1.00000000e+00   6.00000000e+01]] 0.97104806022
+[[  1.19700000e+03   1.20000000e+01   0.00000000e+00   0.00000000e+00]
+ [  1.00000000e+00   3.79000000e+02   2.00000000e+00   2.00000000e+00]
+ [  0.00000000e+00   3.00000000e+00   6.60000000e+01   0.00000000e+00]
+ [  0.00000000e+00   3.00000000e+00   1.00000000e+00   6.10000000e+01]] 0.986103068906
