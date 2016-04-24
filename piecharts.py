@@ -10,15 +10,19 @@ def plot_pie_chart(values, labels, title):
 
     # The slices will be ordered and plotted counter-clockwise.
     my_norm = matplotlib.colors.Normalize(0, 1) # maps your data to the range [0, 1]
-    my_cmap = matplotlib.cm.get_cmap('jet')
+    my_cmap = matplotlib.cm.get_cmap('coolwarm')
     print my_norm(values)
     fig = plt.figure()
-    fig.suptitle(title, fontsize=20)
+    fig.suptitle(title, fontsize=25)
 
+    matplotlib.rcParams['font.size'] = 18
     plt.pie(values, labels=labels, colors=my_cmap(my_norm(values)),
             autopct='%1.1f%%')
     # Set aspect ratio to be equal so that pie is drawn as a circle.
     plt.axis('equal')
+    F = plt.gcf()
+    Size = F.get_size_inches()
+    F.set_size_inches(Size[0]*1.25, Size[1]*1.75, forward=True)
     plt.show()
 
 

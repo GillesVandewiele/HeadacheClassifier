@@ -1,8 +1,6 @@
 
 #TODO: UGLY code: dit moet herschreven worden! GEBRUIK PANDAS!!!
 
-from headacheclassifier import HeadacheClassifier
-
 __author__ = 'kiani &gilles'
 
 import numpy as np
@@ -14,7 +12,7 @@ def loadDataFromDB(host, port, dbname):
     client = MongoClient(host, port)
     db = client[dbname]
     return db
-
+"""
 
 database = loadDataFromDB('localhost', 9000, 'CHRONIC')
 
@@ -215,8 +213,7 @@ def getFeatureVectorForPatient(patientID):
     return features
 
 print(getFeatureVectorForPatient(6))
-s = HeadacheClassifier()
-
+"""
 
 
 #

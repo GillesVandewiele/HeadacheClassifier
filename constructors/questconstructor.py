@@ -191,8 +191,8 @@ class QuestConstructor(TreeConstructor):
         max_value = np.max(max_value)
         min_value = np.min(min_value)
 
-        # First we transform the discrete variable to a continuous variable and then apply same QDA
-        if type == DISCRETE:
+        # First we transform nominal discrete variables to a continuous variable and then apply same QDA
+        if type == DISCRETE:  # and False:  #TODO: check if it is DISCRETE and NOMINAL
             data_feature_all_cats = pd.get_dummies(data[feature])
             dummies = data_feature_all_cats.columns
             data_feature_all_cats['cat'] = data['cat']
@@ -280,8 +280,8 @@ class QuestConstructor(TreeConstructor):
                 indices_a = [i for i in range(len(labels)) if labels[i] == 0]
                 indices_b = [i for i in range(len(labels)) if labels[i] == 1]
                 sum_freq = sum(frequencies)
-                var_a = sum([(frequencies[i]*variances[i] + frequencies[i]*(means[i] - mean_a))/sum_freq for i in indices_a])
-                var_b = sum([(frequencies[i]*variances[i] + frequencies[i]*(means[i] - mean_b))/sum_freq for i in indices_b])
+                var_a = sum([(frequencies[i]*(variances[i] + (means[i] - mean_a)**2)) for i in indices_a])/sum_freq
+                var_b = sum([(frequencies[i]*(variances[i] + (means[i] - mean_b)**2)) for i in indices_b])/sum_freq
                 freq_a = sum([frequencies[i] for i in indices_a])
                 freq_b = sum([frequencies[i] for i in indices_b])
 
@@ -318,12 +318,14 @@ class QuestConstructor(TreeConstructor):
             b = 2*(mean_a*var_b - mean_b*var_a)
             prob_a = float(float(freq_a) / float(freq_a + freq_b))
             prob_b = 1 - prob_a
-            c = (mean_b**2)*var_a - (mean_a**2)*var_b + 2*var_a*var_b*np.log((prob_a * np.sqrt(var_b))/(prob_b * np.sqrt(var_a)))
+            c = (mean_b**2)*var_a - (mean_a**2)*var_b + 2*var_a*var_b*np.log2((prob_a * np.sqrt(var_b))/(prob_b * np.sqrt(var_a)))
 
             disc = b**2-4*a*c
             if disc == 0:
                 x1 = (-b+np.sqrt(disc))/(2*a)
-                if x1 < min_val or x1 > max_val:
+                if x1 < min_val:
+                    return min_val
+                elif x1 > max_val:
                     return (mean_a + mean_b)/2
                 else:
                     return x1
@@ -331,13 +333,17 @@ class QuestConstructor(TreeConstructor):
                 x1 = (-b+np.sqrt(disc))/(2*a)
                 x2 = (-b-np.sqrt(disc))/(2*a)
                 if abs(x1 - mean_a) < abs(x2 - mean_a):
-                    if x1 < min_val or x1 > max_val:
-                        return (mean_a + mean_b)/2
+                    if x1 < min_val:
+                        return min_val
+                    elif x1 > max_val:
+                        return max_val
                     else:
                         return x1
                 else:
-                    if x2 < min_val or x2 > max_val:
-                        return (mean_a + mean_b)/2
+                    if x2 < min_val:
+                        return min_val
+                    elif x2 > max_val:
+                        return max_val
                     else:
                         return x2
             else:
