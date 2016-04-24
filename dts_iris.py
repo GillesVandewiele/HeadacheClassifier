@@ -26,22 +26,22 @@ def build_nn(nr_features):
         ],
 
         input_shape=(None, nr_features),
-        hidden_num_units=25,
+        hidden_num_units=75,
         hidden_nonlinearity=lasagne.nonlinearities.tanh,
         output_nonlinearity=lasagne.nonlinearities.softmax,
         output_num_units=3,
         regression=False,
         update=nesterov_momentum,
-        update_learning_rate=0.003,
+        update_learning_rate=0.0001,
         update_momentum=0.9,
 
-        max_epochs=10000,
-        verbose=1,  # set this to 1, if you want to check the val and train scores for each epoch while training.
+        max_epochs=200000,
+        verbose=0,  # set this to 1, if you want to check the val and train scores for each epoch while training.
     )
     return net1
 
 SEED = 1337
-N_FOLDS = 3
+N_FOLDS = 5
 
 np.random.seed(SEED)  # 84846513
 iris = datasets.load_iris()
@@ -90,25 +90,16 @@ for train_index, test_index in skf:
     test_labels_df = test_labels_df.reset_index(drop=True)
     train_df = train_features_df.copy()
     train_df['cat'] = train_labels_df['cat'].copy()
+
+    # The decision trees
     for tree_constructor in tree_constructors:
         tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
         tree.populate_samples(train_features_df, train_labels_df['cat'])
         # tree.visualise(tree_constructor.get_name())
         predicted_labels = tree.evaluate_multiple(test_features_df)
-        tree_confusion_matrices[tree_constructor.get_name()].append(
-            tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
+        tree_confusion_matrices[tree_constructor.get_name()].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
-    dataframes = learnDiscreteBN(train_df, draw_network=True, continous_columns=feature_column_names,
-                                 features_column_names=feature_column_names)
-    for i in feature_column_names:
-        bins = np.arange((min(test_features_df[i])), (max(test_features_df[i])),
-                         ((max(test_features_df[i]) - min(test_features_df[i])) / 5.0))
-        test_features_df[i] = pandas.np.digitize(test_features_df[i], bins=bins)
-
-    predicted_labels = evaluate_multiple(test_features_df, dataframes)
-    tree_confusion_matrices["Bayesian Network"].append(
-        tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
-
+    # Random Forest
     rf.fit(train_features_df.values.tolist(), train_labels_df['cat'].tolist())
     predicted_labels = []
     for index, vector in enumerate(test_features_df.values):
@@ -120,6 +111,7 @@ for train_index, test_index in skf:
     test_features_df = (test_features_df - test_features_df.mean()) / (test_features_df.max() - test_features_df.min())
     test_features_df = test_features_df.reset_index(drop=True)
 
+    # Neural Network
     model = build_nn(nr_features=len(train_features_df.columns))
     model.initialize()
     layer_info = PrintLayerInfo()
@@ -129,27 +121,46 @@ for train_index, test_index in skf:
     predicted_labels = []
     for index, vector in enumerate(test_features_df.values):
         predicted_labels.append(str(model.predict(vector.reshape(1, -1))[0]+1))
-    tree_confusion_matrices["Neural Network"].append(DecisionTree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+    tree_confusion_matrices["Neural Network"].append(tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels))  # Bit hacky to use the tree method
+
+
+    #Bayesian Network
+    train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()
+    train_labels_df, test_labels_df = labels_df.iloc[train_index,:].copy(), labels_df.iloc[test_index,:].copy()
+    train_features_df = train_features_df.reset_index(drop=True)
+    test_features_df = test_features_df.reset_index(drop=True)
+    train_labels_df = train_labels_df.reset_index(drop=True)
+    test_labels_df = test_labels_df.reset_index(drop=True)
+    train_df = train_features_df.copy()
+    train_df['cat'] = train_labels_df['cat'].copy()
+
+    dataframes = learnDiscreteBN(train_df, draw_network=False, continous_columns=feature_column_names,
+                                 features_column_names=feature_column_names)
+    for i in feature_column_names:
+        bins = np.arange((min(test_features_df[i])), (max(test_features_df[i])),
+                         ((max(test_features_df[i]) - min(test_features_df[i])) / 5.0))
+        test_features_df[i] = pandas.pandas.np.digitize(test_features_df[i], bins=bins)
+
+    predicted_labels = evaluate_multiple(test_features_df, dataframes)
+    tree_confusion_matrices["Bayesian Network"].append(
+        tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str), predicted_labels.astype(str)))
 
 print tree_confusion_matrices
 
 tree_confusion_matrices_mean = {}
 
 fig = plt.figure()
-fig.suptitle('Accuracy of decision trees on iris dataset', fontsize=20)
+fig.suptitle('Accuracy on iris dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
 counter = 0
 for key in tree_confusion_matrices:
-
     tree_confusion_matrices_mean[key] = np.zeros(tree_confusion_matrices[key][0].shape)
     for i in range(len(tree_confusion_matrices[key])):
         tree_confusion_matrices_mean[key] = np.add(tree_confusion_matrices_mean[key], tree_confusion_matrices[key][i])
-    cm_normalized = np.around(
-        tree_confusion_matrices_mean[key].astype('float') / tree_confusion_matrices_mean[key].sum(axis=1)[:,
-                                                            np.newaxis], 3)
+    cm_normalized = np.around(tree_confusion_matrices_mean[key].astype('float') / tree_confusion_matrices_mean[key].sum(axis=1)[:, np.newaxis], 3)
 
     diagonal_sum = sum([tree_confusion_matrices_mean[key][i][i] for i in range(len(tree_confusion_matrices_mean[key]))])
     total_count = np.sum(tree_confusion_matrices_mean[key])
-    print tree_confusion_matrices_mean[key], float(diagonal_sum) / float(total_count)
+    print tree_confusion_matrices_mean[key], float(diagonal_sum)/float(total_count)
 
     ax = fig.add_subplot(1, len(tree_confusion_matrices), counter+1)
     cax = ax.matshow(cm_normalized, cmap=plt.cm.Blues, vmin=0.0, vmax=1.0)
@@ -162,5 +173,5 @@ for key in tree_confusion_matrices:
 
 F = plt.gcf()
 Size = F.get_size_inches()
-F.set_size_inches(Size[0] * 2, Size[1], forward=True)
+F.set_size_inches(Size[0]*2, Size[1], forward=True)
 plt.show()

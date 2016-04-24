@@ -35,7 +35,7 @@ def build_nn(nr_features):
         update_learning_rate=0.0001,
         update_momentum=0.9,
 
-        max_epochs=10000,
+        max_epochs=40000,
         verbose=0,  # set this to 1, if you want to check the val and train scores for each epoch while training.
     )
     return net1
@@ -79,7 +79,7 @@ cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
 tree_constructors = [c45, cart, quest]
 
-#rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
+rf = RandomForestClassifier(n_estimators=500, n_jobs=-1)
 
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:

@@ -28,8 +28,8 @@ def build_nn(nr_features):
         ],
 
         input_shape=(None, nr_features),
-        hidden_num_units=100,
-        hidden2_num_units=50,
+        hidden_num_units=75,
+        hidden2_num_units=40,
         hidden_nonlinearity=lasagne.nonlinearities.tanh,
         hidden2_nonlinearity=lasagne.nonlinearities.tanh,
         output_nonlinearity=lasagne.nonlinearities.softmax,
@@ -46,7 +46,7 @@ def build_nn(nr_features):
 
 
 SEED = 1337
-N_FOLDS = 5
+N_FOLDS = 10
 
 
 np.random.seed(SEED)    # 84846513
@@ -173,7 +173,7 @@ print tree_confusion_matrices
 tree_confusion_matrices_mean = {}
 
 fig = plt.figure()
-fig.suptitle('Accuracy on cars dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
+fig.suptitle('Accuracy on cars (other) dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
 counter = 0
 for key in tree_confusion_matrices:
     tree_confusion_matrices_mean[key] = np.zeros(tree_confusion_matrices[key][0].shape)
