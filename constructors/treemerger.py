@@ -658,13 +658,13 @@ class DecisionTreeMerger(object):
 
         region_accuracy = []
 
-        for region in regions_list:
-            predicted_labels = self.evaluate_regions(region, test_features_df)
-            confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
-            confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
-            accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
-            print confusion_matrix, accuracy
-            region_accuracy.append((region, accuracy, len(region)))
+        # for region in regions_list:
+        #     predicted_labels = self.evaluate_regions(region, test_features_df)
+        #     confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
+        #     confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
+        #     accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
+        #     print confusion_matrix, accuracy
+        #     region_accuracy.append((region, accuracy, len(region)))
 
         for region in regions_list:
                 print counter, len(region)
@@ -686,20 +686,20 @@ class DecisionTreeMerger(object):
             accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
             #print confusion_matrix, accuracy, tree
             tree_accuracy.append((tree, accuracy, len(regions)))
-            region = self.decision_tree_to_decision_table(tree, train_features_df)
-            predicted_labels = self.evaluate_regions(regions, test_features_df)
-            confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
-            confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
-            accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
-            print confusion_matrix, accuracy
-            region_accuracy.append((region, accuracy, len(region)))
+            # region = self.decision_tree_to_decision_table(tree, train_features_df)
+            # predicted_labels = self.evaluate_regions(regions, test_features_df)
+            # confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
+            # confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
+            # accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
+            # print confusion_matrix, accuracy
+            # region_accuracy.append((region, accuracy, len(region)))
 
         print [x for x in sorted(tree_accuracy, key=lambda x: (-x[1], x[2]))[:min(len(regions_list), population_size)]]
 
         best_tree = sorted(tree_accuracy, key=lambda x: (-x[1], x[2]))[0][0]
-        best_region = sorted(region_accuracy, key=lambda x: (-x[1], x[2]))[0][0]
+        #best_region = sorted(region_accuracy, key=lambda x: (-x[1], x[2]))[0][0]
 
-        return (best_tree, best_region)
+        return best_tree#(best_tree, best_region)
 
 
 # TODO: the process that goes from regions to dt's is not perfect...
