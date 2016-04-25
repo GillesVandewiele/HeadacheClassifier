@@ -88,8 +88,8 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
-    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=3,
-                                                        num_mutations=2, population_size=5, max_samples=3)
+    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
+                                         num_mutations=5, population_size=10, max_samples=8, val_fraction=0.2) #7 maxsam
 
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)

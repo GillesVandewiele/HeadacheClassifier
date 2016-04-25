@@ -260,6 +260,8 @@ class DecisionTreeMerger(object):
                     for segment2 in box2_active_set:
                         intersections.append((segment1.region_index, segment2.region_index))
 
+            # print "----------------------------->", intersections
+
             S_intersections[i] = intersections
 
         # The intersection of all these S_i's are the intersecting regions
@@ -426,7 +428,7 @@ class DecisionTreeMerger(object):
         return samples
 
 
-    def evaluate_regions(self, regions, test_features_df, default=0):
+    def evaluate_regions(self, regions, test_features_df, default=1):
         #print "Evaluating regions..."
         labels = []
         for i in range(len(test_features_df)):
@@ -654,6 +656,16 @@ class DecisionTreeMerger(object):
         tree_accuracy = []
         counter = 1
 
+        region_accuracy = []
+
+        # for region in regions_list:
+        #     predicted_labels = self.evaluate_regions(region, test_features_df)
+        #     confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
+        #     confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
+        #     accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
+        #     print confusion_matrix, accuracy
+        #     region_accuracy.append((region, accuracy, len(region)))
+
         for region in regions_list:
                 print counter, len(region)
                 tree = self.regions_to_tree_improved(train_features_df, train_labels_df, region, feature_column_names,
@@ -663,8 +675,8 @@ class DecisionTreeMerger(object):
                 confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
 
                 accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
-                print confusion_matrix, accuracy, tree
-                tree_accuracy.append((tree, accuracy, len(region)))#, region))
+                #print confusion_matrix, accuracy, tree
+                tree_accuracy.append((tree, accuracy, len(region)))
                 counter += 1
 
         for tree in start_trees:
@@ -672,16 +684,22 @@ class DecisionTreeMerger(object):
             confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
             confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
             accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
-            print confusion_matrix, accuracy, tree
-            regions = self.decision_tree_to_decision_table(tree, train_features_df)
+            #print confusion_matrix, accuracy, tree
             tree_accuracy.append((tree, accuracy, len(regions)))
+            # region = self.decision_tree_to_decision_table(tree, train_features_df)
+            # predicted_labels = self.evaluate_regions(regions, test_features_df)
+            # confusion_matrix = tree.plot_confusion_matrix(test_labels_df[cat_name].values.astype(str), predicted_labels.astype(str))
+            # confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum()
+            # accuracy = sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
+            # print confusion_matrix, accuracy
+            # region_accuracy.append((region, accuracy, len(region)))
 
         print [x for x in sorted(tree_accuracy, key=lambda x: (-x[1], x[2]))[:min(len(regions_list), population_size)]]
 
         best_tree = sorted(tree_accuracy, key=lambda x: (-x[1], x[2]))[0][0]
+        #best_region = sorted(region_accuracy, key=lambda x: (-x[1], x[2]))[0][0]
 
-        print best_tree
-        return best_tree
+        return best_tree#(best_tree, best_region)
 
 
 # TODO: the process that goes from regions to dt's is not perfect...
