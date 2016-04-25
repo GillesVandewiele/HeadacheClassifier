@@ -63,7 +63,7 @@ for tree_constructor in tree_constructors:
     tree_confusion_matrices[tree_constructor.get_name()] = []
 tree_confusion_matrices["Genetic"] = []
 
-skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
+skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=False, random_state=SEED)
 
 for train_index, test_index in skf:
     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()
@@ -88,15 +88,9 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
-<<<<<<< HEAD
-    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
-                                         num_mutations=5, population_size=10, max_samples=8, val_fraction=0.2) #7 maxsam
-=======
-
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=3,
                                                         num_mutations=2, population_size=5, max_samples=3)
 
->>>>>>> 99ffc19628c5bf86706ea1dfbdbf59ae26168a74
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),

@@ -17,7 +17,7 @@ from constructors.treemerger import DecisionTreeMerger
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 1337
-N_FOLDS = 5
+N_FOLDS = 10
 
 np.random.seed(SEED)    # 84846513
 columns = ['buying', 'maint', 'doors', 'persons', 'lug_boot', 'safety', 'class']
@@ -59,7 +59,7 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=0.95)
-cart = CARTConstructor(max_depth=12, min_samples_leaf=1)
+cart = CARTConstructor(max_depth=12, min_samples_leaf=2)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.99)
 # c45 = C45Constructor(cf=0.75)
 # cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
