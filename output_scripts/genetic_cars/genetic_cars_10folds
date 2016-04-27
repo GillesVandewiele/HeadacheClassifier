@@ -1,0 +1,1674 @@
+/usr/bin/python2.7 /home/kiani/HeadacheClassifier/genetic_cars.py
+[[120   1   0   0]
+ [  0  38   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[121   0   0   0]
+ [  2  36   1   0]
+ [  0   2   5   0]
+ [  0   0   0   7]]
+[[115   6   0   0]
+ [  0  39   0   0]
+ [  0   1   4   2]
+ [  0   0   0   7]]
+Initializing
+Merging  55  with  64  regions.
+Merging  644  with  54  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.97427652733118975, 0.95176848874598086, 0.93569131832797425])
+('breeding.... ', 4)
+merging...
+Merging  64  with  55  regions.
+going to tree
+3.402
+('breeding.... ', 2)
+merging...
+Merging  2254  with  54  regions.
+going to tree
+3.032
+Took  5.554492  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.97427652733118975, 0.95176848874598086, 0.94212218649517687, 0.93569131832797425, 0.91318327974276525])
+('breeding.... ', 6)
+merging...
+Merging  54  with  64  regions.
+going to tree
+3.776
+('breeding.... ', 4)
+merging...
+Merging  2254  with  2254  regions.
+going to tree
+3.023
+('breeding.... ', 2)
+merging...
+Merging  644  with  55  regions.
+going to tree
+1.315
+Took  33.521348  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98070739549839225, 0.977491961414791, 0.97427652733118975, 0.95176848874598086, 0.94212218649517687, 0.94212218649517676])
+('breeding.... ', 6)
+merging...
+Merging  64  with  2254  regions.
+going to tree
+3.834
+('breeding.... ', 4)
+merging...
+Merging  749  with  2254  regions.
+going to tree
+3.453
+('breeding.... ', 2)
+merging...
+Merging  55  with  2254  regions.
+going to tree
+1.733
+Took  24.717659  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99356913183279738, 0.98070739549839225, 0.977491961414791, 0.97427652733118975, 0.96141479099678462, 0.95176848874598086])
+('breeding.... ', 6)
+merging...
+Merging  749  with  55  regions.
+going to tree
+2.551
+('breeding.... ', 4)
+merging...
+Merging  64  with  2254  regions.
+going to tree
+3.82
+('breeding.... ', 2)
+merging...
+Merging  2254  with  2254  regions.
+going to tree
+3.482
+Took  39.268908  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99356913183279738, 0.99035369774919613, 0.98070739549839225, 0.977491961414791, 0.97427652733118975, 0.96784565916398713])
+('breeding.... ', 6)
+merging...
+Merging  55  with  749  regions.
+going to tree
+2.282
+('breeding.... ', 4)
+merging...
+Merging  64  with  2254  regions.
+going to tree
+3.82
+('breeding.... ', 2)
+merging...
+Merging  2254  with  2254  regions.
+going to tree
+3.834
+Took  39.044945  seconds
+Taking best tree..
+1 2254
+[[ 0.68810289  0.0096463   0.00321543  0.        ]
+ [ 0.00321543  0.21543408  0.00321543  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00643087  0.02250804]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a68eab450>
+2 2254
+[[ 0.68810289  0.0096463   0.00321543  0.        ]
+ [ 0.00321543  0.21543408  0.00321543  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00643087  0.02250804]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a657ebbd0>
+3 749
+[[ 0.61414791  0.08681672  0.          0.        ]
+ [ 0.0192926   0.19292605  0.          0.0096463 ]
+ [ 0.          0.03536977  0.          0.00321543]
+ [ 0.          0.01286174  0.          0.02572347]] 0.832797427653 <objects.decisiontree.DecisionTree object at 0x7f0a68dc6d50>
+4 64
+[[ 0.65916399  0.04180064  0.          0.        ]
+ [ 0.08681672  0.13504823  0.          0.        ]
+ [ 0.01286174  0.02572347  0.          0.        ]
+ [ 0.          0.03858521  0.          0.        ]] 0.79421221865 <objects.decisiontree.DecisionTree object at 0x7f0a682f8210>
+5 55
+[[ 0.66237942  0.03536977  0.00321543  0.        ]
+ [ 0.01286174  0.20578778  0.00321543  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00643087  0.02250804]] 0.929260450161 <objects.decisiontree.DecisionTree object at 0x7f09e7280590>
+6 2254
+[[ 0.68810289  0.0096463   0.00321543  0.        ]
+ [ 0.          0.21864952  0.00321543  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00643087  0.02250804]] 0.967845659164 <objects.decisiontree.DecisionTree object at 0x7f0a6278a090>
+[[ 0.70096463  0.          0.          0.        ]
+ [ 0.00643087  0.21543408  0.          0.        ]
+ [ 0.          0.01607717  0.02250804  0.        ]
+ [ 0.          0.00643087  0.00321543  0.02893891]] 0.967845659164 <objects.decisiontree.DecisionTree object at 0x7f0a68f3aa90>
+[[ 0.70096463  0.          0.          0.        ]
+ [ 0.00643087  0.21543408  0.          0.        ]
+ [ 0.          0.0096463   0.02893891  0.        ]
+ [ 0.          0.00643087  0.00321543  0.02893891]] 0.974276527331 <objects.decisiontree.DecisionTree object at 0x7f0a68eab690>
+[[ 0.69131833  0.0096463   0.          0.        ]
+ [ 0.0192926   0.20257235  0.          0.        ]
+ [ 0.01286174  0.00321543  0.0192926   0.00321543]
+ [ 0.          0.01286174  0.00321543  0.02250804]] 0.935691318328 <objects.decisiontree.DecisionTree object at 0x7f0a68ea13d0>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a68eab690>, 0.97427652733118975, 64), (<objects.decisiontree.DecisionTree object at 0x7f0a6278a090>, 0.96784565916398724, 2254), (<objects.decisiontree.DecisionTree object at 0x7f0a68f3aa90>, 0.96784565916398713, 55), (<objects.decisiontree.DecisionTree object at 0x7f0a68eab450>, 0.96463022508038598, 2254), (<objects.decisiontree.DecisionTree object at 0x7f0a657ebbd0>, 0.96463022508038598, 2254), (<objects.decisiontree.DecisionTree object at 0x7f0a68ea13d0>, 0.93569131832797425, 54)]
+<objects.decisiontree.DecisionTree object at 0x7f0a68eab690>
+[[121   0   0   0]
+ [  0  38   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[120   0   1   0]
+ [  2  37   0   0]
+ [  1   1   5   0]
+ [  0   1   1   5]]
+[[119   1   1   0]
+ [  2  37   0   0]
+ [  1   1   5   0]
+ [  0   1   1   5]]
+[[116   4   1   0]
+ [  4  35   0   0]
+ [  1   1   5   0]
+ [  0   1   0   6]]
+Initializing
+Merging  46  with  63  regions.
+Merging  587  with  61  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118986, 0.96463022508038576, 0.94533762057877813, 0.91639871382636662])
+('breeding.... ', 4)
+merging...
+Merging  63  with  46  regions.
+going to tree
+3.22
+('breeding.... ', 2)
+merging...
+Merging  2465  with  61  regions.
+going to tree
+3.137
+Took  6.156853  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118986, 0.96463022508038576, 0.94533762057877813, 0.92282958199356913, 0.91639871382636662, 0.91318327974276536])
+('breeding.... ', 6)
+merging...
+Merging  61  with  63  regions.
+going to tree
+3.851
+('breeding.... ', 4)
+merging...
+Merging  2465  with  587  regions.
+going to tree
+3.253
+('breeding.... ', 2)
+merging...
+Merging  2465  with  46  regions.
+going to tree
+1.856
+Took  19.407908  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118986, 0.97106109324758838, 0.96463022508038576, 0.94533762057877813, 0.93890675241157562, 0.92282958199356913])
+('breeding.... ', 6)
+merging...
+Merging  787  with  2465  regions.
+going to tree
+3.609
+('breeding.... ', 4)
+merging...
+Merging  63  with  587  regions.
+going to tree
+3.782
+('breeding.... ', 2)
+merging...
+Merging  46  with  2465  regions.
+going to tree
+1.468
+Took  24.707314  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118986, 0.97106109324758849, 0.97106109324758838, 0.96463022508038576, 0.96141479099678451, 0.94533762057877813])
+('breeding.... ', 6)
+merging...
+Merging  361  with  46  regions.
+going to tree
+1.804
+('breeding.... ', 4)
+merging...
+Merging  787  with  2465  regions.
+going to tree
+3.61
+('breeding.... ', 2)
+merging...
+Merging  2465  with  63  regions.
+going to tree
+3.86
+Took  27.493072  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118986, 0.97106109324758849, 0.97106109324758838, 0.97106109324758838, 0.96463022508038576, 0.96141479099678451])
+('breeding.... ', 6)
+merging...
+Merging  46  with  787  regions.
+going to tree
+2.262
+('breeding.... ', 4)
+merging...
+Merging  2465  with  63  regions.
+going to tree
+3.86
+('breeding.... ', 2)
+merging...
+Merging  361  with  2465  regions.
+going to tree
+3.782
+Took  21.639764  seconds
+Taking best tree..
+1 63
+[[ 0.65916399  0.03858521  0.00321543  0.        ]
+ [ 0.02250804  0.19614148  0.00321543  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.          0.02893891]] 0.922829581994 <objects.decisiontree.DecisionTree object at 0x7f0a68f53590>
+2 361
+[[ 0.66559486  0.03215434  0.00321543  0.        ]
+ [ 0.00321543  0.21221865  0.00643087  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.0096463   0.0192926 ]] 0.935691318328 <objects.decisiontree.DecisionTree object at 0x7f0a66522150>
+3 787
+[[ 0.61414791  0.08681672  0.          0.        ]
+ [ 0.02572347  0.18006431  0.          0.01607717]
+ [ 0.          0.03858521  0.          0.        ]
+ [ 0.          0.01286174  0.          0.02572347]] 0.819935691318 <objects.decisiontree.DecisionTree object at 0x7f0a68eeb4d0>
+4 2465
+[[ 0.64951768  0.04823151  0.00321543  0.        ]
+ [ 0.00643087  0.20578778  0.00643087  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.929260450161 <objects.decisiontree.DecisionTree object at 0x7f0a3e746450>
+5 46
+[[ 0.64951768  0.04823151  0.00321543  0.        ]
+ [ 0.01607717  0.19614148  0.00643087  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.91961414791 <objects.decisiontree.DecisionTree object at 0x7f0a573ab2d0>
+6 2465
+[[ 0.66559486  0.03215434  0.00321543  0.        ]
+ [ 0.00321543  0.20900322  0.00643087  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.948553054662 <objects.decisiontree.DecisionTree object at 0x7f0a6660a290>
+[[ 0.68167203  0.01607717  0.00321543  0.        ]
+ [ 0.00643087  0.21221865  0.          0.00321543]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a68e45650>
+[[ 0.68488746  0.01607717  0.          0.        ]
+ [ 0.          0.21543408  0.          0.00643087]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.971061093248 <objects.decisiontree.DecisionTree object at 0x7f0a3e570350>
+[[ 0.67845659  0.0192926   0.00321543  0.        ]
+ [ 0.02893891  0.18006431  0.          0.01286174]
+ [ 0.          0.00643087  0.02893891  0.00321543]
+ [ 0.          0.00321543  0.00643087  0.02893891]] 0.916398713826 <objects.decisiontree.DecisionTree object at 0x7f0a68ec9ad0>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a3e570350>, 0.97106109324758849, 63), (<objects.decisiontree.DecisionTree object at 0x7f0a68e45650>, 0.96463022508038576, 46), (<objects.decisiontree.DecisionTree object at 0x7f0a6660a290>, 0.94855305466237938, 2465), (<objects.decisiontree.DecisionTree object at 0x7f0a66522150>, 0.93569131832797425, 361), (<objects.decisiontree.DecisionTree object at 0x7f0a3e746450>, 0.92926045016077163, 2465), (<objects.decisiontree.DecisionTree object at 0x7f0a68f53590>, 0.92282958199356913, 63)]
+<objects.decisiontree.DecisionTree object at 0x7f0a3e570350>
+[[118   2   1   0]
+ [  1  38   0   0]
+ [  1   1   5   0]
+ [  0   1   1   5]]
+[[121   0   0   0]
+ [  2  36   1   0]
+ [  0   1   6   0]
+ [  0   0   1   6]]
+[[121   0   0   0]
+ [  2  36   1   0]
+ [  0   1   6   0]
+ [  0   0   1   6]]
+[[118   3   0   0]
+ [  5  32   2   0]
+ [  1   3   3   0]
+ [  0   0   0   7]]
+Initializing
+Merging  50  with  61  regions.
+Merging  606  with  46  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.96784565916398702, 0.96463022508038598, 0.94533762057877824, 0.92926045016077174])
+('breeding.... ', 4)
+merging...
+Merging  50  with  61  regions.
+going to tree
+3.098
+('breeding.... ', 2)
+merging...
+Merging  1876  with  46  regions.
+going to tree
+3.39
+Took  3.8262  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.96784565916398702, 0.96463022508038598, 0.94533762057877824, 0.94533762057877824, 0.92926045016077174, 0.90032154340836013])
+('breeding.... ', 6)
+merging...
+Merging  46  with  50  regions.
+going to tree
+2.182
+('breeding.... ', 4)
+merging...
+Merging  1876  with  1876  regions.
+going to tree
+3.39
+('breeding.... ', 2)
+merging...
+Merging  606  with  61  regions.
+going to tree
+3.816
+Took  23.459363  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.96784565916398702, 0.96784565916398702, 0.96463022508038598, 0.94533762057877824, 0.94533762057877824, 0.94533762057877824])
+('breeding.... ', 6)
+merging...
+Merging  317  with  1876  regions.
+going to tree
+3.738
+('breeding.... ', 4)
+merging...
+Merging  50  with  1876  regions.
+going to tree
+1.593
+('breeding.... ', 2)
+merging...
+Merging  61  with  1876  regions.
+going to tree
+3.91
+Took  14.096062  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.96784565916398702, 0.96784565916398702, 0.96463022508038598, 0.96141479099678451, 0.94533762057877824])
+('breeding.... ', 6)
+merging...
+Merging  50  with  61  regions.
+going to tree
+3.098
+('breeding.... ', 4)
+merging...
+Merging  317  with  1876  regions.
+going to tree
+3.827
+('breeding.... ', 2)
+merging...
+Merging  1876  with  1876  regions.
+going to tree
+3.743
+Took  30.993095  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.96784565916398702, 0.96784565916398702, 0.96784565916398702, 0.96463022508038598, 0.96463022508038576])
+('breeding.... ', 6)
+merging...
+Merging  61  with  317  regions.
+going to tree
+3.732
+('breeding.... ', 4)
+merging...
+Merging  1876  with  1876  regions.
+going to tree
+3.91
+('breeding.... ', 2)
+merging...
+Merging  50  with  1876  regions.
+going to tree
+1.437
+Took  29.796448  seconds
+Taking best tree..
+1 1876
+[[ 0.67524116  0.02250804  0.00321543  0.        ]
+ [ 0.01286174  0.20257235  0.00321543  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.95498392283 <objects.decisiontree.DecisionTree object at 0x7f0a66d57510>
+2 50
+[[ 0.68810289  0.0096463   0.00321543  0.        ]
+ [ 0.04823151  0.16720257  0.00321543  0.00321543]
+ [ 0.          0.          0.03536977  0.00321543]
+ [ 0.          0.          0.          0.03858521]] 0.929260450161 <objects.decisiontree.DecisionTree object at 0x7f0a5d113b10>
+3 317
+[[ 0.68488746  0.01286174  0.00321543  0.        ]
+ [ 0.03215434  0.18327974  0.00321543  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.945337620579 <objects.decisiontree.DecisionTree object at 0x7f0a61b6b510>
+4 1876
+[[ 0.68167203  0.01607717  0.00321543  0.        ]
+ [ 0.02572347  0.18971061  0.00321543  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.948553054662 <objects.decisiontree.DecisionTree object at 0x7f0a573abe50>
+5 61
+[[ 0.62379421  0.07717042  0.          0.        ]
+ [ 0.05787781  0.16398714  0.          0.        ]
+ [ 0.01607717  0.02250804  0.          0.        ]
+ [ 0.          0.03858521  0.          0.        ]] 0.787781350482 <objects.decisiontree.DecisionTree object at 0x7f0a49e74dd0>
+6 1876
+[[ 0.67524116  0.02250804  0.00321543  0.        ]
+ [ 0.01286174  0.20257235  0.00321543  0.00321543]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.95498392283 <objects.decisiontree.DecisionTree object at 0x7f0a68f27190>
+[[ 0.69131833  0.00643087  0.00321543  0.        ]
+ [ 0.0192926   0.20257235  0.          0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.967845659164 <objects.decisiontree.DecisionTree object at 0x7f0a573bffd0>
+[[ 0.69453376  0.00321543  0.00321543  0.        ]
+ [ 0.02572347  0.19614148  0.          0.        ]
+ [ 0.00321543  0.00321543  0.03215434  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.961414790997 <objects.decisiontree.DecisionTree object at 0x7f0a68f13d10>
+[[ 0.68167203  0.01607717  0.00321543  0.        ]
+ [ 0.02893891  0.19292605  0.          0.        ]
+ [ 0.          0.00643087  0.02572347  0.00643087]
+ [ 0.          0.0096463   0.          0.02893891]] 0.929260450161 <objects.decisiontree.DecisionTree object at 0x7f0a68edad50>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a573bffd0>, 0.96784565916398702, 50), (<objects.decisiontree.DecisionTree object at 0x7f0a68f13d10>, 0.96141479099678473, 61), (<objects.decisiontree.DecisionTree object at 0x7f0a66d57510>, 0.954983922829582, 1876), (<objects.decisiontree.DecisionTree object at 0x7f0a68f27190>, 0.954983922829582, 1876), (<objects.decisiontree.DecisionTree object at 0x7f0a573abe50>, 0.94855305466237949, 1876), (<objects.decisiontree.DecisionTree object at 0x7f0a61b6b510>, 0.94533762057877824, 317)]
+<objects.decisiontree.DecisionTree object at 0x7f0a573bffd0>
+[[121   0   0   0]
+ [  3  36   0   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   2   0   0]
+ [  0  36   3   0]
+ [  0   0   7   0]
+ [  0   0   0   7]]
+[[120   1   0   0]
+ [  0  36   3   0]
+ [  0   0   7   0]
+ [  0   0   0   7]]
+[[111  10   0   0]
+ [  2  35   1   1]
+ [  0   0   7   0]
+ [  0   0   3   4]]
+Initializing
+Merging  58  with  65  regions.
+Merging  752  with  50  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.97427652733118975, 0.94533762057877813, 0.91961414790996787])
+('breeding.... ', 4)
+merging...
+Merging  65  with  58  regions.
+going to tree
+3.284
+('breeding.... ', 2)
+merging...
+Merging  2501  with  50  regions.
+going to tree
+2.983
+Took  5.309156  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.97427652733118975, 0.94533762057877813, 0.92926045016077174, 0.91961414790996787, 0.91318327974276536])
+('breeding.... ', 6)
+merging...
+Merging  50  with  65  regions.
+going to tree
+3.805
+('breeding.... ', 4)
+merging...
+Merging  2501  with  2501  regions.
+going to tree
+3.012
+('breeding.... ', 2)
+merging...
+Merging  752  with  58  regions.
+going to tree
+1.808
+Took  38.42763  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98070739549839225, 0.977491961414791, 0.97427652733118975, 0.94533762057877813, 0.93569131832797425, 0.92926045016077174])
+('breeding.... ', 6)
+merging...
+Merging  65  with  2501  regions.
+going to tree
+3.718
+('breeding.... ', 4)
+merging...
+Merging  831  with  2501  regions.
+going to tree
+3.208
+('breeding.... ', 2)
+merging...
+Merging  58  with  2501  regions.
+going to tree
+1.945
+Took  26.194309  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98070739549839225, 0.977491961414791, 0.97427652733118975, 0.97427652733118975, 0.94855305466237938, 0.94533762057877813])
+('breeding.... ', 6)
+merging...
+Merging  65  with  2501  regions.
+going to tree
+3.718
+('breeding.... ', 4)
+merging...
+Merging  58  with  2501  regions.
+going to tree
+1.949
+('breeding.... ', 2)
+merging...
+Merging  2501  with  831  regions.
+going to tree
+3.448
+Took  28.029022  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98070739549839225, 0.977491961414791, 0.97427652733118975, 0.97427652733118975, 0.97427652733118975, 0.95819935691318336])
+('breeding.... ', 6)
+merging...
+Merging  2501  with  58  regions.
+going to tree
+1.931
+('breeding.... ', 4)
+merging...
+Merging  2501  with  831  regions.
+going to tree
+3.801
+('breeding.... ', 2)
+merging...
+Merging  65  with  2501  regions.
+going to tree
+3.718
+Took  28.125951  seconds
+Taking best tree..
+1 831
+[[ 0.64630225  0.04823151  0.          0.00643087]
+ [ 0.04180064  0.1607717   0.          0.0192926 ]
+ [ 0.          0.02893891  0.          0.0096463 ]
+ [ 0.          0.01286174  0.          0.02572347]] 0.832797427653 <objects.decisiontree.DecisionTree object at 0x7f0a68f79950>
+2 65
+[[ 0.63022508  0.07073955  0.          0.        ]
+ [ 0.06109325  0.1607717   0.          0.        ]
+ [ 0.00321543  0.03536977  0.          0.        ]
+ [ 0.          0.03858521  0.          0.        ]] 0.790996784566 <objects.decisiontree.DecisionTree object at 0x7f0a68f12b90>
+3 58
+[[ 0.67524116  0.0192926   0.00643087  0.        ]
+ [ 0.0096463   0.20578778  0.00643087  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.          0.02893891]] 0.948553054662 <objects.decisiontree.DecisionTree object at 0x7f0a61b6b1d0>
+4 2501
+[[ 0.67845659  0.01607717  0.00643087  0.        ]
+ [ 0.0096463   0.21221865  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.          0.02893891]] 0.958199356913 <objects.decisiontree.DecisionTree object at 0x7f0a2661f750>
+5 2501
+[[ 0.67845659  0.01607717  0.00643087  0.        ]
+ [ 0.00643087  0.20900322  0.00643087  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.          0.02893891]] 0.95498392283 <objects.decisiontree.DecisionTree object at 0x7f0a66522850>
+6 2501
+[[ 0.68167203  0.01286174  0.00643087  0.        ]
+ [ 0.00643087  0.21543408  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.          0.02893891]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a5f819c10>
+[[ 0.68167203  0.01286174  0.00643087  0.        ]
+ [ 0.00321543  0.21864952  0.          0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.974276527331 <objects.decisiontree.DecisionTree object at 0x7f0a2661f610>
+[[ 0.68810289  0.00643087  0.00643087  0.        ]
+ [ 0.00321543  0.21864952  0.          0.        ]
+ [ 0.          0.0096463   0.02893891  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.974276527331 <objects.decisiontree.DecisionTree object at 0x7f0a2662a6d0>
+[[ 0.68488746  0.0096463   0.00643087  0.        ]
+ [ 0.02250804  0.19935691  0.          0.        ]
+ [ 0.          0.02250804  0.0096463   0.00643087]
+ [ 0.          0.00643087  0.00643087  0.02572347]] 0.91961414791 <objects.decisiontree.DecisionTree object at 0x7f0a265a8e50>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a2661f610>, 0.97427652733118975, 58), (<objects.decisiontree.DecisionTree object at 0x7f0a2662a6d0>, 0.97427652733118975, 65), (<objects.decisiontree.DecisionTree object at 0x7f0a5f819c10>, 0.96463022508038587, 2501), (<objects.decisiontree.DecisionTree object at 0x7f0a2661f750>, 0.95819935691318336, 2501), (<objects.decisiontree.DecisionTree object at 0x7f0a66522850>, 0.95498392282958211, 2501), (<objects.decisiontree.DecisionTree object at 0x7f0a61b6b1d0>, 0.9485530546623796, 58)]
+<objects.decisiontree.DecisionTree object at 0x7f0a2661f610>
+[[119   2   0   0]
+ [  0  37   2   0]
+ [  0   0   7   0]
+ [  0   0   0   7]]
+[[121   0   0   0]
+ [  0  37   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[121   0   0   0]
+ [  1  36   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   2   0   0]
+ [  5  33   0   0]
+ [  0   3   3   1]
+ [  0   0   1   6]]
+Initializing
+Merging  57  with  67  regions.
+Merging  674  with  54  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98392282958199351, 0.98392282958199351, 0.94212218649517687, 0.89067524115755625])
+('breeding.... ', 4)
+merging...
+Merging  57  with  2695  regions.
+going to tree
+1.721
+('breeding.... ', 2)
+merging...
+Merging  67  with  54  regions.
+going to tree
+3.79
+Took  6.286907  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98392282958199351, 0.98392282958199351, 0.97749196141479111, 0.94212218649517687, 0.89067524115755625, 0.52090032154340837])
+('breeding.... ', 6)
+merging...
+Merging  67  with  899  regions.
+going to tree
+3.874
+('breeding.... ', 4)
+merging...
+Merging  2695  with  57  regions.
+going to tree
+1.745
+('breeding.... ', 2)
+merging...
+Merging  2695  with  54  regions.
+going to tree
+3.231
+Took  11.961575  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98392282958199351, 0.98392282958199351, 0.98070739549839225, 0.97749196141479111, 0.94212218649517687, 0.909967845659164])
+('breeding.... ', 6)
+merging...
+Merging  2695  with  67  regions.
+going to tree
+3.874
+('breeding.... ', 4)
+merging...
+Merging  818  with  2695  regions.
+going to tree
+3.443
+('breeding.... ', 2)
+merging...
+Merging  899  with  57  regions.
+going to tree
+2.293
+Took  25.905606  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98392282958199351, 0.98392282958199351, 0.98070739549839225, 0.98070739549839225, 0.97749196141479111, 0.95498392282958189])
+('breeding.... ', 6)
+merging...
+Merging  818  with  67  regions.
+going to tree
+3.874
+('breeding.... ', 4)
+merging...
+Merging  2695  with  899  regions.
+going to tree
+3.874
+('breeding.... ', 2)
+merging...
+Merging  57  with  2695  regions.
+going to tree
+1.528
+Took  26.958979  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98392282958199351, 0.98392282958199351, 0.98070739549839225, 0.98070739549839225, 0.98070739549839225, 0.98070739549839225])
+('breeding.... ', 6)
+merging...
+Merging  818  with  2695  regions.
+going to tree
+3.889
+('breeding.... ', 4)
+merging...
+Merging  57  with  2695  regions.
+going to tree
+1.579
+('breeding.... ', 2)
+merging...
+Merging  818  with  67  regions.
+going to tree
+3.874
+Took  25.980918  seconds
+Taking best tree..
+1 57
+[[ 0.66881029  0.03215434  0.          0.        ]
+ [ 0.00643087  0.20578778  0.0096463   0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.00643087  0.          0.03215434]] 0.945337620579 <objects.decisiontree.DecisionTree object at 0x7f0a666171d0>
+2 67
+[[ 0.63665595  0.06430868  0.          0.        ]
+ [ 0.06109325  0.1607717   0.          0.        ]
+ [ 0.          0.03858521  0.          0.        ]
+ [ 0.          0.03858521  0.          0.        ]] 0.797427652733 <objects.decisiontree.DecisionTree object at 0x7f0a539323d0>
+3 818
+[[ 0.68488746  0.01607717  0.          0.        ]
+ [ 0.0096463   0.20257235  0.0096463   0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.948553054662 <objects.decisiontree.DecisionTree object at 0x7f0a675ba690>
+4 2695
+[[ 0.67524116  0.02572347  0.          0.        ]
+ [ 0.00643087  0.20578778  0.0096463   0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.00643087  0.          0.03215434]] 0.951768488746 <objects.decisiontree.DecisionTree object at 0x7f0a56033090>
+5 818
+[[ 0.68167203  0.0192926   0.          0.        ]
+ [ 0.0096463   0.20578778  0.00643087  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a675c6bd0>
+6 2695
+[[ 0.68167203  0.0192926   0.          0.        ]
+ [ 0.01286174  0.19935691  0.0096463   0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.942122186495 <objects.decisiontree.DecisionTree object at 0x7f0a5390e690>
+[[ 0.69131833  0.0096463   0.          0.        ]
+ [ 0.          0.21864952  0.00321543  0.        ]
+ [ 0.          0.0096463   0.02893891  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.977491961415 <objects.decisiontree.DecisionTree object at 0x7f0a644d2e90>
+[[ 0.69453376  0.00643087  0.          0.        ]
+ [ 0.00321543  0.21543408  0.00321543  0.        ]
+ [ 0.          0.0096463   0.02893891  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.977491961415 <objects.decisiontree.DecisionTree object at 0x7f0a68edaad0>
+[[ 0.65916399  0.04180064  0.          0.        ]
+ [ 0.04501608  0.17363344  0.00321543  0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.00643087  0.0096463   0.02250804]] 0.890675241158 <objects.decisiontree.DecisionTree object at 0x7f0a6651ea50>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a644d2e90>, 0.977491961414791, 57), (<objects.decisiontree.DecisionTree object at 0x7f0a68edaad0>, 0.977491961414791, 67), (<objects.decisiontree.DecisionTree object at 0x7f0a675c6bd0>, 0.96463022508038598, 818), (<objects.decisiontree.DecisionTree object at 0x7f0a56033090>, 0.95176848874598086, 2695), (<objects.decisiontree.DecisionTree object at 0x7f0a675ba690>, 0.94855305466237938, 818), (<objects.decisiontree.DecisionTree object at 0x7f0a666171d0>, 0.94533762057877813, 57)]
+<objects.decisiontree.DecisionTree object at 0x7f0a644d2e90>
+[[121   0   0   0]
+ [  0  37   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   1   1   0]
+ [  0  37   1   0]
+ [  0   0   7   0]
+ [  0   0   1   5]]
+[[119   1   1   0]
+ [  0  38   0   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[117   3   1   0]
+ [  2  34   2   0]
+ [  0   2   4   1]
+ [  0   1   1   4]]
+Initializing
+Merging  56  with  64  regions.
+Merging  640  with  64  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.96784565916398724, 0.95498392282958211, 0.91318327974276525])
+('breeding.... ', 4)
+merging...
+Merging  56  with  2392  regions.
+going to tree
+1.893
+('breeding.... ', 2)
+merging...
+Merging  64  with  64  regions.
+going to tree
+3.737
+Took  5.20823  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.96784565916398724, 0.96784565916398724, 0.95498392282958211, 0.91318327974276525, 0.57234726688102888])
+('breeding.... ', 6)
+merging...
+Merging  64  with  838  regions.
+going to tree
+3.85
+('breeding.... ', 4)
+merging...
+Merging  2392  with  56  regions.
+going to tree
+1.931
+('breeding.... ', 2)
+merging...
+Merging  2392  with  64  regions.
+going to tree
+3.161
+Took  11.454377  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.977491961414791, 0.96784565916398724, 0.96784565916398724, 0.95498392282958211, 0.92282958199356901])
+('breeding.... ', 6)
+merging...
+Merging  2392  with  736  regions.
+going to tree
+3.781
+('breeding.... ', 4)
+merging...
+Merging  64  with  2392  regions.
+going to tree
+3.795
+('breeding.... ', 2)
+merging...
+Merging  838  with  56  regions.
+going to tree
+2.857
+Took  23.231641  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98070739549839225, 0.977491961414791, 0.977491961414791, 0.977491961414791, 0.96784565916398724, 0.96784565916398724])
+('breeding.... ', 6)
+merging...
+Merging  736  with  56  regions.
+going to tree
+2.769
+('breeding.... ', 4)
+merging...
+Merging  2392  with  64  regions.
+going to tree
+3.865
+('breeding.... ', 2)
+merging...
+Merging  2392  with  838  regions.
+going to tree
+3.795
+Took  26.258824  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98070739549839225, 0.98070739549839225, 0.98070739549839225, 0.977491961414791, 0.977491961414791, 0.977491961414791])
+('breeding.... ', 6)
+merging...
+Merging  2392  with  56  regions.
+going to tree
+1.824
+('breeding.... ', 4)
+merging...
+Merging  2392  with  2392  regions.
+going to tree
+3.781
+('breeding.... ', 2)
+merging...
+Merging  736  with  2392  regions.
+going to tree
+3.85
+Took  52.601818  seconds
+Taking best tree..
+1 2392
+[[ 0.68810289  0.0096463   0.00321543  0.        ]
+ [ 0.02250804  0.19935691  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.951768488746 <objects.decisiontree.DecisionTree object at 0x7f0a56008610>
+2 2392
+[[ 0.68488746  0.01286174  0.00321543  0.        ]
+ [ 0.01286174  0.20900322  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.958199356913 <objects.decisiontree.DecisionTree object at 0x7f0a2a178490>
+3 2392
+[[ 0.68488746  0.01286174  0.00321543  0.        ]
+ [ 0.02250804  0.19935691  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.958199356913 <objects.decisiontree.DecisionTree object at 0x7f09e7518e50>
+4 56
+[[ 0.68488746  0.01286174  0.00321543  0.        ]
+ [ 0.02572347  0.19614148  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.945337620579 <objects.decisiontree.DecisionTree object at 0x7f0a2a0948d0>
+5 736
+[[ 0.64308682  0.05787781  0.          0.        ]
+ [ 0.03215434  0.17363344  0.          0.01607717]
+ [ 0.          0.03536977  0.          0.00321543]
+ [ 0.          0.01286174  0.          0.02572347]] 0.842443729904 <objects.decisiontree.DecisionTree object at 0x7f0a58d4e8d0>
+6 2392
+[[ 0.69131833  0.00643087  0.00321543  0.        ]
+ [ 0.01286174  0.20900322  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a676393d0>
+[[ 0.69453376  0.00321543  0.00321543  0.        ]
+ [ 0.01286174  0.20900322  0.          0.        ]
+ [ 0.          0.00643087  0.03215434  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.974276527331 <objects.decisiontree.DecisionTree object at 0x7f0a68edaad0>
+[[ 0.69453376  0.00321543  0.00321543  0.        ]
+ [ 0.01607717  0.20578778  0.          0.        ]
+ [ 0.00643087  0.00643087  0.02572347  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a6651e5d0>
+[[ 0.68167203  0.01607717  0.00321543  0.        ]
+ [ 0.04501608  0.17363344  0.00321543  0.        ]
+ [ 0.          0.00321543  0.03215434  0.00321543]
+ [ 0.          0.01286174  0.          0.02572347]] 0.913183279743 <objects.decisiontree.DecisionTree object at 0x7f0a265b6510>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a68edaad0>, 0.97427652733118975, 56), (<objects.decisiontree.DecisionTree object at 0x7f0a6651e5d0>, 0.96463022508038598, 64), (<objects.decisiontree.DecisionTree object at 0x7f0a676393d0>, 0.96463022508038576, 2392), (<objects.decisiontree.DecisionTree object at 0x7f09e7518e50>, 0.95819935691318336, 2392), (<objects.decisiontree.DecisionTree object at 0x7f0a2a178490>, 0.95819935691318325, 2392), (<objects.decisiontree.DecisionTree object at 0x7f0a56008610>, 0.95176848874598075, 2392)]
+<objects.decisiontree.DecisionTree object at 0x7f0a68edaad0>
+[[119   1   1   0]
+ [  0  37   1   0]
+ [  0   1   6   0]
+ [  0   0   0   6]]
+[[120   1   0   0]
+ [  1  36   1   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[119   2   0   0]
+ [  1  36   1   0]
+ [  1   1   5   0]
+ [  0   0   0   6]]
+[[114   7   0   0]
+ [  2  34   2   0]
+ [  1   1   5   0]
+ [  0   0   0   6]]
+Initializing
+Merging  54  with  61  regions.
+Merging  649  with  50  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.96141479099678462, 0.95176848874598075, 0.92926045016077174])
+('breeding.... ', 4)
+merging...
+Merging  54  with  2209  regions.
+going to tree
+1.872
+('breeding.... ', 2)
+merging...
+Merging  61  with  50  regions.
+going to tree
+3.654
+Took  4.835161  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.96463022508038598, 0.96141479099678462, 0.95176848874598075, 0.92926045016077174, 0.58520900321543412])
+('breeding.... ', 6)
+merging...
+Merging  684  with  61  regions.
+going to tree
+3.737
+('breeding.... ', 4)
+merging...
+Merging  2209  with  54  regions.
+going to tree
+1.518
+('breeding.... ', 2)
+merging...
+Merging  2209  with  50  regions.
+going to tree
+3.313
+Took  9.12095  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.96784565916398724, 0.96463022508038598, 0.96141479099678462, 0.95176848874598075, 0.93890675241157551])
+('breeding.... ', 6)
+merging...
+Merging  2209  with  613  regions.
+going to tree
+3.737
+('breeding.... ', 4)
+merging...
+Merging  684  with  2209  regions.
+going to tree
+3.327
+('breeding.... ', 2)
+merging...
+Merging  61  with  54  regions.
+going to tree
+3.18
+Took  24.659956  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.96784565916398724, 0.96784565916398724, 0.96463022508038598, 0.96141479099678462, 0.95176848874598075])
+('breeding.... ', 6)
+merging...
+Merging  2209  with  613  regions.
+going to tree
+3.737
+('breeding.... ', 4)
+merging...
+Merging  684  with  61  regions.
+going to tree
+3.737
+('breeding.... ', 2)
+merging...
+Merging  54  with  2209  regions.
+going to tree
+1.872
+Took  18.057685  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.96784565916398724, 0.96784565916398724, 0.96784565916398724, 0.96784565916398724, 0.96463022508038598])
+('breeding.... ', 6)
+merging...
+Merging  2209  with  2209  regions.
+going to tree
+3.737
+('breeding.... ', 4)
+merging...
+Merging  54  with  684  regions.
+going to tree
+2.312
+('breeding.... ', 2)
+merging...
+Merging  613  with  613  regions.
+going to tree
+3.737
+Took  35.17646  seconds
+Taking best tree..
+1 54
+[[ 0.66559486  0.03215434  0.00321543  0.        ]
+ [ 0.03536977  0.18649518  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.916398713826 <objects.decisiontree.DecisionTree object at 0x7f0a5f816490>
+2 613
+[[ 0.66559486  0.03215434  0.00321543  0.        ]
+ [ 0.04823151  0.17041801  0.          0.00321543]
+ [ 0.          0.02572347  0.01286174  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.88424437299 <objects.decisiontree.DecisionTree object at 0x7f0a6295a550>
+3 2209
+[[ 0.69131833  0.00643087  0.00321543  0.        ]
+ [ 0.02893891  0.19292605  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.948553054662 <objects.decisiontree.DecisionTree object at 0x7f0a53924610>
+4 2209
+[[ 0.69131833  0.00643087  0.00321543  0.        ]
+ [ 0.02893891  0.19292605  0.          0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.948553054662 <objects.decisiontree.DecisionTree object at 0x7f0a4ece8090>
+5 613
+[[ 0.66559486  0.03215434  0.00321543  0.        ]
+ [ 0.04823151  0.17363344  0.          0.        ]
+ [ 0.          0.02572347  0.01286174  0.        ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.877813504823 <objects.decisiontree.DecisionTree object at 0x7f0a67629710>
+6 684
+[[ 0.66559486  0.03215434  0.00321543  0.        ]
+ [ 0.04823151  0.17041801  0.          0.00321543]
+ [ 0.          0.02572347  0.0096463   0.00321543]
+ [ 0.          0.          0.          0.03858521]] 0.88424437299 <objects.decisiontree.DecisionTree object at 0x7f0a1d5c9f50>
+[[ 0.6977492   0.          0.00321543  0.        ]
+ [ 0.0096463   0.20900322  0.          0.00321543]
+ [ 0.          0.00643087  0.03215434  0.        ]
+ [ 0.          0.00321543  0.          0.03536977]] 0.974276527331 <objects.decisiontree.DecisionTree object at 0x7f0a5f81d350>
+[[ 0.69453376  0.00321543  0.00321543  0.        ]
+ [ 0.01607717  0.20257235  0.          0.00321543]
+ [ 0.00321543  0.0096463   0.02572347  0.        ]
+ [ 0.          0.00321543  0.          0.03536977]] 0.958199356913 <objects.decisiontree.DecisionTree object at 0x7f0a543bfb90>
+[[ 0.68167203  0.0192926   0.          0.        ]
+ [ 0.0192926   0.19935691  0.          0.00321543]
+ [ 0.00643087  0.0192926   0.00643087  0.00643087]
+ [ 0.          0.          0.          0.03858521]] 0.926045016077 <objects.decisiontree.DecisionTree object at 0x7f0a68fe8910>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a5f81d350>, 0.97427652733118975, 54), (<objects.decisiontree.DecisionTree object at 0x7f0a543bfb90>, 0.95819935691318325, 61), (<objects.decisiontree.DecisionTree object at 0x7f0a53924610>, 0.94855305466237927, 2209), (<objects.decisiontree.DecisionTree object at 0x7f0a4ece8090>, 0.94855305466237927, 2209), (<objects.decisiontree.DecisionTree object at 0x7f0a68fe8910>, 0.92604501607717049, 50), (<objects.decisiontree.DecisionTree object at 0x7f0a5f816490>, 0.91639871382636651, 54)]
+<objects.decisiontree.DecisionTree object at 0x7f0a5f81d350>
+[[120   1   0   0]
+ [  0  37   1   0]
+ [  0   0   7   0]
+ [  0   1   0   5]]
+[[118   2   1   0]
+ [  1  37   0   0]
+ [  0   1   6   0]
+ [  0   0   0   6]]
+[[119   1   1   0]
+ [  0  38   0   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[114   6   1   0]
+ [  1  37   0   0]
+ [  0   2   4   1]
+ [  0   1   0   5]]
+Initializing
+Merging  50  with  67  regions.
+Merging  611  with  54  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.96463022508038576, 0.94212218649517698, 0.91639871382636651])
+('breeding.... ', 4)
+merging...
+Merging  50  with  2624  regions.
+going to tree
+1.896
+('breeding.... ', 2)
+merging...
+Merging  67  with  54  regions.
+going to tree
+3.526
+Took  5.531611  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.96463022508038576, 0.96463022508038576, 0.94212218649517698, 0.91639871382636651, 0.54662379421221863])
+('breeding.... ', 6)
+merging...
+Merging  67  with  778  regions.
+going to tree
+3.871
+('breeding.... ', 4)
+merging...
+Merging  2624  with  50  regions.
+going to tree
+1.437
+('breeding.... ', 2)
+merging...
+Merging  2624  with  54  regions.
+going to tree
+2.881
+Took  11.663254  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.97106109324758849, 0.96463022508038576, 0.96463022508038576, 0.94212218649517698, 0.91961414790996787])
+('breeding.... ', 6)
+merging...
+Merging  2624  with  736  regions.
+going to tree
+3.546
+('breeding.... ', 4)
+merging...
+Merging  67  with  2624  regions.
+going to tree
+3.546
+('breeding.... ', 2)
+merging...
+Merging  778  with  50  regions.
+going to tree
+2.176
+Took  25.878509  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.97106109324758849, 0.96463022508038598, 0.96463022508038598, 0.96463022508038576, 0.96463022508038576])
+('breeding.... ', 6)
+merging...
+Merging  2624  with  736  regions.
+going to tree
+3.546
+('breeding.... ', 4)
+merging...
+Merging  2624  with  67  regions.
+going to tree
+3.856
+('breeding.... ', 2)
+merging...
+Merging  50  with  778  regions.
+going to tree
+2.186
+Took  26.095477  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.97106109324758849, 0.96784565916398702, 0.96463022508038598, 0.96463022508038598, 0.96463022508038598])
+('breeding.... ', 6)
+merging...
+Merging  2624  with  2624  regions.
+going to tree
+3.526
+('breeding.... ', 4)
+merging...
+Merging  50  with  2624  regions.
+going to tree
+1.573
+('breeding.... ', 2)
+merging...
+Merging  2624  with  736  regions.
+going to tree
+3.88
+Took  65.744678  seconds
+Taking best tree..
+1 50
+[[ 0.63022508  0.07073955  0.          0.        ]
+ [ 0.          0.21864952  0.00321543  0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.922829581994 <objects.decisiontree.DecisionTree object at 0x7f0a68e18650>
+2 736
+[[ 0.61093248  0.09003215  0.          0.        ]
+ [ 0.02250804  0.18971061  0.          0.0096463 ]
+ [ 0.          0.03536977  0.          0.00321543]
+ [ 0.          0.01286174  0.          0.02572347]] 0.826366559486 <objects.decisiontree.DecisionTree object at 0x7f0a57397310>
+3 2624
+[[ 0.66881029  0.03215434  0.          0.        ]
+ [ 0.00643087  0.21221865  0.00321543  0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.95498392283 <objects.decisiontree.DecisionTree object at 0x7f0a67629d90>
+4 2624
+[[ 0.66881029  0.03215434  0.          0.        ]
+ [ 0.0096463   0.20900322  0.00321543  0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.951768488746 <objects.decisiontree.DecisionTree object at 0x7f09e7493e90>
+5 2624
+[[ 0.65916399  0.04180064  0.          0.        ]
+ [ 0.0096463   0.20900322  0.00321543  0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.942122186495 <objects.decisiontree.DecisionTree object at 0x7f0a26611550>
+6 2624
+[[ 0.67845659  0.02250804  0.          0.        ]
+ [ 0.00321543  0.21543408  0.00321543  0.        ]
+ [ 0.          0.          0.03215434  0.00643087]
+ [ 0.          0.          0.          0.03858521]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a68e8b490>
+[[ 0.67845659  0.02250804  0.          0.        ]
+ [ 0.00321543  0.21864952  0.          0.        ]
+ [ 0.          0.0096463   0.02893891  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.96463022508 <objects.decisiontree.DecisionTree object at 0x7f0a68e766d0>
+[[ 0.67845659  0.02250804  0.          0.        ]
+ [ 0.00643087  0.21543408  0.          0.        ]
+ [ 0.00321543  0.0096463   0.02572347  0.        ]
+ [ 0.          0.          0.          0.03858521]] 0.958199356913 <objects.decisiontree.DecisionTree object at 0x7f0a2a010890>
+[[ 0.67845659  0.02250804  0.          0.        ]
+ [ 0.01607717  0.19935691  0.00321543  0.00321543]
+ [ 0.          0.01607717  0.01286174  0.0096463 ]
+ [ 0.          0.0096463   0.00321543  0.02572347]] 0.916398713826 <objects.decisiontree.DecisionTree object at 0x7f09e7520890>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a68e766d0>, 0.96463022508038598, 50), (<objects.decisiontree.DecisionTree object at 0x7f0a68e8b490>, 0.96463022508038576, 2624), (<objects.decisiontree.DecisionTree object at 0x7f0a2a010890>, 0.95819935691318325, 67), (<objects.decisiontree.DecisionTree object at 0x7f0a67629d90>, 0.954983922829582, 2624), (<objects.decisiontree.DecisionTree object at 0x7f09e7493e90>, 0.95176848874598075, 2624), (<objects.decisiontree.DecisionTree object at 0x7f0a26611550>, 0.94212218649517676, 2624)]
+<objects.decisiontree.DecisionTree object at 0x7f0a68e766d0>
+[[118   2   1   0]
+ [  2  36   0   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[118   3   0   0]
+ [  1  37   0   0]
+ [  0   0   7   0]
+ [  0   1   0   5]]
+[[118   3   0   0]
+ [  1  37   0   0]
+ [  0   0   7   0]
+ [  0   1   0   5]]
+[[114   7   0   0]
+ [  4  34   0   0]
+ [  0   0   6   1]
+ [  0   0   0   6]]
+Initializing
+Merging  54  with  64  regions.
+Merging  653  with  52  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97106109324758849, 0.96141479099678451, 0.93569131832797425, 0.93569131832797425])
+('breeding.... ', 4)
+merging...
+Merging  54  with  52  regions.
+going to tree
+3.07
+('breeding.... ', 2)
+merging...
+Merging  64  with  2256  regions.
+going to tree
+3.865
+Took  5.31934  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.97106109324758849, 0.96141479099678451, 0.93569131832797425, 0.93569131832797425, 0.90032154340836001])
+('breeding.... ', 6)
+merging...
+Merging  54  with  64  regions.
+going to tree
+3.323
+('breeding.... ', 4)
+merging...
+Merging  616  with  2256  regions.
+going to tree
+3.328
+('breeding.... ', 2)
+merging...
+Merging  52  with  2256  regions.
+going to tree
+3.215
+Took  15.689928  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.97427652733118975, 0.97106109324758849, 0.96141479099678451, 0.93569131832797425, 0.93569131832797425, 0.93569131832797425])
+('breeding.... ', 6)
+merging...
+Merging  2256  with  54  regions.
+going to tree
+1.942
+('breeding.... ', 4)
+merging...
+Merging  64  with  2256  regions.
+going to tree
+3.88
+('breeding.... ', 2)
+merging...
+Merging  52  with  2256  regions.
+going to tree
+3.581
+Took  15.64893  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.97427652733118975, 0.97106109324758849, 0.96141479099678451, 0.954983922829582, 0.93569131832797425])
+('breeding.... ', 6)
+merging...
+Merging  54  with  2256  regions.
+going to tree
+2.003
+('breeding.... ', 4)
+merging...
+Merging  64  with  2256  regions.
+going to tree
+3.865
+('breeding.... ', 2)
+merging...
+Merging  2256  with  52  regions.
+going to tree
+3.581
+Took  17.571924  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.977491961414791, 0.97427652733118975, 0.97427652733118975, 0.97106109324758849, 0.96141479099678451, 0.954983922829582])
+('breeding.... ', 6)
+merging...
+Merging  2256  with  54  regions.
+going to tree
+1.708
+('breeding.... ', 4)
+merging...
+Merging  2256  with  2256  regions.
+going to tree
+3.615
+('breeding.... ', 2)
+merging...
+Merging  64  with  2256  regions.
+going to tree
+3.865
+Took  42.914287  seconds
+Taking best tree..
+1 2256
+[[ 0.68167203  0.0096463   0.0096463   0.        ]
+ [ 0.02893891  0.17684887  0.00643087  0.0096463 ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.932475884244 <objects.decisiontree.DecisionTree object at 0x7f0a57a9e8d0>
+2 2256
+[[ 0.68167203  0.0096463   0.0096463   0.        ]
+ [ 0.02893891  0.17684887  0.00643087  0.0096463 ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.932475884244 <objects.decisiontree.DecisionTree object at 0x7f0a3181ddd0>
+3 2256
+[[ 0.68167203  0.0096463   0.0096463   0.        ]
+ [ 0.02893891  0.17684887  0.00643087  0.0096463 ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.932475884244 <objects.decisiontree.DecisionTree object at 0x7f0a2651fe50>
+4 54
+[[ 0.67845659  0.01286174  0.0096463   0.        ]
+ [ 0.0192926   0.18649518  0.00643087  0.0096463 ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.938906752412 <objects.decisiontree.DecisionTree object at 0x7f0a68b59790>
+5 64
+[[ 0.64951768  0.05144695  0.          0.        ]
+ [ 0.08681672  0.13504823  0.          0.        ]
+ [ 0.01286174  0.02572347  0.          0.        ]
+ [ 0.          0.03858521  0.          0.        ]] 0.784565916399 <objects.decisiontree.DecisionTree object at 0x7f0a68596710>
+6 2256
+[[ 0.68167203  0.0096463   0.0096463   0.        ]
+ [ 0.0192926   0.19935691  0.00321543  0.        ]
+ [ 0.          0.          0.03858521  0.        ]
+ [ 0.          0.          0.00321543  0.03536977]] 0.95498392283 <objects.decisiontree.DecisionTree object at 0x7f0a68e89b10>
+[[ 0.68488746  0.00643087  0.0096463   0.        ]
+ [ 0.00643087  0.21543408  0.          0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.00321543  0.          0.03536977]] 0.971061093248 <objects.decisiontree.DecisionTree object at 0x7f0a644c5050>
+[[ 0.68488746  0.00643087  0.0096463   0.        ]
+ [ 0.01607717  0.20578778  0.          0.        ]
+ [ 0.          0.00321543  0.03536977  0.        ]
+ [ 0.          0.00321543  0.          0.03536977]] 0.961414790997 <objects.decisiontree.DecisionTree object at 0x7f0a56003bd0>
+[[ 0.67202572  0.0192926   0.0096463   0.        ]
+ [ 0.0096463   0.20257235  0.00321543  0.00643087]
+ [ 0.          0.00321543  0.03215434  0.00321543]
+ [ 0.          0.0096463   0.          0.02893891]] 0.935691318328 <objects.decisiontree.DecisionTree object at 0x7f0a318304d0>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a644c5050>, 0.97106109324758849, 54), (<objects.decisiontree.DecisionTree object at 0x7f0a56003bd0>, 0.96141479099678451, 64), (<objects.decisiontree.DecisionTree object at 0x7f0a68e89b10>, 0.95498392282958189, 2256), (<objects.decisiontree.DecisionTree object at 0x7f0a68b59790>, 0.93890675241157562, 54), (<objects.decisiontree.DecisionTree object at 0x7f0a318304d0>, 0.93569131832797425, 52), (<objects.decisiontree.DecisionTree object at 0x7f0a57a9e8d0>, 0.93247588424437289, 2256)]
+<objects.decisiontree.DecisionTree object at 0x7f0a644c5050>
+[[118   3   0   0]
+ [  2  36   0   0]
+ [  0   1   6   0]
+ [  0   1   0   5]]
+[[120   0   0   0]
+ [  0  35   1   2]
+ [  0   0   6   0]
+ [  0   0   0   6]]
+[[119   1   0   0]
+ [  0  36   0   2]
+ [  0   1   5   0]
+ [  0   0   0   6]]
+[[113   7   0   0]
+ [  3  31   1   3]
+ [  0   0   3   3]
+ [  0   0   0   6]]
+Initializing
+Merging  49  with  67  regions.
+Merging  592  with  54  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98397435897435892, 0.97435897435897434, 0.93589743589743601, 0.91025641025641035])
+('breeding.... ', 4)
+merging...
+Merging  67  with  2376  regions.
+going to tree
+3.953
+('breeding.... ', 2)
+merging...
+Merging  49  with  54  regions.
+going to tree
+2.716
+Took  5.095967  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98397435897435892, 0.98076923076923073, 0.97435897435897434, 0.93589743589743601, 0.91025641025641035, 0.86538461538461531])
+('breeding.... ', 6)
+merging...
+Merging  2376  with  49  regions.
+going to tree
+1.581
+('breeding.... ', 4)
+merging...
+Merging  567  with  67  regions.
+going to tree
+3.953
+('breeding.... ', 2)
+merging...
+Merging  2376  with  54  regions.
+going to tree
+3.231
+Took  11.456241  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98397435897435892, 0.98076923076923073, 0.98076923076923073, 0.97435897435897434, 0.93589743589743601, 0.92628205128205132])
+('breeding.... ', 6)
+merging...
+Merging  2376  with  2376  regions.
+going to tree
+3.76
+('breeding.... ', 4)
+merging...
+Merging  2376  with  2376  regions.
+going to tree
+3.452
+('breeding.... ', 2)
+merging...
+Merging  49  with  67  regions.
+going to tree
+3.686
+Took  71.018881  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98397435897435892, 0.98076923076923073, 0.98076923076923073, 0.97435897435897434, 0.96153846153846156, 0.94871794871794879])
+('breeding.... ', 6)
+merging...
+Merging  2376  with  2376  regions.
+going to tree
+3.953
+('breeding.... ', 4)
+merging...
+Merging  49  with  2376  regions.
+going to tree
+1.838
+('breeding.... ', 2)
+merging...
+Merging  67  with  2376  regions.
+going to tree
+3.953
+Took  45.044449  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.98397435897435892, 0.98076923076923073, 0.98076923076923073, 0.98076923076923073, 0.98076923076923073, 0.97435897435897434])
+('breeding.... ', 6)
+merging...
+Merging  2376  with  2376  regions.
+going to tree
+3.953
+('breeding.... ', 4)
+merging...
+Merging  67  with  49  regions.
+going to tree
+3.575
+('breeding.... ', 2)
+merging...
+Merging  2376  with  2376  regions.
+going to tree
+3.953
+Took  69.692126  seconds
+Taking best tree..
+1 67
+[[ 0.6474359   0.05128205  0.          0.        ]
+ [ 0.1025641   0.11858974  0.          0.        ]
+ [ 0.01602564  0.02564103  0.          0.        ]
+ [ 0.          0.03846154  0.          0.        ]] 0.766025641026 <objects.decisiontree.DecisionTree object at 0x7f0a66617390>
+2 2376
+[[ 0.67948718  0.01282051  0.00641026  0.        ]
+ [ 0.00320513  0.20833333  0.00641026  0.00320513]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.          0.          0.03846154]] 0.967948717949 <objects.decisiontree.DecisionTree object at 0x7f0a1d53c310>
+3 2376
+[[ 0.67948718  0.01282051  0.00641026  0.        ]
+ [ 0.00320513  0.20833333  0.00641026  0.00320513]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.          0.          0.03846154]] 0.967948717949 <objects.decisiontree.DecisionTree object at 0x7f0a314c6650>
+4 2376
+[[ 0.67948718  0.01282051  0.00641026  0.        ]
+ [ 0.00320513  0.20833333  0.00641026  0.00320513]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.          0.          0.03846154]] 0.967948717949 <objects.decisiontree.DecisionTree object at 0x7f0a6805bf90>
+5 2376
+[[ 0.68269231  0.00961538  0.00641026  0.        ]
+ [ 0.          0.21153846  0.00641026  0.00320513]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.          0.          0.03846154]] 0.974358974359 <objects.decisiontree.DecisionTree object at 0x7f0a65c34c10>
+6 49
+[[ 0.67628205  0.01602564  0.00641026  0.        ]
+ [ 0.01923077  0.19551282  0.00641026  0.        ]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.00641026  0.          0.03205128]] 0.945512820513 <objects.decisiontree.DecisionTree object at 0x7f0a4150f990>
+[[ 0.68269231  0.00961538  0.00641026  0.        ]
+ [ 0.00320513  0.21153846  0.00320513  0.00320513]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.          0.          0.03846154]] 0.974358974359 <objects.decisiontree.DecisionTree object at 0x7f0a61dbaf50>
+[[ 0.69230769  0.          0.00641026  0.        ]
+ [ 0.00320513  0.21153846  0.00320513  0.00320513]
+ [ 0.          0.          0.04166667  0.        ]
+ [ 0.          0.          0.          0.03846154]] 0.983974358974 <objects.decisiontree.DecisionTree object at 0x7f0a314cc890>
+[[ 0.67628205  0.01602564  0.00641026  0.        ]
+ [ 0.01602564  0.18910256  0.00320513  0.01282051]
+ [ 0.          0.01602564  0.01923077  0.00641026]
+ [ 0.          0.00320513  0.00320513  0.03205128]] 0.916666666667 <objects.decisiontree.DecisionTree object at 0x7f0a68af3610>
+[(<objects.decisiontree.DecisionTree object at 0x7f0a314cc890>, 0.98397435897435892, 67), (<objects.decisiontree.DecisionTree object at 0x7f0a61dbaf50>, 0.97435897435897434, 49), (<objects.decisiontree.DecisionTree object at 0x7f0a65c34c10>, 0.97435897435897434, 2376), (<objects.decisiontree.DecisionTree object at 0x7f0a1d53c310>, 0.96794871794871795, 2376), (<objects.decisiontree.DecisionTree object at 0x7f0a314c6650>, 0.96794871794871795, 2376), (<objects.decisiontree.DecisionTree object at 0x7f0a6805bf90>, 0.96794871794871795, 2376)]
+<objects.decisiontree.DecisionTree object at 0x7f0a314cc890>
+[[120   0   0   0]
+ [  0  36   0   2]
+ [  0   1   5   0]
+ [  0   0   0   6]]
+C4.5
+[[120   1   0   0]
+ [  0  38   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[120   0   1   0]
+ [  2  37   0   0]
+ [  1   1   5   0]
+ [  0   1   1   5]]
+[[121   0   0   0]
+ [  2  36   1   0]
+ [  0   1   6   0]
+ [  0   0   1   6]]
+[[119   2   0   0]
+ [  0  36   3   0]
+ [  0   0   7   0]
+ [  0   0   0   7]]
+[[121   0   0   0]
+ [  0  37   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   1   1   0]
+ [  0  37   1   0]
+ [  0   0   7   0]
+ [  0   0   1   5]]
+[[120   1   0   0]
+ [  1  36   1   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[118   2   1   0]
+ [  1  37   0   0]
+ [  0   1   6   0]
+ [  0   0   0   6]]
+[[118   3   0   0]
+ [  1  37   0   0]
+ [  0   0   7   0]
+ [  0   1   0   5]]
+[[120   0   0   0]
+ [  0  35   1   2]
+ [  0   0   6   0]
+ [  0   0   0   6]]
+QUEST
+[[115   6   0   0]
+ [  0  39   0   0]
+ [  0   1   4   2]
+ [  0   0   0   7]]
+[[116   4   1   0]
+ [  4  35   0   0]
+ [  1   1   5   0]
+ [  0   1   0   6]]
+[[118   3   0   0]
+ [  5  32   2   0]
+ [  1   3   3   0]
+ [  0   0   0   7]]
+[[111  10   0   0]
+ [  2  35   1   1]
+ [  0   0   7   0]
+ [  0   0   3   4]]
+[[119   2   0   0]
+ [  5  33   0   0]
+ [  0   3   3   1]
+ [  0   0   1   6]]
+[[117   3   1   0]
+ [  2  34   2   0]
+ [  0   2   4   1]
+ [  0   1   1   4]]
+[[114   7   0   0]
+ [  2  34   2   0]
+ [  1   1   5   0]
+ [  0   0   0   6]]
+[[114   6   1   0]
+ [  1  37   0   0]
+ [  0   2   4   1]
+ [  0   1   0   5]]
+[[114   7   0   0]
+ [  4  34   0   0]
+ [  0   0   6   1]
+ [  0   0   0   6]]
+[[113   7   0   0]
+ [  3  31   1   3]
+ [  0   0   3   3]
+ [  0   0   0   6]]
+Genetic
+[[121   0   0   0]
+ [  0  38   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[118   2   1   0]
+ [  1  38   0   0]
+ [  1   1   5   0]
+ [  0   1   1   5]]
+[[121   0   0   0]
+ [  3  36   0   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   2   0   0]
+ [  0  37   2   0]
+ [  0   0   7   0]
+ [  0   0   0   7]]
+[[121   0   0   0]
+ [  0  37   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   1   1   0]
+ [  0  37   1   0]
+ [  0   1   6   0]
+ [  0   0   0   6]]
+[[120   1   0   0]
+ [  0  37   1   0]
+ [  0   0   7   0]
+ [  0   1   0   5]]
+[[118   2   1   0]
+ [  2  36   0   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[118   3   0   0]
+ [  2  36   0   0]
+ [  0   1   6   0]
+ [  0   1   0   5]]
+[[120   0   0   0]
+ [  0  36   0   2]
+ [  0   1   5   0]
+ [  0   0   0   6]]
+CART
+[[121   0   0   0]
+ [  2  36   1   0]
+ [  0   2   5   0]
+ [  0   0   0   7]]
+[[119   1   1   0]
+ [  2  37   0   0]
+ [  1   1   5   0]
+ [  0   1   1   5]]
+[[121   0   0   0]
+ [  2  36   1   0]
+ [  0   1   6   0]
+ [  0   0   1   6]]
+[[120   1   0   0]
+ [  0  36   3   0]
+ [  0   0   7   0]
+ [  0   0   0   7]]
+[[121   0   0   0]
+ [  1  36   1   0]
+ [  0   1   6   0]
+ [  0   0   0   7]]
+[[119   1   1   0]
+ [  0  38   0   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[119   2   0   0]
+ [  1  36   1   0]
+ [  1   1   5   0]
+ [  0   0   0   6]]
+[[119   1   1   0]
+ [  0  38   0   0]
+ [  0   0   7   0]
+ [  0   0   0   6]]
+[[118   3   0   0]
+ [  1  37   0   0]
+ [  0   0   7   0]
+ [  0   1   0   5]]
+[[119   1   0   0]
+ [  0  36   0   2]
+ [  0   1   5   0]
+ [  0   0   0   6]]
+[[  1.19600000e+03   1.00000000e+01   3.00000000e+00   0.00000000e+00]
+ [  7.00000000e+00   3.66000000e+02   9.00000000e+00   2.00000000e+00]
+ [  1.00000000e+00   5.00000000e+00   6.30000000e+01   0.00000000e+00]
+ [  0.00000000e+00   2.00000000e+00   3.00000000e+00   6.00000000e+01]] 0.975680370585
+[[ 1151.    55.     3.     0.]
+ [   28.   344.     8.     4.]
+ [    3.    13.    44.     9.]
+ [    0.     3.     5.    57.]] 0.924145917776
+[[  1.19500000e+03   1.10000000e+01   3.00000000e+00   0.00000000e+00]
+ [  8.00000000e+00   3.68000000e+02   6.00000000e+00   2.00000000e+00]
+ [  1.00000000e+00   7.00000000e+00   6.10000000e+01   0.00000000e+00]
+ [  0.00000000e+00   3.00000000e+00   1.00000000e+00   6.10000000e+01]] 0.975680370585
+[[ 1196.    10.     3.     0.]
+ [    9.   366.     7.     2.]
+ [    2.     7.    60.     0.]
+ [    0.     2.     2.    61.]] 0.974522292994
+/usr/lib/python2.7/dist-packages/matplotlib/collections.py:571: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if self._edgecolors == str('face'):
+

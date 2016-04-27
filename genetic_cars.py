@@ -59,7 +59,7 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=0.95)
-cart = CARTConstructor(max_depth=12, min_samples_leaf=1)
+cart = CARTConstructor(max_depth=12, min_samples_leaf=2)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=10, alpha=0.99)
 # c45 = C45Constructor(cf=0.75)
 # cart = CARTConstructor(max_depth=10, min_samples_leaf=2)
