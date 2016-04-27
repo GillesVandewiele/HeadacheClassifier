@@ -121,7 +121,8 @@ print patient_df.describe()
 ####################################################
 headache_locations = ["frontal_right", "frontal_mid", "frontal_left", "parietal_right", "parietal_mid",
                       "parietal_left", "temporal_right", "temporal_left", "occipital_right", "occipital_mid",
-                      "occipital_left", "cervical_right", "cervical_mid", "cervical_left"]
+                      "occipital_left", "cervical_right", "cervical_mid", "cervical_left", "orbital_right",
+                      "orbital_left", "mandibular_left", "mandibular_right", "maxillar_right", "maxillar_left"]
 headache_column_names = ['id', 'intensities', 'end', 'patientID', 'symptomIDs', 'triggerIDs', 'locations']
 headaches_list = []
 for i in range(len(patient_df)):
@@ -162,6 +163,9 @@ for i in range(len(patient_df)):
     filtered_df = headache_df[headache_df.patientID == patient_df.iloc[i,:]['id']]
     intensity_values = []
     durations = []
+    location_freq_dict = {}
+    for location in headache_locations:
+        location_freq_dict[location]=0
     for _headache in range(len(filtered_df)):
         headache = filtered_df.iloc[_headache, :]
         intensity_values.extend(headache['intensities'].values())
@@ -170,13 +174,28 @@ for i in range(len(patient_df)):
             duration = 7200
             #TODO: interpolate  sorted(list(headache['intensities'].items()))
         durations.append(duration)
+        for location in headache['locations'].items():
+            location_freq_dict[location[0]] += location[1]
 
+    # Intensity value mean and max
     vector.append(np.mean(intensity_values))
     vector.append(np.max(intensity_values) if len(intensity_values) else np.NaN)
+
+    # Duration mean, max and min
     vector.append(np.mean(durations))
     vector.append(np.max(durations) if len(durations) else np.NaN)
     vector.append(np.min(durations) if len(durations) else np.NaN)
+
+    # Relative frequency of all intensity values (0, 1, .., 10)
     vector.extend(np.histogram(intensity_values, bins=range(12), normed=True)[0])
+
+    # Relative frequency for each location
+    total_sum = sum(location_freq_dict.values())
+    for location in headache_locations:
+        if total_sum > 0:
+            vector.append(location_freq_dict[location]/total_sum)
+        else:
+            vector.append(0)
     data_list.append(vector)
 
 intensity_names = []
@@ -185,10 +204,14 @@ for i in range(11):
 columns = ["id", "age", "sex", "relation", "employment", "diagnosis", "headacheCount", "meanIntensity", "maxIntensity",
            "meanDuration", "maxDuration", "minDuration"]
 columns.extend(intensity_names)
+columns.extend(headache_locations)
 
 data_df = DataFrame(data_list, columns=columns)
 
-data_df = data_df.dropna()
+print data_df
 
-clusters = fclusterdata(data_df[["meanIntensity", "meanDuration"]], 0.1, criterion="distance")
-print clusters
+
+# data_df = data_df.dropna()
+#
+# clusters = fclusterdata(data_df[["meanIntensity", "meanDuration"]], 0.1, criterion="distance")
+# print clusters
