@@ -17,14 +17,14 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 1337
-N_FOLDS = 5
+SEED = 1237
+N_FOLDS = 10
 
 np.random.seed(SEED)    # 84846513
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']
-df = read_csv(os.path.join('data', 'heart.dat'), sep=' ')
+df = read_csv(os.path.join('../data', 'heart.dat'), sep=' ')
 df.columns=columns
 #df = df[['number of vessels', 'oldpeak', 'chest pain type', 'thal', 'max heartrate', 'age', 'serum cholestoral', 'disease']]
 feature_mins = {}
@@ -89,8 +89,8 @@ for train_index, test_index in skf:
 
     merger = DecisionTreeMerger()
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
-                                         num_mutations=5, population_size=10, max_samples=8, val_fraction=0.2,
-                                         num_boosts=1)
+                                         num_mutations=5, population_size=10, max_samples=2, val_fraction=0.10,
+                                         num_boosts=3)
 
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
