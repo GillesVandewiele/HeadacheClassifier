@@ -17,6 +17,7 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
+
 SEED = 1237
 N_FOLDS = 10
 
@@ -50,7 +51,7 @@ for k in range(num_features):
 features_df = new_features
 feature_column_names = list(set(df.columns) - set(['disease']))
 
-c45 = C45Constructor(cf=0.15)
+c45 = C45Constructor(cf=0.3)
 cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
 # c45 = C45Constructor(cf=0.15)
