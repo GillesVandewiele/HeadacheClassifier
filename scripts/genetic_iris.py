@@ -77,8 +77,8 @@ for train_index, test_index in skf:
 
     merger = DecisionTreeMerger()
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
-                                         num_mutations=5, population_size=10, max_samples=2, val_fraction=0.24,
-                                         num_boosts=15)
+                                         num_mutations=8, population_size=16, max_samples=2, val_fraction=0.24,
+                                         num_boosts=11)
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
