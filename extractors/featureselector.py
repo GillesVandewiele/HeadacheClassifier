@@ -4,9 +4,10 @@ from pandas import DataFrame
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
-#from util import boruta_py
-#from util import boruta_py
+# from util import boruta_py
+# from util import boruta_py
 from util import boruta_py
+from util.boruta_py.boruta_py import BorutaPy
 
 
 def RF_feature_selection(features, labels, features_column_names, plot=False, verbose=False):
@@ -44,6 +45,7 @@ def RF_feature_selection(features, labels, features_column_names, plot=False, ve
         plt.show()
     return feature_importance
 
+
 def boruta_py_feature_selection(features, labels, column_names, verbose=False):
     """
     :param features: dataframe of the features
@@ -53,7 +55,7 @@ def boruta_py_feature_selection(features, labels, column_names, verbose=False):
     :return: vector containing the indices of the most important features (as column number)
     """
     rf = RandomForestClassifier(n_jobs=-1, class_weight='auto')
-    feat_selector = boruta_py.BorutaPy(rf, n_estimators='auto', verbose=0)
+    feat_selector = BorutaPy(rf, n_estimators='auto', verbose=0)
     feat_selector.fit(features, labels)
     if verbose:
         print "\n\n\n\n"
@@ -75,7 +77,6 @@ def boruta_py_feature_selection(features, labels, column_names, verbose=False):
             important_features.append(i)
     return important_features
 
-#Dataset heart
-#C4.5 construction
-#confusion matrices
-
+# Dataset heart
+# C4.5 construction
+# confusion matrices

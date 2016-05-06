@@ -39,7 +39,7 @@ best_features_boruta = boruta_py_feature_selection(features_df.values, labels_df
                                                    verbose=True)
 
 
-num_features_rf = 6
+num_features_rf = len(best_features_boruta)
 num_features_boruta = len(best_features_boruta)
 
 new_features_rf = DataFrame()
