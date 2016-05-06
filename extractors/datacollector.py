@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 from scipy.cluster.hierarchy import fclusterdata
 from sklearn.cluster import DBSCAN
+from sklearn.decomposition import PCA
 
 
 class DataCollector(object):
@@ -209,7 +210,41 @@ columns.extend(headache_locations)
 data_df = DataFrame(data_list, columns=columns)
 
 print data_df
+features_df = data_df.copy()
+features_df = features_df.dropna()
+features_df = features_df.drop('diagnosis', axis=1)
+pca = PCA(n_components=2)
+pca.fit(features_df)
 
+transformed_features = []
+for i in range(len(features_df)):
+    feature_vector = features_df.iloc[i, :]
+    transformed_feature = [feature_vector['id']]
+    transformed_feature.extend(*pca.transform(feature_vector))
+    transformed_features.append(transformed_feature)
+
+print transformed_features
+transformed_features_df = DataFrame(transformed_features, columns=["id", "pca_1", "pca_2"])
+print transformed_features_df
+
+fig, ax = plt.subplots()
+
+ax.scatter(transformed_features_df['pca_1'], transformed_features_df['pca_2'])
+
+for i in range(len(transformed_features_df)):
+    feature_vector = transformed_features_df.iloc[i, :]
+    ax.annotate(feature_vector['id'], (feature_vector['pca_1'], feature_vector['pca_2']))
+
+plt.show()
+
+db = DBSCAN(eps=15000, min_samples=1).fit(transformed_features_df[['pca_1', 'pca_2']])
+
+labels = db.labels_
+
+# Number of clusters in labels, ignoring noise if present.
+n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+
+print('Estimated number of clusters: %d' % n_clusters_)
 
 # data_df = data_df.dropna()
 #

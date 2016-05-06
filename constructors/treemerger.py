@@ -284,9 +284,20 @@ class DecisionTreeMerger(object):
                 if region[feature][1] == float("inf"):
                     region[feature][1] = feature_maxs[feature]
             region['class'] = {}
-            for key in regions1[intersection_region_pair[0]]['class'].iterkeys():
-                region['class'][key] = (regions1[intersection_region_pair[0]]['class'][key] +
-                                        regions2[intersection_region_pair[1]]['class'][key]) / 2
+            for key in set(set(regions1[intersection_region_pair[0]]['class'].iterkeys()) |
+                                   set(regions2[intersection_region_pair[1]]['class'].iterkeys())):
+                prob_1 = (regions1[intersection_region_pair[0]]['class'][key]
+                          if key in regions1[intersection_region_pair[0]]['class'] else 0)
+                prob_2 = (regions2[intersection_region_pair[1]]['class'][key]
+                          if key in regions2[intersection_region_pair[1]]['class'] else 0)
+                if prob_1 and prob_2:
+                    region['class'][key] = (regions1[intersection_region_pair[0]]['class'][key] +
+                                            regions2[intersection_region_pair[1]]['class'][key]) / 2
+                else:
+                    if prob_1:
+                        region['class'][key] = prob_1
+                    else:
+                        region['class'][key] = prob_2
             intersected_regions.append(region)
 
         return intersected_regions
@@ -553,7 +564,8 @@ class DecisionTreeMerger(object):
         return node
 
     def genetic_algorithm(self, data, cat_name, tree_constructors, population_size=15, num_mutations=3,
-                          val_fraction=0.25, num_iterations=5, seed=1337, max_samples=5):
+                          val_fraction=0.25, num_iterations=5, seed=1337, max_samples=5, num_boosts=3,
+                          max_regions=1000):
 
         print "Initializing"
         #################################
@@ -570,14 +582,14 @@ class DecisionTreeMerger(object):
                 feature_maxs[feature] = np.max(data[feature])
 
         ###############################################
-        #      Bootstrapping to create population     #
+        #      Boosting to create population          #
         ###############################################
         labels_df = DataFrame()
         labels_df['cat'] = data[cat_name].copy()
         features_df = data.copy()
         features_df = features_df.drop(cat_name, axis=1)
 
-        sss = StratifiedShuffleSplit(labels_df['cat'], 1, test_size=val_fraction, random_state=None)
+        sss = StratifiedShuffleSplit(labels_df['cat'], 1, test_size=val_fraction, random_state=seed)
 
         for train_index, test_index in sss:
             train_features_df, test_features_df = features_df.iloc[train_index, :].copy(), features_df.iloc[test_index, :].copy()
@@ -587,23 +599,73 @@ class DecisionTreeMerger(object):
             train_labels_df = train_labels_df.reset_index(drop=True)
             test_labels_df = test_labels_df.reset_index(drop=True)
 
+        #TODO: populate start_trees by boosting
         start_trees = []
         start_regions = []
         regions_list = []
+
         for tree_constructor in tree_constructors:
+            boosting_train_features_df = train_features_df.copy()
+            boosting_train_labels_df = train_labels_df.copy()
+            regions_to_merge = []
             tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
             tree.populate_samples(train_features_df, train_labels_df['cat'])
             regions = self.decision_tree_to_decision_table(tree, train_features_df)
             regions_list.append(regions)
             start_trees.append(tree)
             start_regions.append(regions)
+            regions_to_merge.append(regions)
+            for i in range(num_boosts-1):
+                missclassified_features = []
+                missclassified_labels = []
+                for i in range(len(train_features_df)):
+                    predicted_label = tree.evaluate(train_features_df.iloc[i, :])
+                    real_label = train_labels_df.iloc[i, :]['cat']
+                    if real_label != predicted_label:
+                        missclassified_features.append(train_features_df.iloc[i, :])
+                        missclassified_labels.append(train_labels_df.iloc[i, :])
 
-        merged_regions = self.calculate_intersection(regions_list[0], regions_list[1], feature_column_names,
-                                                     feature_maxs, feature_mins)
-        for k in range(2, len(tree_constructors)):
-            merged_regions = self.calculate_intersection(merged_regions, regions_list[k], feature_column_names,
-                                                         feature_maxs, feature_mins)
-        regions_list.append(merged_regions)
+                boosting_train_features_df = concat([DataFrame(missclassified_features), boosting_train_features_df])
+                boosting_train_labels_df = concat([DataFrame(missclassified_labels), boosting_train_labels_df])
+                boosting_train_features_df = boosting_train_features_df.reset_index(drop=True)
+                boosting_train_labels_df = boosting_train_labels_df.reset_index(drop=True)
+
+                tree = tree_constructor.construct_tree(boosting_train_features_df, boosting_train_labels_df)
+                tree.populate_samples(boosting_train_features_df, boosting_train_labels_df['cat'])
+                regions = self.decision_tree_to_decision_table(tree, boosting_train_features_df)
+                regions_list.append(regions)
+                start_trees.append(tree)
+                regions_to_merge.append(regions)
+
+            if num_boosts > 1:
+                merged_regions = self.calculate_intersection(regions_to_merge[0], regions_to_merge[1], feature_column_names,
+                                                             feature_maxs, feature_mins)
+                for k in range(2, len(regions_to_merge)):
+                    if len(merged_regions) < max_regions:
+                        merged_regions = self.calculate_intersection(merged_regions, regions_to_merge[k],
+                                                                     feature_column_names, feature_maxs, feature_mins)
+                    else:
+                        break
+                regions_list.append(merged_regions)
+
+        if num_boosts == 1:
+            merged_regions = self.calculate_intersection(regions_list[0], regions_list[1], feature_column_names,
+                                                             feature_maxs, feature_mins)
+            for k in range(2, len(regions_list)):
+                if len(merged_regions) < max_regions:
+                    merged_regions = self.calculate_intersection(merged_regions, regions_list[k],
+                                                                 feature_column_names, feature_maxs, feature_mins)
+                else:
+                    break
+            regions_list.append(merged_regions)
+
+        # for tree_constructor in tree_constructors:
+        #     tree = tree_constructor.construct_tree(train_features_df, train_labels_df)
+        #     tree.populate_samples(train_features_df, train_labels_df['cat'])
+        #     regions = self.decision_tree_to_decision_table(tree, train_features_df)
+        #     regions_list.append(regions)
+        #     start_trees.append(tree)
+        #     start_regions.append(regions)
 
         ###############################################
         #           The genetic algorithm             #
@@ -643,7 +705,8 @@ class DecisionTreeMerger(object):
                 confusion_matrix = np.around(confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis], 3)
                 print sum([confusion_matrix[i][i] for i in range(len(confusion_matrix))])
 
-                regions_list.append(merged_regions)
+                if len(merged_regions) < max_regions:
+                    regions_list.append(merged_regions)
 
             end = time.clock()
             print "Took ", (end - start), " seconds"
@@ -700,7 +763,4 @@ class DecisionTreeMerger(object):
         #best_region = sorted(region_accuracy, key=lambda x: (-x[1], x[2]))[0][0]
 
         return best_tree#(best_tree, best_region)
-
-
-# TODO: the process that goes from regions to dt's is not perfect...
 
