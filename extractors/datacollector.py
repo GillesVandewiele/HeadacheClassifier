@@ -64,8 +64,14 @@ triggers = database['trigger']
 patient_column_names = ['id', 'age', 'sex', 'relation', 'employment', 'diagnosis']
 patients_list = []
 for patient in patients.find({}):
-    patients_list.append([patient['patientID'], patient['birthDate'], patient['isMale'], patient['relation'],
-                          patient['isEmployed'], patient['diagnosis']])
+    print patient
+    patient_list = [patient['patientID'], patient['birthDate'], patient['isMale'], patient['relation'],
+                          patient['isEmployed'] ]
+    if 'diagnoseID' in patient:
+        patient_list.append(patient['diagnoseID'])
+    else:
+        patient_list.append(-1)
+    patients_list.append(patient_list)
 
 ####################################################
 #   Map strings to integers, fill missing values   #
@@ -134,9 +140,30 @@ for i in range(len(patient_df)):
             intensity_dict[datetime.strptime(intensity['key'], "%Y-%m-%dT%H:%M:%S.%fZ")] = int(intensity['value'])
         row.append(intensity_dict)
         # Missing value for end: add 2 hours
-        row.extend([datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
-                    if headache['end'] != "null" else sorted(list(intensity_dict.keys()))[0] + timedelta(hours=2),
+        end_time = ""
+        if headache['end'] == "null" or datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ") < sorted(list(intensity_dict.keys()))[-1]:
+            #interpolleer
+            print "interpolleer"
+            if len(intensity_dict.keys())<2:
+                end_time = sorted(list(intensity_dict.keys()))[0]+timedelta(hours=2)
+            else:
+
+                diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
+                diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
+                last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
+                rico = diff_time/diff_value
+                add = last_value*rico
+
+                end_time = sorted(list(intensity_dict.keys()))[-1]+add
+
+            #row.extend([end_time,headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
+        else:
+            end_time = datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
+
+            row.extend([end_time,
                     headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
+        print sorted(list(intensity_dict.keys()))
+        print end_time
         location_dict = {}
         for location in headache['locations']:
             location_dict[location['key']] = location['value']
@@ -169,10 +196,15 @@ for i in range(len(patient_df)):
         location_freq_dict[location]=0
     for _headache in range(len(filtered_df)):
         headache = filtered_df.iloc[_headache, :]
+        print headache['intensities']
         intensity_values.extend(headache['intensities'].values())
+
         duration = (headache['end'] - sorted(list(headache['intensities'].keys()))[0]).total_seconds()
         if duration < 0:
             duration = 7200
+        timestamps_keys = sorted(list(headache['intensities'].items()))
+        print timestamps_keys
+
             #TODO: interpolate  sorted(list(headache['intensities'].items()))
         durations.append(duration)
         for location in headache['locations'].items():

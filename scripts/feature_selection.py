@@ -41,7 +41,7 @@ features_df = df.copy()
 features_df = features_df.drop('disease', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
-num_features = 6
+num_features = 8
 best_features_rf = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names,
                                         verbose=True)
 best_features_boruta = boruta_py_feature_selection(features_df.values, labels_df['cat'].tolist(),
@@ -52,6 +52,7 @@ selected_features_boruta = DataFrame()
 
 for k in range(num_features):
     selected_features_rf[feature_column_names[best_features_rf[k]]] = features_df[feature_column_names[best_features_rf[k]]]
+for k in range(6):
     selected_features_boruta[feature_column_names[best_features_boruta[k]]] = features_df[feature_column_names[best_features_boruta[k]]]
 
 c45 = C45Constructor(cf=0.15)

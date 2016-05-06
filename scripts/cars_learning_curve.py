@@ -15,7 +15,7 @@ def plot_learning_curve(title, constructor_names, train_sizes, train_scores_mean
                         train_scores_std, test_scores_std):
     plt.figure()
     plt.title(title)
-    plt.ylim([0.0, 1.0])
+    plt.ylim([0.7, 1.0])
     plt.xlim([np.min(train_sizes), np.max(train_sizes)])
     plt.xlabel("Training examples")
     plt.ylabel("Score")

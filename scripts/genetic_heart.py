@@ -18,13 +18,13 @@ from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
 SEED = 1337
-N_FOLDS = 10
+N_FOLDS = 5
 
 np.random.seed(SEED)    # 84846513
 columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
            'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
            'number of vessels', 'thal', 'disease']
-df = read_csv(os.path.join(os.path.join('..', 'data'), 'heart.dat'), sep=' ')
+df = read_csv(os.path.join('data', 'heart.dat'), sep=' ')
 df.columns=columns
 #df = df[['number of vessels', 'oldpeak', 'chest pain type', 'thal', 'max heartrate', 'age', 'serum cholestoral', 'disease']]
 feature_mins = {}
