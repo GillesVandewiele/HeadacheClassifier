@@ -1,0 +1,8 @@
+digraph DT{
+node[fontname="Arial"];
+Node1 [label="Stress_freq <= 0.25"];
+Node2 [label="2" shape="box"];
+Node1 -> Node2 [label="true"];
+Node3 [label="4" shape="box"];
+Node1->Node3 [label="false"];
+}
