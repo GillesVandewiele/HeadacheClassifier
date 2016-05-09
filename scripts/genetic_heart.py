@@ -17,7 +17,7 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 from objects.featuredescriptors import DISCRETE, CONTINUOUS
 
-SEED = 26101993
+SEED = 1332633333337
 N_FOLDS = 10
 
 np.random.seed(SEED)    # 84846513
@@ -50,7 +50,7 @@ for k in range(num_features):
 features_df = new_features
 feature_column_names = list(set(df.columns) - set(['disease']))
 
-c45 = C45Constructor(cf=0.3)
+c45 = C45Constructor(cf=0.05)
 cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
 # c45 = C45Constructor(cf=0.15)
@@ -89,8 +89,8 @@ for train_index, test_index in skf:
 
     merger = DecisionTreeMerger()
     best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
-                                         num_mutations=5, population_size=10, max_samples=8, val_fraction=0.2,
-                                         num_boosts=1)
+                                         num_mutations=10, population_size=10, max_samples=10, val_fraction=0.2,
+                                         num_boosts=2)
 
     # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)

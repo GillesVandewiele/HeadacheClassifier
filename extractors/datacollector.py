@@ -9,6 +9,7 @@ import matplotlib
 from scipy.cluster.hierarchy import fclusterdata
 from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
+from mpl_toolkits.mplot3d import Axes3D
 
 
 class DataCollector(object):
@@ -81,20 +82,18 @@ patient_df['age'] = [DataCollector.calculate_age(datetime.strptime(x, "%Y-%m-%dT
                      else np.NaN for x in patient_df['age']]
 patient_df.age.replace(np.NaN, patient_df["age"].mean(), inplace=True)
 patient_df['age'] = patient_df['age'].astype(int)
-
-relation_mapping = {"VRIJGEZEL": 0, "IN RELATIE": 1,"GETROUWD": 2}
-patient_df['relation'] = patient_df['relation'].map(relation_mapping)
-patient_df['relation'] = patient_df.relation.apply(lambda x: x if not pd.isnull(x) else 0)
-patient_df['sex'] = patient_df['sex'].map(lambda x: 1 if x else 0)
-patient_df['employment'] = patient_df['employment'].map(lambda x: 1 if x else 0)
-patient_df['diagnosis'] = patient_df.diagnosis.apply(lambda x: random.randint(0, 4))  # TODO: this ain't how it should be
-print patient_df
-print patient_df.describe()
+patient_df = patient_df[patient_df.id > 10] #  All patients with id higher than 10 are test accounts
+patient_df = patient_df[patient_df.diagnosis != -1]
+patient_df = patient_df.reset_index(drop=True)
+diagnose_mapping = {1: "MIGRAINE W/ AURA", 2: "MIGRAINE W/O AURA", 3: "CLUSTER", 4:"TENSION"}
+diagnose_mapping_reverse = {"MIGRAINE W/ AURA": 1, "MIGRAINE W/O AURA": 2, "CLUSTER": 3, "TENSION": 4}
+patient_df['sex'] = patient_df['sex'].map(lambda x: "MALE" if x else "FEMALE")
+patient_df['employment'] = patient_df['employment'].map(lambda x: "EMPLOYED" if x else "UNEMPLOYED")
+patient_df['diagnosis'] = patient_df["diagnosis"].map(diagnose_mapping)
 
 ###################################################
 #           Plot some demographic plots           #
 ###################################################
-
 
 # def get_distribution(values):
 #     distribution = {}
@@ -122,6 +121,19 @@ print patient_df.describe()
 # plt.title('Distribution of the age in the headache dataset')
 # plt.show()
 
+##########################################################
+#               Do some mapping                          #
+##########################################################
+
+relation_mapping = {"VRIJGEZEL": 0, "IN RELATIE": 1,"GETROUWD": 2}
+patient_df['relation'] = patient_df['relation'].map(relation_mapping)
+patient_df['relation'] = patient_df.relation.apply(lambda x: x if not pd.isnull(x) else 0)
+patient_df['sex'] = patient_df['sex'].map(lambda x: 1 if "MALE" else 0)
+patient_df['employment'] = patient_df['employment'].map(lambda x: 1 if "EMPLOYED" else 0)
+patient_df['diagnosis'] = patient_df["diagnosis"].map(diagnose_mapping_reverse)
+print patient_df
+print patient_df.describe()
+
 ####################################################
 #      Read the headache data into dataframe       #
 #   We process the strings already in datatypes    #
@@ -147,14 +159,14 @@ for i in range(len(patient_df)):
             if len(intensity_dict.keys())<2:
                 end_time = sorted(list(intensity_dict.keys()))[0]+timedelta(hours=2)
             else:
-
-                diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
-                diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
-                last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
-                rico = diff_time/diff_value
-                add = last_value*rico
-
-                end_time = sorted(list(intensity_dict.keys()))[-1]+add
+                end_time = sorted(list(intensity_dict.keys()))[0]+timedelta(hours=2)
+                # diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
+                # diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
+                # last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
+                # rico = diff_time.total_seconds()/(diff_value+1e-9)
+                # add = last_value*rico
+                #
+                # end_time = sorted(list(intensity_dict.keys()))[-1]+add
 
             #row.extend([end_time,headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
         else:
@@ -240,43 +252,40 @@ columns.extend(intensity_names)
 columns.extend(headache_locations)
 
 data_df = DataFrame(data_list, columns=columns)
+data_df = data_df[data_df.headacheCount > 1]
+data_df.reset_index(drop=True)
 
 print data_df
 features_df = data_df.copy()
 features_df = features_df.dropna()
-features_df = features_df.drop('diagnosis', axis=1)
-pca = PCA(n_components=2)
+pca = PCA(n_components=3)
 pca.fit(features_df)
 
 transformed_features = []
 for i in range(len(features_df)):
     feature_vector = features_df.iloc[i, :]
-    transformed_feature = [feature_vector['id']]
+    transformed_feature = [feature_vector['id'], feature_vector['diagnosis']]
     transformed_feature.extend(*pca.transform(feature_vector))
     transformed_features.append(transformed_feature)
 
 print transformed_features
-transformed_features_df = DataFrame(transformed_features, columns=["id", "pca_1", "pca_2"])
+transformed_features_df = DataFrame(transformed_features, columns=["id", "diagnosis", "pca_1", "pca_2", "pca_3"])
 print transformed_features_df
 
-fig, ax = plt.subplots()
+fig = plt.figure()
 
-ax.scatter(transformed_features_df['pca_1'], transformed_features_df['pca_2'])
+ax = Axes3D(fig)
+
+#ax.scatter(transformed_features_df['pca_1'], transformed_features_df['pca_2'], transformed_features_df['pca_3'])
+colors = ["red", "blue", "green", "yellow"]
 
 for i in range(len(transformed_features_df)):
     feature_vector = transformed_features_df.iloc[i, :]
-    ax.annotate(feature_vector['id'], (feature_vector['pca_1'], feature_vector['pca_2']))
+    ax.scatter(feature_vector['pca_1'], feature_vector['pca_2'], feature_vector['pca_3'],
+               c=colors[int(feature_vector["diagnosis"])-1], s=50)
+    ax.text(feature_vector['pca_1'], feature_vector['pca_2'], feature_vector['pca_3'], feature_vector['id'])
 
 plt.show()
-
-db = DBSCAN(eps=15000, min_samples=1).fit(transformed_features_df[['pca_1', 'pca_2']])
-
-labels = db.labels_
-
-# Number of clusters in labels, ignoring noise if present.
-n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-
-print('Estimated number of clusters: %d' % n_clusters_)
 
 # data_df = data_df.dropna()
 #
