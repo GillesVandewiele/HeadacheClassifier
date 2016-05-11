@@ -98,31 +98,31 @@ patient_df['diagnosis'] = patient_df["diagnosis"].map(diagnose_mapping)
 #           Plot some demographic plots           #
 ###################################################
 
-# def get_distribution(values):
-#     distribution = {}
-#     for value in values:
-#         if value not in distribution:
-#             distribution[value] = 1
-#         else:
-#             distribution[value] += 1
-#
-#     total_sum = np.sum(distribution.values())
-#     for value in distribution:
-#         distribution[value] = float(distribution[value]) / float(total_sum)
-#
-#     return distribution
-#
-# categorical_columns = ['sex', 'relation', 'employment', 'diagnosis']
-# for column in categorical_columns:
-#     col_distribution = get_distribution(patient_df[column].values)
-#     DataCollector.plot_pie_chart(col_distribution.values(), col_distribution.keys(),
-#                                  'Distribution of the ' + column + ' in the headache dataset')
-#
-# n, bins, patches = plt.hist(patient_df['age'], 5, normed=0, facecolor='blue', alpha=0.75)
-# plt.xlabel('Age')
-# plt.ylabel('Relative amount')
-# plt.title('Distribution of the age in the headache dataset')
-# plt.show()
+def get_distribution(values):
+    distribution = {}
+    for value in values:
+        if value not in distribution:
+            distribution[value] = 1
+        else:
+            distribution[value] += 1
+
+    total_sum = np.sum(distribution.values())
+    for value in distribution:
+        distribution[value] = float(distribution[value]) / float(total_sum)
+
+    return distribution
+
+categorical_columns = ['sex', 'relation', 'employment', 'diagnosis']
+for column in categorical_columns:
+    col_distribution = get_distribution(patient_df[column].values)
+    DataCollector.plot_pie_chart(col_distribution.values(), col_distribution.keys(),
+                                 'Distribution of the ' + column + ' in the headache dataset')
+
+n, bins, patches = plt.hist(patient_df['age'], 5, normed=0, facecolor='blue', alpha=0.75)
+plt.xlabel('Age')
+plt.ylabel('Relative amount')
+plt.title('Distribution of the age in the headache dataset')
+plt.show()
 
 ##########################################################
 #               Do some mapping                          #
@@ -163,16 +163,16 @@ for i in range(len(patient_df)):
             if len(intensity_dict.keys()) < 2:
                 end_time = sorted(list(intensity_dict.keys()))[0] + timedelta(hours=2)
             else:
-                end_time = sorted(list(intensity_dict.keys()))[0] + timedelta(hours=2)
-                # diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
-                # diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
-                # last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
-                # rico = diff_time.total_seconds()/(diff_value+1e-9)
-                # add = last_value*rico
-                #
-                # end_time = sorted(list(intensity_dict.keys()))[-1]+add
+                # end_time = sorted(list(intensity_dict.keys()))[0] + timedelta(hours=2)
+                diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
+                diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
+                last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
+                rico = diff_time/(diff_value+1)
+                add = last_value*rico
 
-                # row.extend([end_time,headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
+                end_time = sorted(list(intensity_dict.keys()))[-1]+add
+
+                row.extend([end_time,headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
         else:
             end_time = datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
@@ -391,6 +391,6 @@ for k in range(num_features_boruta):
 features_df_boruta = new_features_boruta
 
 
-cart = C45Constructor(cf=0.15)
+cart = CARTConstructor(min_samples_split=1)
 tree = cart.construct_tree(new_features_boruta, labels=label_df)
 tree.visualise("./test.pdf")

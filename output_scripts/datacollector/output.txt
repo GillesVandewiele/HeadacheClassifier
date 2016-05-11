@@ -1,0 +1,1278 @@
+/usr/bin/python2.7 /home/kiani/HeadacheClassifier/extractors/datacollector.py
+{u'category': u'Algemeen', u'_id': ObjectId('56797725e4b0470e57480b66'), u'name': u'Misselijkheid', u'symptomID': 3, u'description': u'Het gevoel te moeten braken'}
+{u'category': u'Algemeen', u'_id': ObjectId('56798a5ae4b0470e57480b68'), u'name': u'Braken', u'symptomID': 4, u'description': u'Braken'}
+{u'category': u'Algemeen', u'_id': ObjectId('567e7158e4b0470e57480b79'), u'name': u'Gevoeligheid aan licht', u'symptomID': 5, u'description': u'Fotofobie'}
+{u'category': u'Algemeen', u'_id': ObjectId('567e7162e4b0470e57480b7a'), u'name': u'Gevoeligheid aan geluid', u'symptomID': 6, u'description': u'Sonofobie'}
+{u'category': u'Algemeen', u'_id': ObjectId('567e7172e4b0470e57480b7b'), u'name': u'Gevoeligheid aan inspanning', u'symptomID': 7, u'description': u'Mechanosensitiviteit'}
+{u'category': u'Hoofdpijn omschrijving', u'_id': ObjectId('56bc4cf5e4b0624839122600'), u'name': u'Drukkend gevoel', u'symptomID': 8, u'description': u'Een drukkend gevoel op de geselecteerde locaties'}
+{u'category': u'Hoofdpijn omschrijving', u'_id': ObjectId('56bc4d02e4b0624839122601'), u'name': u'Kloppend gevoel', u'symptomID': 9, u'description': u'Een kloppend gevoel op de geselecteerde locaties'}
+{u'category': u'Algemeen', u'_id': ObjectId('56bc4d19e4b0624839122602'), u'name': u'Gebrek aan eetlust', u'symptomID': 10, u'description': u'Anorexia'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc4f90e4b0624839122603'), u'name': u'Rood oogwit', u'symptomID': 11, u'description': u'Conjunctivale injectie'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc4fa0e4b0624839122604'), u'name': u'Tranend oog', u'symptomID': 12, u'description': u'Lacrimatie'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc5002e4b0624839122605'), u'name': u'Lopende neus', u'symptomID': 13, u'description': u'Rhinorrhoea'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc500de4b0624839122606'), u'name': u'Verstopte neus', u'symptomID': 14, u'description': u'Nasale congestie'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc50c6e4b0624839122607'), u'name': u'Gezwollen ooglid', u'symptomID': 15, u'description': u'Ooglid oedema'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc50e4e4b0624839122608'), u'name': u'Zweten op aangezicht', u'symptomID': 16, u'description': u'Faciale transpiratie'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc50f2e4b0624839122609'), u'name': u'Roodheid of warmte op aangezicht', u'symptomID': 17, u'description': u'Faciale flushing'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc5117e4b062483912260a'), u'name': u'Volheidsgevoel in oor', u'symptomID': 18, u'description': u'Drukkend gevoel in oor'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc514ae4b062483912260b'), u'name': u'Verkleining van pupil(len)', u'symptomID': 19, u'description': u'Miose'}
+{u'category': u'Autonoom', u'_id': ObjectId('56bc5155e4b062483912260c'), u'name': u'Afhangend ooglid', u'symptomID': 20, u'description': u'Ptose'}
+{u'category': u'Hoofdpijn omschrijving', u'_id': ObjectId('56c5b2b3e4b0d2616451dcc1'), u'name': u'Stekend gevoel', u'symptomID': 23, u'description': u'Een stekend gevoel op de geselecteerde locaties'}
+{u'category': u'Aurasymptomen', u'_id': ObjectId('56c5b65ee4b0d2616451dcc3'), u'description': u'Visueel aura gaat gepaard met het zien van flikkerende gekartelde lijnen, driehoekjes, sterretjes of andere vergelijkbare zaken. Soms is er een deel van het gezichtsveld dat ontbreekt (zwarte vlek).', u'symptomID': 24, u'name': u'Visueel aura'}
+{u'category': u'Aurasymptomen', u'_id': ObjectId('56c5b671e4b0d2616451dcc4'), u'description': u'Sensibel aura wordt getypeerd door tintelingen aan \xe9\xe9n zijde van het lichaam, of een verdoofd gevoel aan \xe9\xe9n zijde van het lichaam.', u'symptomID': 25, u'name': u'Sensibel aura'}
+{u'category': u'Aurasymptomen', u'_id': ObjectId('56c5b688e4b0d2616451dcc5'), u'description': u'Bij motorisch aura is er krachtsvermindering aan \xe9\xe9n zijde van het lichaam.', u'symptomID': 26, u'name': u'Motorisch aura'}
+{u'category': u'Aurasymptomen', u'_id': ObjectId('56c5b6a2e4b0d2616451dcc6'), u'description': u'Moeite hebben om woorden uit te spreken', u'symptomID': 27, u'name': u'Spraakproblemen'}
+{u'triggerID': 2, u'_id': ObjectId('567005a0e4b0d563151195d6'), u'name': u'Alcohol', u'description': u''}
+{u'triggerID': 3, u'_id': ObjectId('567005bde4b0d563151195d7'), u'name': u'Menstruatie', u'description': u''}
+{u'triggerID': 4, u'_id': ObjectId('567005d1e4b0d563151195d8'), u'name': u'Slaaptekort', u'description': u''}
+{u'triggerID': 5, u'_id': ObjectId('56766ef4e4b00992d51a09e0'), u'name': u'Stress', u'description': u''}
+{u'triggerID': 6, u'_id': ObjectId('56effa66e4b05275aa70e088'), u'description': u'', u'name': u'Vermoeidheid'}
+{u'triggerID': 7, u'_id': ObjectId('5700e6e4e4b0e1029b4a059a'), u'description': u'', u'name': u'Voeding'}
+{u'triggerID': 8, u'_id': ObjectId('570fd241e4b0e1029b4a0600'), u'description': u'', u'name': u'Warmte'}
+{u'triggerID': 9, u'_id': ObjectId('571b583fe4b0c60e08780dd6'), u'name': u'Geluid', u'description': u'Omgevingsgeluid'}
+{u'triggerID': 10, u'_id': ObjectId('571b585fe4b0c60e08780dd7'), u'description': u'Omgevingslicht', u'name': u'Licht'}
+id                                                            72
+intensities     {2016-04-16 06:49:49: 5, 2016-04-15 11:18:46: 8}
+end                                          2016-04-17 21:51:55
+patientID                                                     11
+symptomIDs            [7, 8, 9, 20, 3, 5, 6, 10, 14, 15, 18, 27]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 1, dtype: object
+12.0
+1.0
+id                                                             3
+intensities                             {2016-03-21 21:47:46: 2}
+end                                          2016-03-22 06:58:00
+patientID                                                     12
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 3, dtype: object
+id                                                             4
+intensities    {2016-03-24 09:26:47: 1, 2016-03-24 06:00:00: ...
+end                                          2016-03-25 13:00:00
+patientID                                                     12
+symptomIDs                                         [9, 5, 6, 10]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 4, dtype: object
+id                                                            21
+intensities                             {2016-04-03 04:00:00: 3}
+end                                          2016-04-03 08:15:00
+patientID                                                     12
+symptomIDs                                   [7, 8, 9, 5, 6, 10]
+triggerIDs                                             [4, 3, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 5, dtype: object
+id                                                            22
+intensities                             {2016-04-01 23:10:00: 7}
+end                                          2016-04-03 12:00:00
+patientID                                                     12
+symptomIDs                                  [8, 9, 13, 5, 6, 10]
+triggerIDs                                             [2, 4, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 6, dtype: object
+id                                                            23
+intensities                             {2016-03-31 03:20:00: 5}
+end                                          2016-03-31 07:25:00
+patientID                                                     12
+symptomIDs                                             [3, 5, 6]
+triggerIDs                                                   [4]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 7, dtype: object
+id                                                            24
+intensities                             {2016-04-03 15:07:00: 1}
+end                                          2016-04-03 21:59:00
+patientID                                                     12
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 8, dtype: object
+id                                                            49
+intensities                             {2016-04-07 05:30:00: 4}
+end                                          2016-04-07 21:40:00
+patientID                                                     12
+symptomIDs                                                   [5]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 9, dtype: object
+id                                                            51
+intensities                             {2016-04-10 04:46:00: 5}
+end                                          2016-04-10 11:26:00
+patientID                                                     12
+symptomIDs                                                   [5]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 11, dtype: object
+id                                                            52
+intensities     {2016-04-12 11:47:55: 2, 2016-04-12 12:44:44: 4}
+end                                          2016-04-12 14:28:00
+patientID                                                     12
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 12, dtype: object
+id                                                            90
+intensities                             {2016-04-18 06:15:00: 3}
+end                                          2016-04-18 14:00:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 13, dtype: object
+id                                                            97
+intensities                             {2016-04-19 04:20:00: 4}
+end                                          2016-04-19 06:00:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 14, dtype: object
+id                                                           126
+intensities                             {2016-04-24 07:00:00: 2}
+end                                          2016-04-24 14:41:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 15, dtype: object
+id                                                           128
+intensities                             {2016-04-24 17:30:00: 2}
+end                                          2016-04-25 15:25:00
+patientID                                                     12
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 16, dtype: object
+id                                                           136
+intensities    {2016-04-25 14:00:00: 7, 2016-04-25 11:26:00: ...
+end                                          2016-04-25 15:25:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 17, dtype: object
+id                                                           153
+intensities                             {2016-04-26 04:11:00: 5}
+end                                          2016-04-26 07:12:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 18, dtype: object
+id                                                           154
+intensities                             {2016-04-27 04:00:00: 3}
+end                                          2016-04-27 07:17:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 19, dtype: object
+id                                                           155
+intensities     {2016-04-28 08:20:00: 5, 2016-04-28 04:07:00: 2}
+end                                          2016-04-28 10:18:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 20, dtype: object
+id                                                           156
+intensities                             {2016-04-28 14:20:00: 3}
+end                                          2016-04-28 20:27:00
+patientID                                                     12
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 21, dtype: object
+30.0
+7.0
+/home/kiani/.local/lib/python2.7/site-packages/numpy/core/_methods.py:59: RuntimeWarning: Mean of empty slice.
+  warnings.warn("Mean of empty slice.", RuntimeWarning)
+0.0
+0.0
+id                                                            28
+intensities                             {2016-04-07 06:44:00: 3}
+end                                          2016-04-07 08:50:00
+patientID                                                     18
+symptomIDs                                    [8, 12, 17, 5, 24]
+triggerIDs                                                [5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 22, dtype: object
+id                                                            37
+intensities                             {2016-04-08 04:45:00: 2}
+end                                          2016-04-09 16:00:00
+patientID                                                     18
+symptomIDs                                     [7, 9, 12, 17, 5]
+triggerIDs                                                [5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 23, dtype: object
+id                                                            53
+intensities    {2016-04-14 19:00:00: 2, 2016-04-13 06:30:00: ...
+end                                          2016-04-14 19:00:00
+patientID                                                     18
+symptomIDs                             [7, 9, 12, 17, 5, 23, 25]
+triggerIDs                                                [5, 3]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 24, dtype: object
+id                                                            68
+intensities    {2016-04-14 14:00:00: 6, 2016-04-14 12:00:00: ...
+end                                          2016-04-14 17:00:00
+patientID                                                     18
+symptomIDs                           [7, 9, 12, 17, 3, 5, 6, 24]
+triggerIDs                                                [3, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 25, dtype: object
+id                                                            87
+intensities                             {2016-04-16 18:00:00: 3}
+end                                          2016-04-16 19:00:00
+patientID                                                     18
+symptomIDs                                         [7, 9, 17, 5]
+triggerIDs                                             [5, 3, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 26, dtype: object
+id                                                           158
+intensities                             {2016-04-25 13:00:00: 2}
+end                                          2016-04-25 18:00:00
+patientID                                                     18
+symptomIDs                                             [7, 8, 5]
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 27, dtype: object
+id                                                           169
+intensities                             {2016-05-01 13:00:00: 2}
+end                                          2016-05-01 15:00:00
+patientID                                                     18
+symptomIDs                                             [7, 9, 5]
+triggerIDs                                               [8, 10]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 28, dtype: object
+35.0
+14.0
+0.0
+0.0
+id                                                            11
+intensities    {2016-04-02 12:00:00: 1, 2016-04-02 05:15:00: ...
+end                                          2016-04-03 05:15:00
+patientID                                                     21
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 29, dtype: object
+id                                                            32
+intensities     {2016-04-08 18:09:07: 2, 2016-04-08 19:50:34: 1}
+end                                          2016-04-09 03:15:00
+patientID                                                     21
+symptomIDs                                                   [8]
+triggerIDs                                                   [4]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 30, dtype: object
+id                                                            36
+intensities    {2016-04-10 05:15:00: 7, 2016-04-12 06:46:26: ...
+end                                          2016-04-13 06:15:00
+patientID                                                     21
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 31, dtype: object
+id                                                            56
+intensities                             {2016-04-13 06:17:56: 3}
+end                                          2016-04-13 12:52:00
+patientID                                                     21
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 32, dtype: object
+id                                                           117
+intensities    {2016-04-22 04:00:00: 3, 2016-04-21 04:00:00: ...
+end                                          2016-04-22 08:15:00
+patientID                                                     21
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 33, dtype: object
+id                                                           122
+intensities    {2016-04-22 19:00:00: 3, 2016-04-22 21:00:00: ...
+end                                          2016-04-23 05:30:00
+patientID                                                     21
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 34, dtype: object
+id                                                           125
+intensities                             {2016-04-24 06:00:00: 5}
+end                                          2016-04-24 08:00:00
+patientID                                                     21
+symptomIDs                                                   [9]
+triggerIDs                                                   [7]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 35, dtype: object
+id                                                           129
+intensities                             {2016-04-25 04:00:00: 4}
+end                                          2016-04-25 07:50:00
+patientID                                                     21
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 36, dtype: object
+id                                                           152
+intensities    {2016-04-28 14:00:00: 6, 2016-04-29 18:50:00: ...
+end                                          2016-05-03 04:00:00
+patientID                                                     21
+symptomIDs                                                    []
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 37, dtype: object
+id                                                           179
+intensities                             {2016-05-03 14:00:00: 5}
+end                                          2016-05-04 04:00:00
+patientID                                                     21
+symptomIDs                                                    []
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 38, dtype: object
+id                                                           185
+intensities                             {2016-05-08 03:05:00: 7}
+end                                          2016-05-08 09:30:00
+patientID                                                     21
+symptomIDs                                                    []
+triggerIDs                                                   [2]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 39, dtype: object
+7.0
+5.0
+0.0
+0.0
+id                                                            16
+intensities    {2016-04-01 12:10:20: 5, 2016-04-01 14:15:01: ...
+end                                          2016-04-02 05:25:13
+patientID                                                     24
+symptomIDs                              [7, 9, 5, 6, 10, 24, 27]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 40, dtype: object
+7.0
+0.0
+id                                                            18
+intensities     {2016-03-31 20:00:00: 3, 2016-03-31 20:10:00: 7}
+end                                          2016-03-31 20:15:00
+patientID                                                     25
+symptomIDs                                           [20, 5, 23]
+triggerIDs                                                   [7]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 41, dtype: object
+id                                                            19
+intensities     {2016-03-31 23:00:00: 3, 2016-03-31 23:10:00: 7}
+end                                          2016-03-31 23:40:00
+patientID                                                     25
+symptomIDs                                           [20, 5, 23]
+triggerIDs                                                   [7]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 42, dtype: object
+id                                                            20
+intensities     {2016-04-01 03:40:00: 5, 2016-04-01 03:30:00: 3}
+end                                          2016-04-01 03:50:00
+patientID                                                     25
+symptomIDs                                           [20, 5, 23]
+triggerIDs                                                   [7]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 43, dtype: object
+id                                                            39
+intensities     {2016-04-06 23:15:00: 3, 2016-04-06 23:25:00: 7}
+end                                          2016-04-06 23:30:00
+patientID                                                     25
+symptomIDs                                           [20, 5, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 44, dtype: object
+id                                                            40
+intensities                             {2016-04-07 21:30:00: 5}
+end                                          2016-04-07 22:10:00
+patientID                                                     25
+symptomIDs                                               [5, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 45, dtype: object
+id                                                            74
+intensities                             {2016-04-11 21:00:00: 6}
+end                                          2016-04-11 21:20:00
+patientID                                                     25
+symptomIDs                                           [20, 5, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 46, dtype: object
+id                                                            75
+intensities                             {2016-04-12 23:00:00: 3}
+end                                          2016-04-12 23:40:00
+patientID                                                     25
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 47, dtype: object
+id                                                            76
+intensities                             {2016-04-14 22:30:00: 3}
+end                                          2016-04-14 23:00:00
+patientID                                                     25
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 48, dtype: object
+id                                                            80
+intensities     {2016-04-22 20:40:00: 7, 2016-04-15 20:15:00: 4}
+end                                          2016-04-29 21:05:00
+patientID                                                     25
+symptomIDs                                           [20, 5, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 49, dtype: object
+id                                                            93
+intensities                             {2016-04-16 23:00:00: 3}
+end                                          2016-04-16 23:20:00
+patientID                                                     25
+symptomIDs                                           [20, 6, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 50, dtype: object
+id                                                            94
+intensities                             {2016-04-17 03:00:00: 3}
+end                                          2016-04-17 03:30:00
+patientID                                                     25
+symptomIDs                                           [20, 6, 23]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 51, dtype: object
+id                                                            95
+intensities                             {2016-04-17 12:00:00: 6}
+end                                          2016-04-17 12:20:00
+patientID                                                     25
+symptomIDs                                           [20, 6, 23]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 52, dtype: object
+31.0
+5.0
+id                                                            25
+intensities     {2016-04-05 17:29:23: 3, 2016-04-04 14:30:00: 2}
+end                                          2016-04-06 20:28:46
+patientID                                                     26
+symptomIDs                                                   [9]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 53, dtype: object
+id                                                            26
+intensities     {2016-04-05 09:07:41: 1, 2016-04-05 17:21:49: 3}
+end                                          2016-04-05 20:19:00
+patientID                                                     26
+symptomIDs                                        [7, 9, 12, 24]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 54, dtype: object
+id                                                            30
+intensities                             {2016-04-06 13:30:00: 4}
+end                                          2016-04-06 16:30:00
+patientID                                                     26
+symptomIDs                                             [7, 8, 6]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 55, dtype: object
+id                                                            35
+intensities                             {2016-04-09 08:00:00: 4}
+end                                          2016-04-09 11:13:00
+patientID                                                     26
+symptomIDs                                               [9, 17]
+triggerIDs                                                [4, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 56, dtype: object
+id                                                            38
+intensities     {2016-04-10 16:37:00: 6, 2016-04-10 07:30:00: 5}
+end                                          2016-04-10 19:20:00
+patientID                                                     26
+symptomIDs                                           [9, 17, 14]
+triggerIDs                                                [4, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 57, dtype: object
+id                                                            43
+intensities     {2016-04-11 07:38:31: 7, 2016-04-11 08:26:37: 1}
+end                                          2016-04-11 08:35:00
+patientID                                                     26
+symptomIDs                                 [7, 8, 9, 12, 17, 16]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 58, dtype: object
+id                                                            46
+intensities                             {2016-04-11 13:13:27: 3}
+end                                          2016-04-11 15:08:00
+patientID                                                     26
+symptomIDs                                                [8, 9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 59, dtype: object
+id                                                            48
+intensities                             {2016-04-12 07:09:18: 2}
+end                                          2016-04-12 09:56:00
+patientID                                                     26
+symptomIDs                                                    []
+triggerIDs                                                   [4]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 60, dtype: object
+id                                                            63
+intensities     {2016-04-14 11:12:52: 3, 2016-04-14 16:10:10: 2}
+end                                          2016-04-14 18:34:00
+patientID                                                     26
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 61, dtype: object
+id                                                            73
+intensities                             {2016-04-15 15:31:06: 2}
+end                                          2016-04-15 19:55:00
+patientID                                                     26
+symptomIDs                                                [7, 8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 62, dtype: object
+id                                                            88
+intensities    {2016-04-18 07:47:06: 6, 2016-04-18 10:26:01: ...
+end                                          2016-04-18 11:42:00
+patientID                                                     26
+symptomIDs                             [7, 8, 9, 12, 17, 14, 16]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 63, dtype: object
+id                                                           106
+intensities                             {2016-04-20 16:32:00: 5}
+end                                          2016-04-20 17:03:00
+patientID                                                     26
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 64, dtype: object
+id                                                           131
+intensities    {2016-04-25 12:08:55: 2, 2016-04-25 19:47:00: ...
+end                                          2016-04-26 08:49:00
+patientID                                                     26
+symptomIDs                                            [7, 9, 11]
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 66, dtype: object
+id                                                           137
+intensities    {2016-04-26 15:08:23: 6, 2016-04-26 13:46:51: ...
+end                                          2016-04-26 22:07:00
+patientID                                                     26
+symptomIDs                                            [7, 6, 23]
+triggerIDs                                                [5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 67, dtype: object
+id                                                           145
+intensities     {2016-04-27 11:42:33: 2, 2016-04-27 14:00:53: 1}
+end                                          2016-04-27 18:11:00
+patientID                                                     26
+symptomIDs                                                [8, 9]
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 68, dtype: object
+id                                                           157
+intensities                             {2016-04-28 20:00:13: 3}
+end                                          2016-04-29 09:58:00
+patientID                                                     26
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 69, dtype: object
+id                                                           159
+intensities                             {2016-04-28 21:58:55: 2}
+end                                          2016-04-29 09:58:00
+patientID                                                     26
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 70, dtype: object
+id                                                           164
+intensities                             {2016-04-30 21:26:05: 2}
+end                                          2016-05-01 09:04:00
+patientID                                                     26
+symptomIDs                                                   [9]
+triggerIDs                                                [5, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 71, dtype: object
+id                                                           181
+intensities                             {2016-05-04 16:43:47: 2}
+end                                          2016-05-04 21:13:00
+patientID                                                     26
+symptomIDs                                            [8, 9, 10]
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 72, dtype: object
+id                                                           186
+intensities                             {2016-05-09 15:13:00: 2}
+end                                          2016-05-09 21:24:00
+patientID                                                     26
+symptomIDs                                               [9, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 73, dtype: object
+45.0
+16.0
+id                                                            27
+intensities                             {2016-04-06 14:57:55: 5}
+end                                          2016-04-07 11:16:00
+patientID                                                     27
+symptomIDs                                                   [9]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 76, dtype: object
+1.0
+0.0
+id                                                            31
+intensities                             {2016-04-07 20:00:00: 6}
+end                                          2016-04-09 05:30:00
+patientID                                                     28
+symptomIDs                                               [8, 10]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 79, dtype: object
+2.0
+0.0
+id                                                            57
+intensities     {2016-04-12 05:00:00: 3, 2016-04-13 06:46:44: 3}
+end                                          2016-04-16 12:06:56
+patientID                                                     29
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 81, dtype: object
+id                                                            58
+intensities                             {2016-04-13 05:40:00: 3}
+end                                          2016-04-13 15:57:00
+patientID                                                     29
+symptomIDs                                                  [23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 82, dtype: object
+id                                                            67
+intensities    {2016-04-14 13:00:00: 5, 2016-04-14 14:15:00: ...
+end                                   2016-04-14 18:33:49.500000
+patientID                                                     29
+symptomIDs                                                   [6]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 83, dtype: object
+id                                                            84
+intensities                             {2016-04-15 06:13:00: 2}
+end                                          2016-04-15 15:07:00
+patientID                                                     29
+symptomIDs                                                   [8]
+triggerIDs                                                   [8]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 84, dtype: object
+id                                                            85
+intensities     {2016-04-16 16:15:00: 2, 2016-04-16 06:00:00: 2}
+end                                          2016-04-16 18:09:00
+patientID                                                     29
+symptomIDs                                                   [8]
+triggerIDs                                                [4, 8]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 85, dtype: object
+id                                                           114
+intensities    {2016-04-17 11:50:00: 9, 2016-04-17 05:46:19: ...
+end                                          2016-04-17 21:00:00
+patientID                                                     29
+symptomIDs                                                [8, 9]
+triggerIDs                                                   [3]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 86, dtype: object
+id                                                           115
+intensities                             {2016-04-18 05:54:17: 2}
+end                                          2016-04-18 10:55:00
+patientID                                                     29
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 87, dtype: object
+id                                                           119
+intensities                             {2016-04-20 06:09:00: 1}
+end                                          2016-04-20 10:11:00
+patientID                                                     29
+symptomIDs                                                   [9]
+triggerIDs                                                   [3]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 89, dtype: object
+id                                                           120
+intensities    {2016-04-21 14:12:00: 5, 2016-04-21 16:12:00: ...
+end                                          2016-04-21 18:12:00
+patientID                                                     29
+symptomIDs                                         [9, 5, 6, 23]
+triggerIDs                                                   [3]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 90, dtype: object
+12.0
+6.0
+id                                                            54
+intensities                             {2016-04-12 13:41:14: 5}
+end                                          2016-04-12 16:00:00
+patientID                                                     30
+symptomIDs                                [8, 12, 5, 14, 16, 24]
+triggerIDs                                                [5, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 91, dtype: object
+id                                                            55
+intensities                             {2016-04-12 16:00:00: 4}
+end                                          2016-04-12 22:58:00
+patientID                                                     30
+symptomIDs                                               [8, 17]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 92, dtype: object
+id                                                            66
+intensities    {2016-04-27 06:01:05: 5, 2016-04-23 23:32:11: ...
+end                                          2016-04-28 07:20:30
+patientID                                                     30
+symptomIDs                                                   [8]
+triggerIDs                                         [5, 6, 9, 10]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 94, dtype: object
+id                                                            79
+intensities                             {2016-04-16 01:00:00: 8}
+end                                          2016-04-16 08:30:00
+patientID                                                     30
+symptomIDs                          [12, 13, 11, 14, 15, 18, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 95, dtype: object
+id                                                            83
+intensities     {2016-04-16 14:30:00: 8, 2016-04-17 08:23:00: 7}
+end                                          2016-04-18 07:30:00
+patientID                                                     30
+symptomIDs               [12, 13, 17, 5, 10, 11, 14, 15, 16, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': T...
+Name: 96, dtype: object
+id                                                           177
+intensities    {2016-05-05 08:00:00: 4, 2016-05-03 10:33:37: ...
+end                                          2016-05-11 06:49:10
+patientID                                                     30
+symptomIDs                                                    []
+triggerIDs                                                [5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 97, dtype: object
+id                                                           178
+intensities    {2016-04-27 06:01:05: 5, 2016-04-23 23:32:11: ...
+end                                          2016-04-30 21:59:00
+patientID                                                     30
+symptomIDs                                                   [8]
+triggerIDs                                         [5, 6, 9, 10]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 98, dtype: object
+27.0
+12.0
+id                                                            69
+intensities                             {2016-04-14 04:00:00: 3}
+end                                          2016-04-14 06:00:00
+patientID                                                     31
+symptomIDs                                            [7, 8, 17]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 99, dtype: object
+id                                                            70
+intensities                             {2016-04-14 12:00:00: 2}
+end                                          2016-04-14 13:30:00
+patientID                                                     31
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 100, dtype: object
+id                                                           109
+intensities                             {2016-04-19 01:00:00: 3}
+end                                          2016-04-19 04:00:00
+patientID                                                     31
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 101, dtype: object
+id                                                           110
+intensities                             {2016-04-20 04:00:00: 3}
+end                                          2016-04-20 06:00:00
+patientID                                                     31
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 102, dtype: object
+id                                                           111
+intensities                             {2016-04-20 20:00:00: 5}
+end                                          2016-04-21 03:00:00
+patientID                                                     31
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 103, dtype: object
+id                                                           130
+intensities                             {2016-04-23 13:00:00: 3}
+end                                          2016-04-23 14:00:00
+patientID                                                     31
+symptomIDs                                                   [8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 104, dtype: object
+6.0
+0.0
+id                                                            62
+intensities                             {2016-04-14 07:30:00: 6}
+end                                          2016-04-14 19:16:00
+patientID                                                     32
+symptomIDs                                    [7, 8, 17, 10, 26]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 105, dtype: object
+id                                                            71
+intensities                             {2016-04-15 02:59:48: 8}
+end                                          2016-04-15 11:20:00
+patientID                                                     32
+symptomIDs                                                   [3]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 106, dtype: object
+id                                                            77
+intensities                             {2016-04-15 21:14:37: 5}
+end                                          2016-04-16 06:28:00
+patientID                                                     32
+symptomIDs                                                [7, 8]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 107, dtype: object
+id                                                            82
+intensities                             {2016-04-16 21:04:32: 7}
+end                                          2016-04-17 07:30:00
+patientID                                                     32
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 108, dtype: object
+id                                                            89
+intensities                             {2016-04-18 09:51:46: 6}
+end                                          2016-04-18 11:13:00
+patientID                                                     32
+symptomIDs                                        [7, 8, 10, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 109, dtype: object
+id                                                            91
+intensities                             {2016-04-18 12:13:54: 9}
+end                                          2016-04-18 16:37:00
+patientID                                                     32
+symptomIDs                                  [4, 7, 8, 3, 10, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 110, dtype: object
+id                                                           107
+intensities                             {2016-04-21 06:13:41: 7}
+end                                          2016-04-21 20:21:00
+patientID                                                     32
+symptomIDs                                            [7, 8, 12]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 111, dtype: object
+id                                                           123
+intensities                             {2016-04-23 05:47:45: 6}
+end                                          2016-04-24 08:03:00
+patientID                                                     32
+symptomIDs                                    [7, 8, 12, 10, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 112, dtype: object
+id                                                           165
+intensities                             {2016-05-01 06:56:07: 6}
+end                                          2016-05-01 11:13:00
+patientID                                                     32
+symptomIDs                                    [7, 8, 10, 14, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 113, dtype: object
+id                                                           175
+intensities                             {2016-05-03 04:15:03: 8}
+end                                          2016-05-03 09:36:00
+patientID                                                     32
+symptomIDs                                     [7, 8, 3, 10, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 114, dtype: object
+id                                                           183
+intensities                             {2016-05-06 05:46:53: 9}
+end                                          2016-05-06 09:35:00
+patientID                                                     32
+symptomIDs                                            [7, 3, 10]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 115, dtype: object
+39.0
+0.0
+id                                                            64
+intensities     {2016-04-14 12:15:54: 3, 2016-04-14 14:51:50: 2}
+end                                          2016-04-14 18:45:44
+patientID                                                     33
+symptomIDs                                               [8, 19]
+triggerIDs                                                   [6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 117, dtype: object
+id                                                            92
+intensities     {2016-04-18 16:00:00: 2, 2016-04-18 12:30:00: 4}
+end                                          2016-04-18 18:55:00
+patientID                                                     33
+symptomIDs                                               [9, 10]
+triggerIDs                                                   [4]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 118, dtype: object
+id                                                           112
+intensities                             {2016-04-21 14:20:00: 4}
+end                                          2016-04-21 16:45:00
+patientID                                                     33
+symptomIDs                                     [9, 17, 3, 5, 27]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 119, dtype: object
+id                                                           132
+intensities    {2016-04-25 21:15:31: 6, 2016-04-25 16:12:00: ...
+end                                          2016-04-25 23:10:00
+patientID                                                     33
+symptomIDs                                 [8, 17, 3, 5, 10, 27]
+triggerIDs                                             [4, 5, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 120, dtype: object
+15.0
+5.0
+id                                                           103
+intensities                             {2016-04-17 08:00:00: 7}
+end                                          2016-04-17 11:00:00
+patientID                                                     34
+symptomIDs                                            [8, 17, 6]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 121, dtype: object
+id                                                           104
+intensities                             {2016-04-19 17:00:00: 9}
+end                                          2016-04-20 02:00:00
+patientID                                                     34
+symptomIDs                                                   [3]
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 122, dtype: object
+id                                                           166
+intensities                             {2016-04-24 14:00:00: 6}
+end                                          2016-04-24 16:00:00
+patientID                                                     34
+symptomIDs                                             [7, 5, 6]
+triggerIDs                                                [6, 8]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 123, dtype: object
+id                                                           167
+intensities                             {2016-04-26 03:00:00: 9}
+end                                          2016-04-26 21:50:00
+patientID                                                     34
+symptomIDs                                [4, 7, 8, 3, 5, 6, 10]
+triggerIDs                                             [6, 7, 8]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 124, dtype: object
+id                                                           168
+intensities                             {2016-04-28 09:00:00: 6}
+end                                          2016-04-28 11:00:00
+patientID                                                     34
+symptomIDs                                             [8, 5, 6]
+triggerIDs                                                   [9]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 125, dtype: object
+id                                                           174
+intensities                             {2016-05-02 16:00:00: 6}
+end                                          2016-05-02 19:00:00
+patientID                                                     34
+symptomIDs                                                [7, 8]
+triggerIDs                                                   [5]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 126, dtype: object
+19.0
+8.0
+id                                                            99
+intensities                             {2016-04-19 19:15:00: 3}
+end                                          2016-04-19 21:20:00
+patientID                                                     35
+symptomIDs                                                [7, 8]
+triggerIDs                                             [4, 5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 127, dtype: object
+id                                                           100
+intensities                             {2016-04-16 07:00:00: 5}
+end                                          2016-04-16 18:00:00
+patientID                                                     35
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 128, dtype: object
+id                                                           101
+intensities                             {2016-04-17 16:00:00: 2}
+end                                          2016-04-17 20:00:00
+patientID                                                     35
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 129, dtype: object
+id                                                           102
+intensities                             {2016-04-18 14:00:00: 5}
+end                                          2016-04-18 19:30:00
+patientID                                                     35
+symptomIDs                                                    []
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 130, dtype: object
+id                                                           105
+intensities                             {2016-04-20 14:20:00: 1}
+end                                          2016-04-20 19:15:00
+patientID                                                     35
+symptomIDs                                                [7, 8]
+triggerIDs                                             [4, 5, 6]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 131, dtype: object
+id                                                           108
+intensities    {2016-04-22 10:00:00: 0, 2016-04-21 22:30:00: ...
+end                                          2016-04-22 10:00:00
+patientID                                                     35
+symptomIDs                        [7, 8, 9, 17, 20, 3, 5, 6, 14]
+triggerIDs                                             [4, 5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 132, dtype: object
+id                                                           143
+intensities                             {2016-04-27 02:00:00: 5}
+end                                          2016-04-27 05:30:00
+patientID                                                     35
+symptomIDs                                      [7, 9, 5, 6, 14]
+triggerIDs                                             [4, 5, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 133, dtype: object
+id                                                           180
+intensities                             {2016-05-03 19:45:00: 3}
+end                                          2016-05-04 05:40:00
+patientID                                                     35
+symptomIDs                                             [7, 8, 6]
+triggerIDs                                                [4, 6]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 134, dtype: object
+21.0
+14.0
+id                                                           134
+intensities    {2016-04-25 15:32:06: 5, 2016-04-25 18:17:20: ...
+end                                          2016-04-26 06:00:00
+patientID                                                     36
+symptomIDs                         [7, 9, 17, 20, 6, 14, 15, 26]
+triggerIDs                                                [3, 7]
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 135, dtype: object
+id                                                           146
+intensities     {2016-04-27 15:13:27: 5, 2016-04-27 12:50:51: 2}
+end                                          2016-04-27 17:00:00
+patientID                                                     36
+symptomIDs                                  [7, 9, 17, 20, 3, 6]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 136, dtype: object
+id                                                           162
+intensities     {2016-04-30 11:11:18: 6, 2016-05-01 05:05:00: 7}
+end                                          2016-05-01 07:28:00
+patientID                                                     36
+symptomIDs                     [8, 17, 20, 5, 6, 10, 14, 15, 23]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 137, dtype: object
+id                                                           176
+intensities                             {2016-05-03 11:32:43: 1}
+end                                          2016-05-03 20:16:00
+patientID                                                     36
+symptomIDs                                               [8, 17]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 138, dtype: object
+id                                                           184
+intensities                             {2016-05-07 16:06:00: 6}
+end                                          2016-05-07 20:08:00
+patientID                                                     36
+symptomIDs                                    [17, 20, 3, 6, 23]
+triggerIDs                                                   [8]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 139, dtype: object
+30.0
+3.0
+id                                                           133
+intensities     {2016-04-25 05:20:00: 3, 2016-04-25 08:24:00: 5}
+end                                          2016-04-25 14:24:00
+patientID                                                     38
+symptomIDs                                             [7, 3, 5]
+triggerIDs                                            [3, 6, 10]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 140, dtype: object
+id                                                           135
+intensities     {2016-04-25 17:59:41: 0, 2016-04-25 16:52:01: 5}
+end                                   2016-04-25 18:56:04.333330
+patientID                                                     38
+symptomIDs                                             [7, 3, 5]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 141, dtype: object
+id                                                           144
+intensities     {2016-04-27 10:31:51: 5, 2016-04-27 12:11:58: 0}
+end                                   2016-04-27 13:35:23.833330
+patientID                                                     38
+symptomIDs                                                   [8]
+triggerIDs                                            [8, 9, 10]
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 146, dtype: object
+7.0
+6.0
+id                                                           139
+intensities     {2016-04-26 19:36:16: 3, 2016-04-26 15:55:00: 7}
+end                                   2016-04-27 00:46:02.400000
+patientID                                                     39
+symptomIDs                                  [7, 8, 9, 5, 14, 19]
+triggerIDs                                                    []
+locations      {u'orbital_right': False, u'mandibular_left': ...
+Name: 157, dtype: object
+6.0
+0.0
+id                                                           173
+intensities     {2016-05-02 19:19:52: 6, 2016-05-02 14:00:00: 4}
+end                                   2016-05-03 02:26:21.333332
+patientID                                                     40
+symptomIDs                                          [7, 8, 5, 6]
+triggerIDs                                                    []
+locations      {u'orbital_right': True, u'mandibular_left': F...
+Name: 158, dtype: object
+4.0
+0.0
+    id  age  sex  relation  employment  diagnosis  headacheCount  \
+1   12   40    1         2           1          2             18   
+3   18   21    1         0           1          4              7   
+5   21   58    1         1           1          4             11   
+8   25   51    1         2           1          3             12   
+9   26   20    1         0           1          4             20   
+12  29   47    1         1           1          2              9   
+13  30   27    1         1           1          4              7   
+14  31   53    1         2           1          2              6   
+15  32   42    1         0           1          2             11   
+16  33   19    1         0           1          2              4   
+17  34   46    1         1           1          2              6   
+18  35   29    1         2           1          2              8   
+19  36   33    1         2           1          1              5   
+20  38   42    1         1           1          2              3   
+
+    meanIntensity  maxIntensity   meanDuration     ...      \
+1        3.500000             7   37147.722222     ...       
+3        3.666667             7   55165.714286     ...       
+5        3.703704             8  107664.818182     ...       
+8        4.588235             7  102500.000000     ...       
+9        3.212121             8   35751.450000     ...       
+12       4.277778             9   73621.055556     ...       
+13       5.279070             8  529502.000000     ...       
+14       3.166667             5    9900.000000     ...       
+15       7.000000             9   32497.636364     ...       
+16       3.500000             6   22726.500000     ...       
+17       7.166667             9   22700.000000     ...       
+18       4.333333             9   31237.500000     ...       
+19       4.666667             7   37188.400000     ...       
+20       3.000000             5   17032.055553     ...       
+
+    Spraakproblemen_freq  Alcohol_freq  Menstruatie_freq  Slaaptekort_freq  \
+1               0.000000      0.142857          0.142857          0.428571   
+3               0.000000      0.000000          0.214286          0.000000   
+5               0.000000      0.200000          0.000000          0.200000   
+8               0.000000      0.000000          0.000000          0.000000   
+9               0.000000      0.000000          0.000000          0.187500   
+12              0.000000      0.000000          0.500000          0.166667   
+13              0.000000      0.000000          0.000000          0.000000   
+14              0.000000      0.000000          0.000000          0.000000   
+15              0.000000      0.000000          0.000000          0.000000   
+16              0.133333      0.000000          0.000000          0.400000   
+17              0.000000      0.000000          0.000000          0.000000   
+18              0.000000      0.000000          0.000000          0.357143   
+19              0.000000      0.000000          0.333333          0.000000   
+20              0.000000      0.000000          0.166667          0.000000   
+
+    Stress_freq  Vermoeidheid_freq  Voeding_freq  Warmte_freq  Geluid_freq  \
+1      0.000000           0.285714      0.000000     0.000000     0.000000   
+3      0.357143           0.285714      0.000000     0.071429     0.000000   
+5      0.400000           0.000000      0.200000     0.000000     0.000000   
+8      0.000000           0.400000      0.600000     0.000000     0.000000   
+9      0.312500           0.500000      0.000000     0.000000     0.000000   
+12     0.000000           0.000000      0.000000     0.333333     0.000000   
+13     0.333333           0.333333      0.000000     0.000000     0.166667   
+14     0.000000           0.000000      0.000000     0.000000     0.000000   
+15     0.000000           0.000000      0.000000     0.000000     0.000000   
+16     0.200000           0.400000      0.000000     0.000000     0.000000   
+17     0.250000           0.250000      0.125000     0.250000     0.125000   
+18     0.285714           0.357143      0.000000     0.000000     0.000000   
+19     0.000000           0.000000      0.333333     0.333333     0.000000   
+20     0.000000           0.166667      0.000000     0.166667     0.166667   
+
+    Licht_freq  
+1     0.000000  
+3     0.071429  
+5     0.000000  
+8     0.000000  
+9     0.000000  
+12    0.000000  
+13    0.166667  
+14    0.000000  
+15    0.000000  
+16    0.000000  
+17    0.000000  
+18    0.000000  
+19    0.000000  
+20    0.333333  
+
+[14 rows x 75 columns]
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/home/kiani/.local/lib/python2.7/site-packages/sklearn/utils/validation.py:386: DeprecationWarning: Passing 1d arrays as data is deprecated in 0.17 and willraise ValueError in 0.19. Reshape your data either using X.reshape(-1, 1) if your data has a single feature or X.reshape(1, -1) if it contains a single sample.
+  DeprecationWarning)
+/usr/lib/python2.7/dist-packages/matplotlib/collections.py:571: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if self._edgecolors == str('face'):
+
+
+
+
+
+Ranking features: 
+[ 6 53 13 53  7 20 20  1  1  1 34  3 23 17 15 28 11  1 23 30 53 53 53 53 53
+ 53 53 53 53 53 53 53 53 53 53 53 53 53 53 53 53  6 36  9 18 31  2 13 25 27
+  3 35 15 10 27  8 37 40  1  1  3 33  3 40 40 24 32  1 20  1 15 40 30]
+Most important features ( 8):
+
+feature  7: meanIntensity            
+feature  8: maxIntensity             
+feature  9: meanDuration             
+feature 17: intensity_5              
+feature 58: Volheidsgevoel in oor_freq
+feature 59: Verkleining van pupil(len)_freq
+feature 67: Menstruatie_freq         
+feature 69: Stress_freq              
+
+Process finished with exit code 0
+
