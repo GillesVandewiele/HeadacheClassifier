@@ -120,7 +120,7 @@ for column in categorical_columns:
 
 n, bins, patches = plt.hist(patient_df['age'], 5, normed=0, facecolor='blue', alpha=0.75)
 plt.xlabel('Age')
-plt.ylabel('Relative amount')
+plt.ylabel('Absolute amount')
 plt.title('Distribution of the age in the headache dataset')
 plt.show()
 
@@ -363,7 +363,7 @@ for i in range(len(transformed_features_df)):
                c=colors[int(feature_vector["diagnosis"]) - 1], s=50)
     ax.text(feature_vector['pca_1'], feature_vector['pca_2'], feature_vector['pca_3'], feature_vector['id'])
 
-# plt.show()
+plt.show()
 
 # data_df = data_df.dropna()
 #
