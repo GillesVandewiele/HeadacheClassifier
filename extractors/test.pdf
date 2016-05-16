@@ -1,0 +1,20 @@
+digraph DT{
+node[fontname="Arial"];
+Node1 [label="Stress_freq <= 0.299107134342"];
+Node2 [label="meanDuration <= 88060.53125"];
+Node3 [label="Menstruatie_freq <= 0.25"];
+Node4 [label="2.0" shape="box"];
+Node3 -> Node4 [label="true"];
+Node5 [label="intensity_5 <= 0.166666671634"];
+Node6 [label="2.0" shape="box"];
+Node5 -> Node6 [label="true"];
+Node7 [label="1.0" shape="box"];
+Node5->Node7 [label="false"];
+Node3->Node5 [label="false"];
+Node2 -> Node3 [label="true"];
+Node9 [label="3.0" shape="box"];
+Node2->Node9 [label="false"];
+Node1 -> Node2 [label="true"];
+Node12 [label="4.0" shape="box"];
+Node1->Node12 [label="false"];
+}

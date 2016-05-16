@@ -11,9 +11,13 @@ from sklearn.cluster import DBSCAN
 from sklearn.decomposition import PCA
 from mpl_toolkits.mplot3d import Axes3D
 
+from constructors.c45orangeconstructor import C45Constructor
+from constructors.cartconstructor import CARTConstructor
+from constructors.questconstructor import QuestConstructor
+from extractors.featureselector import boruta_py_feature_selection, RF_feature_selection
+
 
 class DataCollector(object):
-
     def __init__(self):
         pass
 
@@ -30,11 +34,10 @@ class DataCollector(object):
 
     @staticmethod
     def plot_pie_chart(values, labels, title):
-
         # The slices will be ordered and plotted counter-clockwise.
-        my_norm = matplotlib.colors.Normalize(0, 1) # maps your data to the range [0, 1]
+        my_norm = matplotlib.colors.Normalize(0, 1)  # maps your data to the range [0, 1]
         my_cmap = matplotlib.cm.get_cmap('coolwarm')
-        print my_norm(values)
+        # print my_norm(values)
         fig = plt.figure()
         fig.suptitle(title, fontsize=25)
 
@@ -45,7 +48,7 @@ class DataCollector(object):
         plt.axis('equal')
         F = plt.gcf()
         Size = F.get_size_inches()
-        F.set_size_inches(Size[0]*1.25, Size[1]*1.75, forward=True)
+        F.set_size_inches(Size[0] * 1.25, Size[1] * 1.75, forward=True)
         plt.show()
 
 
@@ -65,9 +68,9 @@ triggers = database['trigger']
 patient_column_names = ['id', 'age', 'sex', 'relation', 'employment', 'diagnosis']
 patients_list = []
 for patient in patients.find({}):
-    print patient
+    # print patient
     patient_list = [patient['patientID'], patient['birthDate'], patient['isMale'], patient['relation'],
-                          patient['isEmployed'] ]
+                    patient['isEmployed']]
     if 'diagnoseID' in patient:
         patient_list.append(patient['diagnoseID'])
     else:
@@ -82,10 +85,10 @@ patient_df['age'] = [DataCollector.calculate_age(datetime.strptime(x, "%Y-%m-%dT
                      else np.NaN for x in patient_df['age']]
 patient_df.age.replace(np.NaN, patient_df["age"].mean(), inplace=True)
 patient_df['age'] = patient_df['age'].astype(int)
-patient_df = patient_df[patient_df.id > 10] #  All patients with id higher than 10 are test accounts
+patient_df = patient_df[patient_df.id > 10]  # All patients with id higher than 10 are test accounts
 patient_df = patient_df[patient_df.diagnosis != -1]
 patient_df = patient_df.reset_index(drop=True)
-diagnose_mapping = {1: "MIGRAINE W/ AURA", 2: "MIGRAINE W/O AURA", 3: "CLUSTER", 4:"TENSION"}
+diagnose_mapping = {1: "MIGRAINE W/ AURA", 2: "MIGRAINE W/O AURA", 3: "CLUSTER", 4: "TENSION"}
 diagnose_mapping_reverse = {"MIGRAINE W/ AURA": 1, "MIGRAINE W/O AURA": 2, "CLUSTER": 3, "TENSION": 4}
 patient_df['sex'] = patient_df['sex'].map(lambda x: "MALE" if x else "FEMALE")
 patient_df['employment'] = patient_df['employment'].map(lambda x: "EMPLOYED" if x else "UNEMPLOYED")
@@ -95,44 +98,44 @@ patient_df['diagnosis'] = patient_df["diagnosis"].map(diagnose_mapping)
 #           Plot some demographic plots           #
 ###################################################
 
-# def get_distribution(values):
-#     distribution = {}
-#     for value in values:
-#         if value not in distribution:
-#             distribution[value] = 1
-#         else:
-#             distribution[value] += 1
-#
-#     total_sum = np.sum(distribution.values())
-#     for value in distribution:
-#         distribution[value] = float(distribution[value]) / float(total_sum)
-#
-#     return distribution
-#
-# categorical_columns = ['sex', 'relation', 'employment', 'diagnosis']
-# for column in categorical_columns:
-#     col_distribution = get_distribution(patient_df[column].values)
-#     DataCollector.plot_pie_chart(col_distribution.values(), col_distribution.keys(),
-#                                  'Distribution of the ' + column + ' in the headache dataset')
-#
-# n, bins, patches = plt.hist(patient_df['age'], 5, normed=0, facecolor='blue', alpha=0.75)
-# plt.xlabel('Age')
-# plt.ylabel('Relative amount')
-# plt.title('Distribution of the age in the headache dataset')
-# plt.show()
+def get_distribution(values):
+    distribution = {}
+    for value in values:
+        if value not in distribution:
+            distribution[value] = 1
+        else:
+            distribution[value] += 1
+
+    total_sum = np.sum(distribution.values())
+    for value in distribution:
+        distribution[value] = float(distribution[value]) / float(total_sum)
+
+    return distribution
+
+categorical_columns = ['sex', 'relation', 'employment', 'diagnosis']
+for column in categorical_columns:
+    col_distribution = get_distribution(patient_df[column].values)
+    DataCollector.plot_pie_chart(col_distribution.values(), col_distribution.keys(),
+                                 'Distribution of the ' + column + ' in the headache dataset')
+
+n, bins, patches = plt.hist(patient_df['age'], 5, normed=0, facecolor='blue', alpha=0.75)
+plt.xlabel('Age')
+plt.ylabel('Relative amount')
+plt.title('Distribution of the age in the headache dataset')
+plt.show()
 
 ##########################################################
 #               Do some mapping                          #
 ##########################################################
 
-relation_mapping = {"VRIJGEZEL": 0, "IN RELATIE": 1,"GETROUWD": 2}
+relation_mapping = {"VRIJGEZEL": 0, "IN RELATIE": 1, "GETROUWD": 2}
 patient_df['relation'] = patient_df['relation'].map(relation_mapping)
 patient_df['relation'] = patient_df.relation.apply(lambda x: x if not pd.isnull(x) else 0)
 patient_df['sex'] = patient_df['sex'].map(lambda x: 1 if "MALE" else 0)
 patient_df['employment'] = patient_df['employment'].map(lambda x: 1 if "EMPLOYED" else 0)
 patient_df['diagnosis'] = patient_df["diagnosis"].map(diagnose_mapping_reverse)
-print patient_df
-print patient_df.describe()
+# print patient_df
+# print patient_df.describe()
 
 ####################################################
 #      Read the headache data into dataframe       #
@@ -153,29 +156,30 @@ for i in range(len(patient_df)):
         row.append(intensity_dict)
         # Missing value for end: add 2 hours
         end_time = ""
-        if headache['end'] == "null" or datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ") < sorted(list(intensity_dict.keys()))[-1]:
-            #interpolleer
-            print "interpolleer"
-            if len(intensity_dict.keys())<2:
-                end_time = sorted(list(intensity_dict.keys()))[0]+timedelta(hours=2)
+        if headache['end'] == "null" or datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ") < \
+                sorted(list(intensity_dict.keys()))[-1]:
+            # interpolleer
+            # print "interpolleer"
+            if len(intensity_dict.keys()) < 2:
+                end_time = sorted(list(intensity_dict.keys()))[0] + timedelta(hours=2)
             else:
-                end_time = sorted(list(intensity_dict.keys()))[0]+timedelta(hours=2)
-                # diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
-                # diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
-                # last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
-                # rico = diff_time.total_seconds()/(diff_value+1e-9)
-                # add = last_value*rico
-                #
-                # end_time = sorted(list(intensity_dict.keys()))[-1]+add
+                # end_time = sorted(list(intensity_dict.keys()))[0] + timedelta(hours=2)
+                diff_time = abs(sorted(list(intensity_dict.keys()))[-1]-sorted(list(intensity_dict.keys()))[-2])
+                diff_value = abs(intensity_dict[sorted(list(intensity_dict.keys()))[-1]] - intensity_dict[sorted(list(intensity_dict.keys()))[-2]])
+                last_value = intensity_dict[sorted(list(intensity_dict.keys()))[-2]]
+                rico = diff_time/(diff_value+1)
+                add = last_value*rico
 
-            #row.extend([end_time,headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
+                end_time = sorted(list(intensity_dict.keys()))[-1]+add
+
+                row.extend([end_time,headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
         else:
             end_time = datetime.strptime(headache['end'], "%Y-%m-%dT%H:%M:%S.%fZ")
 
             row.extend([end_time,
-                    headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
-        print sorted(list(intensity_dict.keys()))
-        print end_time
+                        headache['patientID'], headache['symptomIDs'], headache['triggerIDs']])
+        sorted(list(intensity_dict.keys()))
+        # print end_time
         location_dict = {}
         for location in headache['locations']:
             location_dict[location['key']] = location['value']
@@ -183,8 +187,36 @@ for i in range(len(patient_df)):
         headaches_list.append(row)
 
 headache_df = DataFrame(headaches_list, columns=headache_column_names)
-print headache_df
-print headache_df.describe()
+# print headache_df
+# print headache_df.describe()
+
+####################################################
+#       Read the symptom data into dataframe       #
+####################################################
+symptom_column_names = ['id', 'name']
+symptoms_list = []
+for symptom in symptoms.find({}):
+    print symptom
+    symptom_list = [symptom['symptomID'], symptom['name']]
+    # if 'diagnoseID' in patient:
+    #     patient_list.append(patient['diagnoseID'])
+    # else:
+    #     patient_list.append(-1)
+    symptoms_list.append(symptom_list)
+
+####################################################
+#       Read the trigger data into dataframe       #
+####################################################
+trigger_column_names = ['id', 'name']
+triggers_list = []
+for trigger in triggers.find({}):
+    print trigger
+    trigger_list = [trigger['triggerID'], trigger['name']]
+    # if 'diagnoseID' in patient:
+    #     patient_list.append(patient['diagnoseID'])
+    # else:
+    #     patient_list.append(-1)
+    triggers_list.append(trigger_list)
 
 ####################################################
 #    Now that we have all required information,    #
@@ -199,28 +231,63 @@ for i in range(len(patient_df)):
     vector.extend(patient_df.iloc[i, :].values)
 
     # Count number of headaches for a patient
-    vector.append(len(headache_df[headache_df.patientID == patient_df.iloc[i,:]['id']]))
-    filtered_df = headache_df[headache_df.patientID == patient_df.iloc[i,:]['id']]
+    vector.append(len(headache_df[headache_df.patientID == patient_df.iloc[i, :]['id']]))
+    filtered_df = headache_df[headache_df.patientID == patient_df.iloc[i, :]['id']]
     intensity_values = []
     durations = []
     location_freq_dict = {}
     for location in headache_locations:
-        location_freq_dict[location]=0
+        location_freq_dict[location] = 0
+
+    symptom_freq_dict = {}
+
+    for symptom in symptoms_list:
+        symptom_freq_dict[int(symptom[0])] = 0.0
+
+    trigger_freq_dict = {}
+
+    for trigger in triggers_list:
+        trigger_freq_dict[int(trigger[0])] = 0.0
+
     for _headache in range(len(filtered_df)):
         headache = filtered_df.iloc[_headache, :]
-        print headache['intensities']
+        # print headache['intensities']
         intensity_values.extend(headache['intensities'].values())
 
         duration = (headache['end'] - sorted(list(headache['intensities'].keys()))[0]).total_seconds()
         if duration < 0:
             duration = 7200
         timestamps_keys = sorted(list(headache['intensities'].items()))
-        print timestamps_keys
+        # print timestamps_keys
 
-            #TODO: interpolate  sorted(list(headache['intensities'].items()))
+        # TODO: interpolate  sorted(list(headache['intensities'].items()))
         durations.append(duration)
         for location in headache['locations'].items():
             location_freq_dict[location[0]] += location[1]
+
+        for symptomID in headache['symptomIDs']:
+            symptom_freq_dict[symptomID] += 1
+
+        for triggerID in headache['triggerIDs']:
+            trigger_freq_dict[triggerID] += 1
+
+        print headache
+
+    totalsymptoms = sum(symptom_freq_dict.values())
+    print totalsymptoms
+    for symptomID in symptom_freq_dict.keys():
+        if totalsymptoms != 0:
+            symptom_freq_dict[symptomID] = float(symptom_freq_dict[symptomID]) / float(totalsymptoms)
+        else:
+            symptom_freq_dict[symptomID] = 0
+
+    totaltriggers = sum(trigger_freq_dict.values())
+    print totaltriggers
+    for triggerID in trigger_freq_dict.keys():
+        if totaltriggers != 0:
+            trigger_freq_dict[triggerID] = float(trigger_freq_dict[triggerID]) / float(totaltriggers)
+        else:
+            trigger_freq_dict[triggerID] = 0
 
     # Intensity value mean and max
     vector.append(np.mean(intensity_values))
@@ -238,18 +305,29 @@ for i in range(len(patient_df)):
     total_sum = sum(location_freq_dict.values())
     for location in headache_locations:
         if total_sum > 0:
-            vector.append(location_freq_dict[location]/total_sum)
+            vector.append(location_freq_dict[location] / total_sum)
         else:
             vector.append(0)
+
+    # Relative frequency for each symptom
+    for symptom in symptoms_list:
+        vector.append(symptom_freq_dict[symptom[0]])
+
+    # Relative frequency for each trigger
+    for trigger in triggers_list:
+        vector.append(trigger_freq_dict[trigger[0]])
+
     data_list.append(vector)
 
 intensity_names = []
 for i in range(11):
-    intensity_names.append("intensity_"+str(i))
+    intensity_names.append("intensity_" + str(i))
 columns = ["id", "age", "sex", "relation", "employment", "diagnosis", "headacheCount", "meanIntensity", "maxIntensity",
            "meanDuration", "maxDuration", "minDuration"]
 columns.extend(intensity_names)
 columns.extend(headache_locations)
+columns.extend([x[1] + "_freq" for x in symptoms_list])
+columns.extend([x[1] + "_freq" for x in triggers_list])
 
 data_df = DataFrame(data_list, columns=columns)
 data_df = data_df[data_df.headacheCount > 1]
@@ -268,26 +346,51 @@ for i in range(len(features_df)):
     transformed_feature.extend(*pca.transform(feature_vector))
     transformed_features.append(transformed_feature)
 
-print transformed_features
+# print transformed_features
 transformed_features_df = DataFrame(transformed_features, columns=["id", "diagnosis", "pca_1", "pca_2", "pca_3"])
-print transformed_features_df
+# print transformed_features_df
 
 fig = plt.figure()
 
 ax = Axes3D(fig)
 
-#ax.scatter(transformed_features_df['pca_1'], transformed_features_df['pca_2'], transformed_features_df['pca_3'])
+# ax.scatter(transformed_features_df['pca_1'], transformed_features_df['pca_2'], transformed_features_df['pca_3'])
 colors = ["red", "blue", "green", "yellow"]
 
 for i in range(len(transformed_features_df)):
     feature_vector = transformed_features_df.iloc[i, :]
     ax.scatter(feature_vector['pca_1'], feature_vector['pca_2'], feature_vector['pca_3'],
-               c=colors[int(feature_vector["diagnosis"])-1], s=50)
+               c=colors[int(feature_vector["diagnosis"]) - 1], s=50)
     ax.text(feature_vector['pca_1'], feature_vector['pca_2'], feature_vector['pca_3'], feature_vector['id'])
 
-plt.show()
+# plt.show()
 
 # data_df = data_df.dropna()
 #
 # clusters = fclusterdata(data_df[["meanIntensity", "meanDuration"]], 0.1, criterion="distance")
 # print clusters
+label_df = DataFrame()
+label_df["cat"] = features_df["diagnosis"]
+
+features_df = features_df.drop("diagnosis", axis=1)
+features_df = features_df.drop("id", axis=1)
+
+best_features_boruta = boruta_py_feature_selection(features_df.values, label_df['cat'].tolist(), columns,
+                                                   verbose=True, percentile=80, alpha=0.1)
+
+
+num_features_boruta = len(best_features_boruta)
+
+new_features_rf = DataFrame()
+new_features_boruta = DataFrame()
+
+
+for k in range(num_features_boruta):
+    new_features_boruta[columns[best_features_boruta[k]]] = features_df[columns[best_features_boruta[k]]]
+
+features_df_boruta = new_features_boruta
+
+
+cart = CARTConstructor(min_samples_split=1)
+tree = cart.construct_tree(new_features_boruta, labels=label_df)
+tree.visualise("./test.pdf")
