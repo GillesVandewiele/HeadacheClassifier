@@ -101,6 +101,16 @@ class DecisionTreeMerger(object):
         plt.xlabel(x_feature)
         plt.ylabel(y_feature)
         for region in regions:
+            if region[x_feature][0] == float("-inf"):
+                region[x_feature][0] = x_min
+            if region[x_feature][1] == float("inf"):
+                region[x_feature][1] = x_max
+            if region[y_feature][0] == float("-inf"):
+                region[y_feature][0] = y_min
+            if region[y_feature][1] == float("inf"):
+                region[y_feature][1] = y_max
+
+        for region in regions:
             x = region[x_feature][0]
             width = region[x_feature][1] - x
             y = region[y_feature][0]
