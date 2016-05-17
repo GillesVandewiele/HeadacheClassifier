@@ -45,7 +45,7 @@ thread_measures = {1: [], 5: [], 10: [], 25: [], 50: [], 100: []}
 n_measures = 10
 
 for i in range(n_measures):
-    for key in thread_measures.keys():
+    for key in sorted(thread_measures.keys()):
         # Do the request and add their response times to a queue
         q = Queue(key)
         for i in range(key):
@@ -64,5 +64,5 @@ for i in range(n_measures):
 
 
 print '-------------------------- STRESS TEST: SYNCDB() -----------------------------------'
-for key in thread_measures.keys():
+for key in sorted(thread_measures.keys()):
     print '\t NUMBER OF THREADS = ' + str(key) + '\t AVG TIME = ' + str(np.mean(thread_measures[key]))
