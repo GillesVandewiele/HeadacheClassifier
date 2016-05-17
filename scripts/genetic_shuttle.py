@@ -1,3 +1,27 @@
+"""
+Shuttle dataset:
+----------------
+----------------
+
+9 features:
+-----------
+
+
+7 classes:
+-----------
+1 Rad Flow
+2 Fpv Close
+3 Fpv Open
+4 High
+5 Bypass
+6 Bpv Close
+7 Bpv Open
+
+Approximately 80% of the data belongs to class 1. Therefore the default
+accuracy is about 80%. The aim here is to obtain an accuracy of
+99 - 99.9%.
+"""
+
 from pandas import read_csv, DataFrame
 
 import operator
@@ -16,45 +40,41 @@ from constructors.c45orangeconstructor import C45Constructor
 from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 
-SEED = 1332633333337
-N_FOLDS = 10
+SEED = 1337
+N_FOLDS = 2
 
 np.random.seed(SEED)    # 84846513
-columns = ['age', 'sex', 'chest pain type', 'resting blood pressure', 'serum cholestoral', 'fasting blood sugar', \
-           'resting electrocardio', 'max heartrate', 'exercise induced angina', 'oldpeak', 'slope peak', \
-           'number of vessels', 'thal', 'disease']
-df = read_csv(os.path.join('../data', 'heart.dat'), sep=' ')
+columns = ['feature1', 'feature2', 'feature3', 'feature4', 'feature5', 'feature6', 'feature7', 'feature8',
+           'feature9', 'class' ]
+df = read_csv(os.path.join('../data', 'shuttle.tst'), sep=' ')
 df.columns=columns
-#df = df[['number of vessels', 'oldpeak', 'chest pain type', 'thal', 'max heartrate', 'age', 'serum cholestoral', 'disease']]
+df = df[df['class'] < 6]
+df = df.reset_index(drop=True)
+print np.bincount(df['class'])
 feature_mins = {}
 feature_maxs = {}
-feature_column_names = list(set(df.columns) - set(['disease']))
+feature_column_names = list(set(df.columns) - set(['class']))
 
 for feature in feature_column_names:
+    if np.min(df[feature]) < 0:
+        df[feature] += np.min(df[feature]) * (-1)
+        feature_mins[feature] = 0
+    else:
         feature_mins[feature] = np.min(df[feature])
-        feature_maxs[feature] = np.max(df[feature])
+
+    feature_maxs[feature] = np.max(df[feature])
+
 df=df.reset_index(drop=True)
 labels_df = DataFrame()
-labels_df['cat'] = df['disease'].copy()
+labels_df['cat'] = df['class'].copy()
 features_df = df.copy()
-features_df = features_df.drop('disease', axis=1)
+features_df = features_df.drop('class', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
-
-num_features = 8
-best_features = RF_feature_selection(features_df.values, labels_df['cat'].tolist(), feature_column_names, verbose=True)
-new_features = DataFrame()
-for k in range(num_features):
-    new_features[feature_column_names[best_features[k]]] = features_df[feature_column_names[best_features[k]]]
-features_df = new_features
-feature_column_names = list(set(df.columns) - set(['disease']))
 
 c45 = C45Constructor(cf=0.05)
 cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
 quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
-# c45 = C45Constructor(cf=0.15)
-# cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
-# quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=3, alpha=0.5)
 tree_constructors = [c45, cart, quest]
 
 tree_confusion_matrices = {}
@@ -95,7 +115,6 @@ for train_index, test_index in skf:
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
                                               predicted_labels.astype(str)))
-    # raw_input("Press Enter to continue...")
 
 tree_confusion_matrices_mean = {}
 for key in tree_confusion_matrices:

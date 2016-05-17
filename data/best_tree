@@ -1,0 +1,65 @@
+digraph DT{
+node[fontname="Arial"];
+Node1 [label="feature1 <= 54.0"];
+Node2 [label="feature2 <= 3142.0"];
+Node3 [label="feature8 <= 261.0"];
+Node4 [label="feature7 <= 55.0"];
+Node5 [label="3
+{'1': 0.0, '3': 1.0, '2': 0.0, '5': 0.0, '4': 0.0}" shape="box"];
+Node4 -> Node5 [label="true"];
+Node6 [label="1
+{'1': 0.94, '3': 0.06, '2': 0.0, '5': 0.0, '4': 0.0}" shape="box"];
+Node4->Node6 [label="false"];
+Node3 -> Node4 [label="true"];
+Node7 [label="3
+{'1': 0.0, '3': 0.9, '2': 0.0, '5': 0.0, '4': 0.1}" shape="box"];
+Node3->Node7 [label="false"];
+Node2 -> Node3 [label="true"];
+Node9 [label="feature7 <= 43.0"];
+Node10 [label="feature9 <= 270.0"];
+Node11 [label="1
+{'1': 1.0, '3': 0.0, '2': 0.0, '5': 0.0, '4': 0.0}" shape="box"];
+Node10 -> Node11 [label="true"];
+Node12 [label="4
+{'1': 0.0, '3': 0.0, '2': 0.0, '5': 0.0, '4': 1.0}" shape="box"];
+Node10->Node12 [label="false"];
+Node9 -> Node10 [label="true"];
+Node13 [label="feature2 <= 3165.0"];
+Node14 [label="1
+{'1': 1.0, '3': 0.0, '2': 0.0, '5': 0.0, '4': 0.0}" shape="box"];
+Node13 -> Node14 [label="true"];
+Node15 [label="feature2 <= 3177.0"];
+Node16 [label="1
+{'1': 0.99, '3': 0.0, '2': 0.0, '5': 0.0, '4': 0.01}" shape="box"];
+Node15 -> Node16 [label="true"];
+Node17 [label="2
+{'1': 0.14, '3': 0.0, '2': 0.86, '5': 0.0, '4': 0.0}" shape="box"];
+Node15->Node17 [label="false"];
+Node13->Node15 [label="false"];
+Node9->Node13 [label="false"];
+Node2->Node9 [label="false"];
+Node1 -> Node2 [label="true"];
+Node28 [label="feature9 <= 266.0"];
+Node29 [label="1
+{'1': 1.0, '3': 0.0, '2': 0.0, '5': 0.0, '4': 0.0}" shape="box"];
+Node28 -> Node29 [label="true"];
+Node30 [label="feature1 <= 64.0"];
+Node31 [label="4
+{'1': 0.0, '3': 0.0, '2': 0.0, '5': 0.0, '4': 1.0}" shape="box"];
+Node30 -> Node31 [label="true"];
+Node32 [label="feature2 <= 3148.0"];
+Node33 [label="feature2 <= 3136.0"];
+Node34 [label="3
+{'1': 0.0, '3': 1.0, '2': 0.0, '5': 0.0, '4': 0.0}" shape="box"];
+Node33 -> Node34 [label="true"];
+Node35 [label="5
+{'1': 0.0, '3': 0.0, '2': 0.0, '5': 1.0, '4': 0.0}" shape="box"];
+Node33->Node35 [label="false"];
+Node32 -> Node33 [label="true"];
+Node36 [label="5
+{'1': 0.0, '3': 0.0, '2': 0.0, '5': 1.0, '4': 0.0}" shape="box"];
+Node32->Node36 [label="false"];
+Node30->Node32 [label="false"];
+Node28->Node30 [label="false"];
+Node1->Node28 [label="false"];
+}
