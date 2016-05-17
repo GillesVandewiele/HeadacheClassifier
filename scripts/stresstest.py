@@ -9,7 +9,8 @@ import time
 
 
 def sync_db():
-    header = { "Authorization": "Basic: a2RsYW5ub3lAZ21haWwuY29tOmZlM2Y2ZDI5OGJlMWI2ODljNmUwZjlkNjFiYjNjY2YzYTNkYWIwMDdmYjYzZWU0MDcxMTFhMTgzMjNjYWQwNzAyNjM5OTY1OTZhOTAwZTM4MzgwNDhhMThjODdkZDUyOWZiZWM3YTA2YTEwZjA0ZDM0NjJjYmRmNjkwNGJlMjEz" }
+    header = {
+        "Authorization": "Basic: a2RsYW5ub3lAZ21haWwuY29tOmZlM2Y2ZDI5OGJlMWI2ODljNmUwZjlkNjFiYjNjY2YzYTNkYWIwMDdmYjYzZWU0MDcxMTFhMTgzMjNjYWQwNzAyNjM5OTY1OTZhOTAwZTM4MzgwNDhhMThjODdkZDUyOWZiZWM3YTA2YTEwZjA0ZDM0NjJjYmRmNjkwNGJlMjEz"}
 
     urls = [
         'http://tw06v033.ugent.be/Chronic/rest/DrugService/drugs',
@@ -20,7 +21,7 @@ def sync_db():
     ]
 
     session = requests.Session()
-    session.mount('http://', HTTPAdapter(pool_connections=50, pool_maxsize=50))
+    # session.mount('http://', HTTPAdapter(pool_connections=250, pool_maxsize=50))
     rs = (grequests.get(u, headers=header, session=session) for u in urls)
 
     # responses = requests.async.imap(rs, size=250)
@@ -41,11 +42,12 @@ def send_headache_to_db():
     pass
 
 
-thread_measures = {1: [], 5: [], 10: [], 25: [], 50: [], 100: []}
-n_measures = 10
+thread_measures = {1: [], 5: [], 10: [], 25: [], 50: [], 100: [], 250: [], 500: [], 1000: [], 2500: [], 5000: [],
+                   10000: []}
+n_measures = 1
 
 for i in range(n_measures):
-    for key in thread_measures.keys():
+    for key in sorted(thread_measures.keys()):
         # Do the request and add their response times to a queue
         q = Queue(key)
         for i in range(key):
@@ -62,7 +64,6 @@ for i in range(n_measures):
         thread_measures[key].append(np.mean(response_times))
         time.sleep(0.5)
 
-
 print '-------------------------- STRESS TEST: SYNCDB() -----------------------------------'
-for key in thread_measures.keys():
+for key in sorted(thread_measures.keys()):
     print '\t NUMBER OF THREADS = ' + str(key) + '\t AVG TIME = ' + str(np.mean(thread_measures[key]))

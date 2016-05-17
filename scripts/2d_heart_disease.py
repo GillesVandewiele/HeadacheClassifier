@@ -41,8 +41,8 @@ for feature in feature_column_names:
         feature_maxs[feature] = np.max(df[feature])
 
 merger = DecisionTreeMerger()
-cart = CARTConstructor(min_samples_leaf=10, max_depth=3)
-
+# cart = CARTConstructor(min_samples_leaf=10, max_depth=2)
+cart = C45Constructor(cf=1.0)
 tree = cart.construct_tree(train_features_df, train_labels_df)
 tree.populate_samples(train_features_df, train_labels_df['cat'])
 tree.visualise("2d_tree")
