@@ -28,7 +28,7 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 
 SEED = 1337
-N_FOLDS = 2
+N_FOLDS = 5
 
 np.random.seed(SEED)    # 84846513
 columns = ['parents', 'has_nurs', 'form', 'children', 'housing', 'finance', 'social', 'health', 'class']
@@ -58,9 +58,9 @@ df['class'] = df['class'].map(mapping_class)
 
 df = df[df['class'] != 0]
 df = df.reset_index(drop=True)
-
-print df
-print np.bincount(df['class'])
+#
+# print df
+# print np.bincount(df['class'])
 
 feature_mins = {}
 feature_maxs = {}
@@ -84,9 +84,10 @@ train_labels_df = labels_df
 train_features_df = features_df
 
 c45 = C45Constructor(cf=0.05)
-cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
+cart = CARTConstructor(min_samples_leaf=40, max_depth=10)
+quest = QuestConstructor(default=1, max_nr_nodes=50, discrete_thresh=15, alpha=0.001)
 tree_constructors = [c45, cart, quest]
+# tree_constructors = [c45]
 
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:
