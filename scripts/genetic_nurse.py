@@ -94,7 +94,7 @@ for tree_constructor in tree_constructors:
     tree_confusion_matrices[tree_constructor.get_name()] = []
 tree_confusion_matrices["Genetic"] = []
 
-skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=False, random_state=SEED)
+skf = sklearn.cross_validation.StratifiedKFold(labels_df['cat'], n_folds=N_FOLDS, shuffle=True, random_state=SEED)
 
 for train_index, test_index in skf:
     train_features_df, test_features_df = features_df.iloc[train_index,:].copy(), features_df.iloc[test_index,:].copy()
@@ -119,8 +119,8 @@ for train_index, test_index in skf:
 
 
     merger = DecisionTreeMerger()
-    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=10,
-                                         num_mutations=5, population_size=10, max_samples=2, val_fraction=0.10,
+    best_tree = merger.genetic_algorithm(train_df, 'cat', tree_constructors, seed=SEED, num_iterations=5,
+                                         num_mutations=3, population_size=6, max_samples=35, val_fraction=0.10,
                                          num_boosts=3)
 
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
@@ -134,7 +134,7 @@ for key in tree_confusion_matrices:
         print matrix
 
 fig = plt.figure()
-fig.suptitle('Accuracy on heart disease dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
+fig.suptitle('Accuracy on nursery dataset using ' + str(N_FOLDS) + ' folds', fontsize=20)
 counter = 0
 for key in tree_confusion_matrices:
     tree_confusion_matrices_mean[key] = np.zeros(tree_confusion_matrices[key][0].shape)

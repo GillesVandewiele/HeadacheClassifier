@@ -1,0 +1,629 @@
+/usr/bin/python2.7 /home/kiani/HeadacheClassifier/scripts/genetic_nurse.py
+Initializing
+Merging  120  with  158  regions.
+Merging  179  with  162  regions.
+Merging  56  with  68  regions.
+Merging  114  with  76  regions.
+Merging  45  with  77  regions.
+Merging  505  with  94  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99710703953712621, 0.99035679845708779, 0.98939247830279653, 0.97010607521697212, 0.95853423336547727, 0.94792671166827391])
+('breeding.... ', 6)
+merging...
+Merging  162  with  120  regions.
+going to tree
+2.572
+('breeding.... ', 4)
+merging...
+Merging  56  with  76  regions.
+going to tree
+3.683
+('breeding.... ', 2)
+merging...
+Merging  158  with  269  regions.
+going to tree
+2.738
+Took  14.272928  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99710703953712621, 0.99035679845708779, 0.98939247830279653, 0.97010607521697212, 0.95853423336547727, 0.95467695274831232])
+('breeding.... ', 6)
+merging...
+Merging  120  with  186  regions.
+going to tree
+2.551
+('breeding.... ', 4)
+merging...
+Merging  162  with  269  regions.
+going to tree
+2.715
+('breeding.... ', 2)
+merging...
+Merging  158  with  76  regions.
+going to tree
+2.633
+Took  16.452094  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99710703953712621, 0.99035679845708779, 0.98939247830279653, 0.97010607521697212, 0.95853423336547727, 0.95467695274831232])
+('breeding.... ', 6)
+merging...
+Merging  120  with  162  regions.
+going to tree
+2.353
+('breeding.... ', 4)
+merging...
+Merging  269  with  76  regions.
+going to tree
+3.721
+('breeding.... ', 2)
+merging...
+Merging  158  with  186  regions.
+going to tree
+2.607
+Took  12.303793  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99710703953712621, 0.99035679845708779, 0.98939247830279653, 0.97010607521697212, 0.96721311475409832, 0.95853423336547727])
+('breeding.... ', 6)
+merging...
+Merging  120  with  269  regions.
+going to tree
+2.445
+('breeding.... ', 4)
+merging...
+Merging  158  with  162  regions.
+going to tree
+2.333
+('breeding.... ', 2)
+merging...
+Merging  76  with  269  regions.
+going to tree
+3.715
+Took  11.873753  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99710703953712621, 0.99035679845708779, 0.98939247830279653, 0.97010607521697212, 0.96721311475409832, 0.96528447444551579])
+('breeding.... ', 6)
+merging...
+Merging  158  with  269  regions.
+going to tree
+2.688
+('breeding.... ', 4)
+merging...
+Merging  269  with  269  regions.
+going to tree
+3.715
+('breeding.... ', 2)
+merging...
+Merging  120  with  162  regions.
+going to tree
+2.353
+Took  12.067528  seconds
+Taking best tree..
+1 162
+2 158
+3 120
+4 269
+5 269
+6 269
+[(<objects.decisiontree.DecisionTree object at 0x7f0dcc469f90>, 0.99710703953712621, 94), (<objects.decisiontree.DecisionTree object at 0x7f0dcc7ff950>, 0.99035679845708779, 94), (<objects.decisiontree.DecisionTree object at 0x7f0de7529a10>, 0.98939247830279653, 94), (<objects.decisiontree.DecisionTree object at 0x7f0dcba4ae90>, 0.95853423336547727, 94), (<objects.decisiontree.DecisionTree object at 0x7f0dcc7a0dd0>, 0.94792671166827391, 94), (<objects.decisiontree.DecisionTree object at 0x7f0dcba492d0>, 0.94406943105110908, 94)]
+Initializing
+Merging  139  with  136  regions.
+Merging  160  with  170  regions.
+Merging  58  with  69  regions.
+Merging  122  with  74  regions.
+Merging  45  with  71  regions.
+Merging  493  with  73  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99517839922854379, 0.98842815814850526, 0.98457087753134043, 0.9604628736740598, 0.95564127290260359, 0.94310511089681781])
+('breeding.... ', 6)
+merging...
+Merging  170  with  136  regions.
+going to tree
+2.357
+('breeding.... ', 4)
+merging...
+Merging  58  with  74  regions.
+going to tree
+3.625
+('breeding.... ', 2)
+merging...
+Merging  139  with  226  regions.
+going to tree
+2.643
+Took  11.277459  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99517839922854379, 0.98842815814850526, 0.98457087753134043, 0.9604628736740598, 0.95564127290260359, 0.94792671166827391])
+('breeding.... ', 6)
+merging...
+Merging  136  with  159  regions.
+going to tree
+2.792
+('breeding.... ', 4)
+merging...
+Merging  170  with  226  regions.
+going to tree
+2.382
+('breeding.... ', 2)
+merging...
+Merging  139  with  74  regions.
+going to tree
+3.04
+Took  13.792286  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99517839922854379, 0.98842815814850526, 0.98457087753134043, 0.9604628736740598, 0.95564127290260359, 0.94792671166827391])
+('breeding.... ', 6)
+merging...
+Merging  136  with  170  regions.
+going to tree
+2.115
+('breeding.... ', 4)
+merging...
+Merging  226  with  74  regions.
+going to tree
+3.808
+('breeding.... ', 2)
+merging...
+Merging  139  with  159  regions.
+going to tree
+2.738
+Took  10.145321  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99517839922854379, 0.98842815814850526, 0.98457087753134043, 0.96142719382835107, 0.9604628736740598, 0.95564127290260359])
+('breeding.... ', 6)
+merging...
+Merging  136  with  226  regions.
+going to tree
+2.824
+('breeding.... ', 4)
+merging...
+Merging  139  with  170  regions.
+going to tree
+2.54
+('breeding.... ', 2)
+merging...
+Merging  74  with  226  regions.
+going to tree
+3.808
+Took  10.742652  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99517839922854379, 0.98842815814850526, 0.98457087753134043, 0.96142719382835107, 0.96142719382835107, 0.9604628736740598])
+('breeding.... ', 6)
+merging...
+Merging  139  with  226  regions.
+going to tree
+2.643
+('breeding.... ', 4)
+merging...
+Merging  226  with  226  regions.
+going to tree
+3.808
+('breeding.... ', 2)
+merging...
+Merging  136  with  170  regions.
+going to tree
+2.115
+Took  10.399164  seconds
+Taking best tree..
+1 170
+2 139
+3 136
+4 226
+5 226
+6 226
+[(<objects.decisiontree.DecisionTree object at 0x7f0dcc45aad0>, 0.99517839922854379, 73), (<objects.decisiontree.DecisionTree object at 0x7f0dccd47290>, 0.98842815814850526, 73), (<objects.decisiontree.DecisionTree object at 0x7f0dcb08ae10>, 0.98457087753134043, 73), (<objects.decisiontree.DecisionTree object at 0x7f0dcba18110>, 0.95660559305689485, 73), (<objects.decisiontree.DecisionTree object at 0x7f0dcbf9f6d0>, 0.94310511089681781, 73), (<objects.decisiontree.DecisionTree object at 0x7f0dcc7ff210>, 0.9431051108968177, 73)]
+Initializing
+Merging  139  with  148  regions.
+Merging  163  with  151  regions.
+Merging  58  with  67  regions.
+Merging  124  with  72  regions.
+Merging  56  with  63  regions.
+Merging  386  with  63  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.99710703953712621, 0.99324975891996137, 0.96721311475409832, 0.95081967213114749, 0.94985535197685622])
+('breeding.... ', 6)
+merging...
+Merging  151  with  139  regions.
+going to tree
+2.375
+('breeding.... ', 4)
+merging...
+Merging  58  with  72  regions.
+going to tree
+3.698
+('breeding.... ', 2)
+merging...
+Merging  148  with  241  regions.
+going to tree
+2.658
+Took  11.823637  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.99710703953712621, 0.99324975891996137, 0.96721311475409832, 0.95949855351976865, 0.95081967213114749])
+('breeding.... ', 6)
+merging...
+Merging  139  with  72  regions.
+going to tree
+2.673
+('breeding.... ', 4)
+merging...
+Merging  151  with  241  regions.
+going to tree
+2.651
+('breeding.... ', 2)
+merging...
+Merging  148  with  156  regions.
+going to tree
+2.675
+Took  15.055111  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.99710703953712621, 0.99324975891996137, 0.96721311475409832, 0.95949855351976865, 0.95081967213114749])
+('breeding.... ', 6)
+merging...
+Merging  139  with  151  regions.
+going to tree
+1.79
+('breeding.... ', 4)
+merging...
+Merging  241  with  156  regions.
+going to tree
+3.682
+('breeding.... ', 2)
+merging...
+Merging  148  with  72  regions.
+going to tree
+2.75
+Took  12.079858  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.99710703953712621, 0.99324975891996137, 0.96721311475409832, 0.96624879459980706, 0.95949855351976865])
+('breeding.... ', 6)
+merging...
+Merging  139  with  241  regions.
+going to tree
+2.424
+('breeding.... ', 4)
+merging...
+Merging  148  with  151  regions.
+going to tree
+1.746
+('breeding.... ', 2)
+merging...
+Merging  156  with  241  regions.
+going to tree
+3.715
+Took  9.770292  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.99710703953712621, 0.99324975891996137, 0.96721311475409832, 0.96624879459980706, 0.96528447444551591])
+('breeding.... ', 6)
+merging...
+Merging  148  with  241  regions.
+going to tree
+2.483
+('breeding.... ', 4)
+merging...
+Merging  241  with  241  regions.
+going to tree
+3.688
+('breeding.... ', 2)
+merging...
+Merging  139  with  151  regions.
+going to tree
+1.79
+Took  11.946032  seconds
+Taking best tree..
+1 151
+2 148
+3 139
+4 241
+5 241
+6 241
+[(<objects.decisiontree.DecisionTree object at 0x7f0dcb66b310>, 0.99903567984570874, 63), (<objects.decisiontree.DecisionTree object at 0x7f0dcb9db310>, 0.99710703953712621, 63), (<objects.decisiontree.DecisionTree object at 0x7f0dcaae9910>, 0.99324975891996137, 63), (<objects.decisiontree.DecisionTree object at 0x7f0dca703090>, 0.95081967213114749, 63), (<objects.decisiontree.DecisionTree object at 0x7f0dcbf1b110>, 0.94985535197685622, 63), (<objects.decisiontree.DecisionTree object at 0x7f0dcc417d90>, 0.93924783027965286, 63)]
+Initializing
+Merging  130  with  147  regions.
+Merging  164  with  165  regions.
+Merging  59  with  71  regions.
+Merging  127  with  73  regions.
+Merging  43  with  83  regions.
+Merging  414  with  72  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.9951783992285439, 0.99035679845708768, 0.96528447444551591, 0.95756991321118601, 0.95467695274831232])
+('breeding.... ', 6)
+merging...
+Merging  165  with  130  regions.
+going to tree
+2.041
+('breeding.... ', 4)
+merging...
+Merging  73  with  59  regions.
+going to tree
+3.687
+('breeding.... ', 2)
+merging...
+Merging  147  with  248  regions.
+going to tree
+2.893
+Took  10.503217  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.9951783992285439, 0.99035679845708768, 0.96528447444551591, 0.95756991321118601, 0.95467695274831232])
+('breeding.... ', 6)
+merging...
+Merging  130  with  73  regions.
+going to tree
+3.05
+('breeding.... ', 4)
+merging...
+Merging  165  with  248  regions.
+going to tree
+2.49
+('breeding.... ', 2)
+merging...
+Merging  147  with  59  regions.
+going to tree
+2.475
+Took  12.682411  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.9951783992285439, 0.99035679845708768, 0.96528447444551591, 0.95756991321118601, 0.95467695274831232])
+('breeding.... ', 6)
+merging...
+Merging  130  with  165  regions.
+going to tree
+2.197
+('breeding.... ', 4)
+merging...
+Merging  248  with  59  regions.
+going to tree
+3.742
+('breeding.... ', 2)
+merging...
+Merging  147  with  73  regions.
+going to tree
+3.155
+Took  8.746673  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.9951783992285439, 0.99035679845708768, 0.96528447444551591, 0.96239151398264222, 0.95756991321118601])
+('breeding.... ', 6)
+merging...
+Merging  130  with  248  regions.
+going to tree
+2.334
+('breeding.... ', 4)
+merging...
+Merging  147  with  165  regions.
+going to tree
+1.943
+('breeding.... ', 2)
+merging...
+Merging  59  with  248  regions.
+going to tree
+3.73
+Took  7.805823  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99903567984570874, 0.9951783992285439, 0.99035679845708768, 0.96528447444551591, 0.96239151398264222, 0.95853423336547727])
+('breeding.... ', 6)
+merging...
+Merging  147  with  248  regions.
+going to tree
+2.5
+('breeding.... ', 4)
+merging...
+Merging  248  with  248  regions.
+going to tree
+3.662
+('breeding.... ', 2)
+merging...
+Merging  130  with  165  regions.
+going to tree
+2.197
+Took  10.387184  seconds
+Taking best tree..
+1 165
+2 147
+3 130
+4 248
+5 248
+6 248
+[(<objects.decisiontree.DecisionTree object at 0x7f0dccd42bd0>, 0.99903567984570874, 72), (<objects.decisiontree.DecisionTree object at 0x7f0dcc2e6c10>, 0.9951783992285439, 72), (<objects.decisiontree.DecisionTree object at 0x7f0dcb65f990>, 0.99035679845708768, 72), (<objects.decisiontree.DecisionTree object at 0x7f0dcba02250>, 0.95756991321118601, 72), (<objects.decisiontree.DecisionTree object at 0x7f0dcba28450>, 0.95467695274831232, 72), (<objects.decisiontree.DecisionTree object at 0x7f0dcc002f10>, 0.94406943105110908, 72)]
+Initializing
+Merging  142  with  148  regions.
+Merging  168  with  146  regions.
+Merging  58  with  70  regions.
+Merging  138  with  72  regions.
+Merging  43  with  82  regions.
+Merging  399  with  61  regions.
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99324975891996148, 0.98746383799421422, 0.98649951783992296, 0.95467695274831255, 0.95274831243973002, 0.94599807135969149])
+('breeding.... ', 6)
+merging...
+Merging  148  with  142  regions.
+going to tree
+2.624
+('breeding.... ', 4)
+merging...
+Merging  72  with  58  regions.
+going to tree
+3.541
+('breeding.... ', 2)
+merging...
+Merging  146  with  213  regions.
+going to tree
+2.757
+Took  12.28864  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99324975891996148, 0.98746383799421422, 0.98649951783992296, 0.95467695274831255, 0.95467695274831255, 0.95274831243973002])
+('breeding.... ', 6)
+merging...
+Merging  142  with  58  regions.
+going to tree
+2.773
+('breeding.... ', 4)
+merging...
+Merging  148  with  213  regions.
+going to tree
+2.387
+('breeding.... ', 2)
+merging...
+Merging  146  with  143  regions.
+going to tree
+2.848
+Took  11.160496  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99324975891996148, 0.98746383799421422, 0.98649951783992296, 0.95467695274831255, 0.95467695274831255, 0.95274831243973002])
+('breeding.... ', 6)
+merging...
+Merging  142  with  148  regions.
+going to tree
+2.522
+('breeding.... ', 4)
+merging...
+Merging  213  with  143  regions.
+going to tree
+3.529
+('breeding.... ', 2)
+merging...
+Merging  146  with  58  regions.
+going to tree
+2.591
+Took  11.201668  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99324975891996148, 0.98746383799421422, 0.98649951783992296, 0.95467695274831255, 0.95467695274831255, 0.95274831243973002])
+('breeding.... ', 6)
+merging...
+Merging  142  with  213  regions.
+going to tree
+2.721
+('breeding.... ', 4)
+merging...
+Merging  146  with  148  regions.
+going to tree
+2.552
+('breeding.... ', 2)
+merging...
+Merging  58  with  143  regions.
+going to tree
+3.529
+Took  9.682427  seconds
+Calculating accuracy and sorting
+('----> Best tree till now: ', [0.99324975891996148, 0.98746383799421422, 0.98649951783992296, 0.95467695274831255, 0.95467695274831255, 0.95274831243973002])
+('breeding.... ', 6)
+merging...
+Merging  146  with  58  regions.
+going to tree
+2.591
+('breeding.... ', 4)
+merging...
+Merging  143  with  213  regions.
+going to tree
+3.529
+('breeding.... ', 2)
+merging...
+Merging  142  with  148  regions.
+going to tree
+2.522
+Took  11.347021  seconds
+Taking best tree..
+1 148
+2 146
+3 142
+4 213
+5 143
+6 58
+[(<objects.decisiontree.DecisionTree object at 0x7f0dcbc453d0>, 0.99324975891996148, 61), (<objects.decisiontree.DecisionTree object at 0x7f0dcafada90>, 0.98746383799421422, 61), (<objects.decisiontree.DecisionTree object at 0x7f0dcc85f650>, 0.98649951783992296, 61), (<objects.decisiontree.DecisionTree object at 0x7f0dcad06290>, 0.95274831243973002, 61), (<objects.decisiontree.DecisionTree object at 0x7f0dcb932ed0>, 0.94599807135969149, 61), (<objects.decisiontree.DecisionTree object at 0x7f0dcc7a1550>, 0.94021215043394402, 61)]
+C4.5
+[[864   0   0   0]
+ [  0  63   3   0]
+ [  0   0 831  23]
+ [  0   0   3 806]]
+[[864   0   0   0]
+ [  0  66   0   0]
+ [  0   3 844   6]
+ [  0   0   6 803]]
+[[864   0   0   0]
+ [  0  66   0   0]
+ [  0   0 835  18]
+ [  0   0   6 803]]
+[[864   0   0   0]
+ [  0  64   1   0]
+ [  0   0 840  13]
+ [  0   0   9 800]]
+[[864   0   0   0]
+ [  0  63   2   0]
+ [  0   0 847   6]
+ [  0   0   6 802]]
+QUEST
+[[864   0   0   0]
+ [  0  28  38   0]
+ [  0   6 713 135]
+ [  0   0  36 773]]
+[[864   0   0   0]
+ [  0  41  25   0]
+ [  0   7 721 125]
+ [  0   0  21 788]]
+[[864   0   0   0]
+ [  0  34  32   0]
+ [  0   5 737 111]
+ [  0   0  69 740]]
+[[864   0   0   0]
+ [  0  34  31   0]
+ [  0   5 737 111]
+ [  0   0  30 779]]
+[[864   0   0   0]
+ [  0  28  37   0]
+ [  0   5 732 116]
+ [  0   0  25 783]]
+Genetic
+[[864   0   0   0]
+ [  0  65   1   0]
+ [  0   0 848   6]
+ [  0   0   2 807]]
+[[864   0   0   0]
+ [  0  66   0   0]
+ [  0   0 850   3]
+ [  0   0   4 805]]
+[[864   0   0   0]
+ [  0  66   0   0]
+ [  0   0 837  16]
+ [  0   0   0 809]]
+[[864   0   0   0]
+ [  0  64   1   0]
+ [  0   0 849   4]
+ [  0   0   6 803]]
+[[864   0   0   0]
+ [  0  65   0   0]
+ [  0   3 842   8]
+ [  0   0   1 807]]
+CART
+[[864   0   0   0]
+ [  0  55  11   0]
+ [  0  10 747  97]
+ [  0   0  21 788]]
+[[864   0   0   0]
+ [  0  53  13   0]
+ [  0  26 756  71]
+ [  0   0  36 773]]
+[[864   0   0   0]
+ [  0  56  10   0]
+ [  0   9 780  64]
+ [  0   0  40 769]]
+[[864   0   0   0]
+ [  0  45  20   0]
+ [  0   5 793  55]
+ [  0   0  51 758]]
+[[864   0   0   0]
+ [  0  46  19   0]
+ [  0  10 778  65]
+ [  0   0  18 790]]
+[[  4.32000000e+03   0.00000000e+00   0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   3.22000000e+02   6.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   3.00000000e+00   4.19700000e+03   6.60000000e+01]
+ [  0.00000000e+00   0.00000000e+00   3.00000000e+01   4.01400000e+03]] 0.991896897669
+[[ 4320.     0.     0.     0.]
+ [    0.   165.   163.     0.]
+ [    0.    28.  3640.   598.]
+ [    0.     0.   181.  3863.]] 0.925142768946
+[[  4.32000000e+03   0.00000000e+00   0.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   3.26000000e+02   2.00000000e+00   0.00000000e+00]
+ [  0.00000000e+00   3.00000000e+00   4.22600000e+03   3.70000000e+01]
+ [  0.00000000e+00   0.00000000e+00   1.30000000e+01   4.03100000e+03]] 0.995755517827
+[[ 4320.     0.     0.     0.]
+ [    0.   255.    73.     0.]
+ [    0.    60.  3854.   352.]
+ [    0.     0.   166.  3878.]] 0.94976076555
+/usr/lib/python2.7/dist-packages/matplotlib/collections.py:571: FutureWarning: elementwise comparison failed; returning scalar instead, but in the future will perform elementwise comparison
+  if self._edgecolors == str('face'):
+
