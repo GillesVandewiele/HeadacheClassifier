@@ -41,7 +41,7 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 
 SEED = 1337
-N_FOLDS = 2
+N_FOLDS = 3
 
 np.random.seed(SEED)    # 84846513
 columns = ['feature1', 'feature2', 'feature3', 'feature4', 'feature5', 'feature6', 'feature7', 'feature8',
@@ -72,10 +72,11 @@ features_df = features_df.drop('class', axis=1)
 train_labels_df = labels_df
 train_features_df = features_df
 
-c45 = C45Constructor(cf=0.05)
-cart = CARTConstructor(min_samples_leaf=10, max_depth=6)
-quest = QuestConstructor(default=1, max_nr_nodes=1, discrete_thresh=25, alpha=0.05)
+c45 = C45Constructor(cf=0.65)
+cart = CARTConstructor(min_samples_leaf=5, max_depth=6)
+quest = QuestConstructor(default=1, max_nr_nodes=3, discrete_thresh=1, alpha=0.25)
 tree_constructors = [c45, cart, quest]
+# tree_constructors = [quest]
 
 tree_confusion_matrices = {}
 for tree_constructor in tree_constructors:
@@ -111,7 +112,7 @@ for train_index, test_index in skf:
                                          num_mutations=5, population_size=10, max_samples=2, val_fraction=0.10,
                                          num_boosts=3)
 
-    # best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
+    best_tree.visualise(os.path.join(os.path.join('..', 'data'), 'best_tree'))
     predicted_labels = best_tree.evaluate_multiple(test_features_df)
     tree_confusion_matrices["Genetic"].append(best_tree.plot_confusion_matrix(test_labels_df['cat'].values.astype(str),
                                               predicted_labels.astype(str)))
