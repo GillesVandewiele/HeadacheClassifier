@@ -28,7 +28,7 @@ from constructors.treemerger import DecisionTreeMerger
 from extractors.featureselector import RF_feature_selection
 
 SEED = 1337
-N_FOLDS = 5
+N_FOLDS = 10
 
 np.random.seed(SEED)    # 84846513
 columns = ['parents', 'has_nurs', 'form', 'children', 'housing', 'finance', 'social', 'health', 'class']
